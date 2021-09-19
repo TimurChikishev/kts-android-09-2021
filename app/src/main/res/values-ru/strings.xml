@@ -5,4 +5,11 @@
     <string name="welcome_description">Это приветственный экран специально для KTS</string>
     <string name="skip_toast">Пропускать нечего…</string>
     <string name="welcome">Добро пожаловать</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="icon_log_in">Иконка авторизации</string>
+    <string name="home">HOME</string>
+    <string name="log_in">Log In</string>
+    <string name="error_email">некоректный e-mail</string>
+    <string name="error_password">некоректный пароль</string>
 </resources>

@@ -3,14 +3,16 @@
     package="com.example.lecture1">
 
     <application
-        android:allowBackup="true"
+        android:name=".App"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Lecture1">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activitys.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
