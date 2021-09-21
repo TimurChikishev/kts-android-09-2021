@@ -9,8 +9,10 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lecture1.R
 import com.example.lecture1.databinding.FragmentLogInBinding
+import com.example.lecture1.databinding.FragmentOnBoardingBinding
 import com.example.lecture1.ui.viewmodels.AuthViewModal
 import com.example.lecture1.ui.viewmodels.LoginState
 import com.google.android.material.textfield.TextInputEditText
@@ -18,14 +20,14 @@ import com.google.android.material.textfield.TextInputEditText
 class LogInFragment : Fragment(R.layout.fragment_log_in) {
 
     private val viewModel: AuthViewModal by viewModels()
-    private var viewBinding: FragmentLogInBinding? = null
+    private val viewBinding by viewBinding(FragmentLogInBinding::bind)
+
     private var inputEmail: TextInputEditText? = null
     private var inputPassword: TextInputEditText? = null
     private var btnLogin: Button? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding = FragmentLogInBinding.bind(view)
 
         initLogInFrom()
 
@@ -53,9 +55,9 @@ class LogInFragment : Fragment(R.layout.fragment_log_in) {
     }
 
     private fun initLogInFrom() {
-        inputEmail = viewBinding?.inputEmail
-        inputPassword = viewBinding?.inputPassword
-        btnLogin = viewBinding?.btnLogIn
+        inputEmail = viewBinding.inputEmail
+        inputPassword = viewBinding.inputPassword
+        btnLogin = viewBinding.btnLogIn
 
         btnLogin?.setOnClickListener {
             viewModel.login(email = inputEmail?.text.toString(), password = inputPassword?.text.toString())
@@ -84,7 +86,6 @@ class LogInFragment : Fragment(R.layout.fragment_log_in) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewBinding = null
         inputEmail = null
         inputPassword = null
         btnLogin = null
