@@ -1,4 +1,4 @@
-package com.example.lecture1.extensions
+package com.example.lecture1.utils
 
 import androidx.lifecycle.MutableLiveData
 

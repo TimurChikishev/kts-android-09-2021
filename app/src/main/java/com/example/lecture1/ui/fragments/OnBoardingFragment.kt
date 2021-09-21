@@ -21,6 +21,5 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
             val action = OnBoardingFragmentDirections.actionOnBoardingFragmentToLogInFragment()
             findNavController().navigate(action)
         }
-
     }
 }

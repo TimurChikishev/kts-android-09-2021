@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.lecture1.R
-import com.example.lecture1.extensions.set
+import com.example.lecture1.utils.set
 
 class AuthViewModal(
     savedStateHandle: SavedStateHandle
