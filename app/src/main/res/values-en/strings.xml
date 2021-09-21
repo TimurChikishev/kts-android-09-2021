@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Lecture1</string>
+    <string name="icon_smile">icon smile</string>
+    <string name="skip">Skip</string>
+    <string name="welcome_description">This is a welcome screen specially for KTS</string>
+    <string name="skip_toast">Skip nothing…</string>
+    <string name="welcome">Welcome</string>
+</resources>

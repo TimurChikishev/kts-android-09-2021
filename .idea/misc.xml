@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/GIT/kts/app/src/main/res/drawable/ic_smile_faces_green_24.xml" value="0.5661538461538461" />
+        <entry key="..\:/GIT/kts/app/src/main/res/layout-land/activity_main.xml" value="0.43125" />
+        <entry key="..\:/GIT/kts/app/src/main/res/layout/activity_main.xml" value="0.375" />
+        <entry key="..\:/GIT/tmp/kts-android-09-2021/app/src/main/res/drawable/ic_smile_faces_green_24.xml" value="0.47685185185185186" />
+        <entry key="..\:/GIT/tmp/kts-android-09-2021/app/src/main/res/drawable/ic_smile_faces_white_24.xml" value="0.5707692307692308" />
+        <entry key="..\:/GIT/tmp/kts-android-09-2021/app/src/main/res/layout-land/activity_main.xml" value="0.47354497354497355" />
+        <entry key="..\:/GIT/tmp/kts-android-09-2021/app/src/main/res/layout/activity_main.xml" value="0.18" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
