@@ -12,6 +12,9 @@
         android:layout_height="20dp"
         android:layout_margin="8dp"
         android:contentDescription="@string/app_icon"
+        app:layout_constraintEnd_toStartOf="@+id/authorTextView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
@@ -25,32 +28,34 @@
         android:maxLines="1"
         android:singleLine="true"
         app:layout_constraintEnd_toStartOf="@+id/createdTextView"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth="wrap_content_constrained"
-        tools:text="@tools:sample/full_names" />
+        tools:text="@tools:sample/lorem" />
 
     <TextView
         android:id="@+id/createdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/thumbnailImageView"
+        app:layout_constraintStart_toEndOf="@+id/authorTextView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/date/hhmm" />
 
-
     <TextView
         android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:ellipsize="end"
         android:maxLines="3"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/thumbnailImageView"
+        app:layout_constraintHeight="wrap_content_constrained"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerBarrierBottom"
+        app:layout_constraintWidth="wrap_content_constrained"
         tools:text="@tools:sample/lorem" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -60,6 +65,25 @@
         android:orientation="vertical"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="avatarImageView,authorTextView,createdTextView" />
+
+    <ImageView
+        android:id="@+id/thumbnailImageView"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/main_image"
+        android:src="@drawable/ic_image_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bodyBarrierBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="titleTextView,thumbnailImageView" />
 
     <ImageView
         android:id="@+id/upsUpImageView"
@@ -74,7 +98,7 @@
         app:layout_constraintEnd_toStartOf="@+id/numUpsTextView"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <TextView
         android:id="@+id/numUpsTextView"
@@ -86,7 +110,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/upsDownImageView"
         app:layout_constraintStart_toEndOf="@+id/upsUpImageView"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom"
         tools:text="0" />
 
     <ImageView
@@ -100,7 +124,7 @@
         android:contentDescription="@string/like"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/numUpsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/endUpsBarrier"
@@ -123,7 +147,7 @@
         app:layout_constraintEnd_toStartOf="@+id/numCommentsTextView"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/endUpsBarrier"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <TextView
         android:id="@+id/numCommentsTextView"
@@ -136,7 +160,7 @@
         app:layout_constraintEnd_toStartOf="@+id/startSharedBarrier"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/commentsImageView"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom"
         tools:text="0" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -159,7 +183,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/shareTextView"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <TextView
         android:id="@+id/shareTextView"
@@ -173,6 +197,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
