@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.HomeFragment">
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:textStyle="bold"
-      android:textSize="30sp"
-      android:text="@string/home"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/home"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
 </FrameLayout>

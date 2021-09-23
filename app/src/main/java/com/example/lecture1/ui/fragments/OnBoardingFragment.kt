@@ -10,14 +10,12 @@ import com.example.lecture1.databinding.FragmentOnBoardingBinding
 
 class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
-//    private var viewBinding by viewBinding(FragmentOnBoardingBinding::bind)
-    // Without reflection
     private val viewBinding by viewBinding(FragmentOnBoardingBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.btnSkip.setOnClickListener {
+        viewBinding.buttonSkip.setOnClickListener {
             val action = OnBoardingFragmentDirections.actionOnBoardingFragmentToLogInFragment()
             findNavController().navigate(action)
         }

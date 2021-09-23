@@ -11,16 +11,17 @@ class AuthViewModal(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val mutableState = savedStateHandle.getLiveData<LoginState>("login", LoginState.DefaultState)
+    private val mutableState =
+        savedStateHandle.getLiveData<LoginState>("login", LoginState.DefaultState)
 
-    val state : LiveData<LoginState>
+    val state: LiveData<LoginState>
         get() = mutableState
 
     // т.к. мы делаем кнопку enable только тогда, когда
     // все поля прошли валидацию, можно убрать валидацию тут,
     // но малоли кто-то решит ипользовать это подругому и что-то пойдет не так
     fun login(email: String, password: String) {
-        if (!validateEmail(email = email)){
+        if (!validateEmail(email = email)) {
             mutableState.set(newValue = LoginState.ErrorState(message = R.string.error_email))
             return
         }
