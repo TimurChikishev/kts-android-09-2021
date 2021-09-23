@@ -1,8 +1,8 @@
-package com.example.lecture1.ui.activitys
+package com.swallow.cracker.ui.activitys
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.lecture1.R
+import com.swallow.cracker.R
 
 class MainActivity : AppCompatActivity() {
 

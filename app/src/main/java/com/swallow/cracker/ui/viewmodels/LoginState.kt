@@ -1,4 +1,4 @@
-package com.example.lecture1.ui.viewmodels
+package com.swallow.cracker.ui.viewmodels
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

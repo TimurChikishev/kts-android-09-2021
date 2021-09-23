@@ -1,11 +1,11 @@
-package com.example.lecture1.ui.viewmodels
+package com.swallow.cracker.ui.viewmodels
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.lecture1.R
-import com.example.lecture1.utils.set
+import com.swallow.cracker.R
+import com.swallow.cracker.utils.set
 
 class AuthViewModal(
     savedStateHandle: SavedStateHandle

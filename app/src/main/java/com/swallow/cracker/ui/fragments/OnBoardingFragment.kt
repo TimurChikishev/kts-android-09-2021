@@ -1,12 +1,12 @@
-package com.example.lecture1.ui.fragments
+package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lecture1.R
-import com.example.lecture1.databinding.FragmentOnBoardingBinding
+import com.swallow.cracker.R
+import com.swallow.cracker.databinding.FragmentOnBoardingBinding
 
 class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 

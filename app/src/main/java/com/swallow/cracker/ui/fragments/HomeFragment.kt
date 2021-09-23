@@ -1,6 +1,6 @@
-package com.example.lecture1.ui.fragments
+package com.swallow.cracker.ui.fragments
 
 import androidx.fragment.app.Fragment
-import com.example.lecture1.R
+import com.swallow.cracker.R
 
 class HomeFragment : Fragment(R.layout.fragment_home) {}

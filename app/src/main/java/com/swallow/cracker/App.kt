@@ -1,4 +1,4 @@
-package com.example.lecture1
+package com.swallow.cracker
 
 import android.app.Application
 import androidx.viewbinding.BuildConfig

@@ -1,4 +1,4 @@
-package com.example.lecture1.utils
+package com.swallow.cracker.utils
 
 import androidx.lifecycle.MutableLiveData
 

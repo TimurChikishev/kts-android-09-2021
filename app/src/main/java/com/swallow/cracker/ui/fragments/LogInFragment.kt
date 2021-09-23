@@ -1,4 +1,4 @@
-package com.example.lecture1.ui.fragments
+package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,10 +9,10 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lecture1.R
-import com.example.lecture1.databinding.FragmentLogInBinding
-import com.example.lecture1.ui.viewmodels.AuthViewModal
-import com.example.lecture1.ui.viewmodels.LoginState
+import com.swallow.cracker.R
+import com.swallow.cracker.databinding.FragmentLogInBinding
+import com.swallow.cracker.ui.viewmodels.AuthViewModal
+import com.swallow.cracker.ui.viewmodels.LoginState
 import com.google.android.material.textfield.TextInputEditText
 
 class LogInFragment : Fragment(R.layout.fragment_log_in) {
@@ -37,13 +37,8 @@ class LogInFragment : Fragment(R.layout.fragment_log_in) {
                 }
                 is LoginState.ErrorState<*> -> {
                     when (state.message) {
-                        is Int -> Toast.makeText(
-                            context,
-                            getString(state.message),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT)
-                            .show()
+                        is Int -> Toast.makeText(context, getString(state.message), Toast.LENGTH_SHORT).show()
+                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                     }
                     btnLogin?.isEnabled = false
                 }
