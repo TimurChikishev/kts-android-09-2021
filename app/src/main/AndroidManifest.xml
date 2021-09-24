@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.swallow.cracker">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="com.swallow.cracker.App"
         android:allowBackup="false"
