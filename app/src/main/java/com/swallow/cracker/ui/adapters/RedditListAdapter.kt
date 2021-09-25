@@ -6,6 +6,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
+import com.swallow.cracker.databinding.RedditListItemBinding
+import com.swallow.cracker.databinding.RedditListItemWithImageBinding
 import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItem
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
@@ -16,12 +18,16 @@ class RedditListAdapter() :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.reddit_list_item -> RedditListViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.reddit_list_item, parent, false)
+                RedditListItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
             )
             else -> RedditListWithImageViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.reddit_list_item_with_image, parent, false)
+                RedditListItemWithImageBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
             )
         }
     }
