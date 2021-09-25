@@ -22,19 +22,21 @@ class EverythingNewsPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RedditList> {
         val page: Int = params.key ?: 1
 
-        val response = Networking.redditApi.getTop(Networking.after, limit)
-
-        return if (response.isSuccessful) {
+        return try   {
+            val response = Networking.redditApi.getTop(Networking.after, limit)
             val responseBody = checkNotNull(response.body())
             Networking.after = responseBody.data.after.toString()
+
             val data =
                 checkNotNull(response.body()).data.children.map { RedditMapper().mapApiToUi(it.data) }
 
             val nextKey = if (data.isEmpty()) null else page + 1
             val prevKey = if (page == 1) null else page - 1
             LoadResult.Page(data, prevKey, nextKey)
-        } else {
-            LoadResult.Error(HttpException(response))
+        } catch (exception: Throwable) {
+            LoadResult.Error(exception)
+        } catch (exception: HttpException) {
+            LoadResult.Error(exception)
         }
     }
 }
