@@ -2,15 +2,16 @@ package com.swallow.cracker.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
-import com.swallow.cracker.ui.adapters.diff_util.DiffAdapter
-import com.swallow.cracker.ui.adapters.diff_util.DiffCalculator
 import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItem
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 
-class SubredditListAdapter() : DiffAdapter<RedditList, RecyclerView.ViewHolder>() {
+class RedditListAdapter() :
+    PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(POST_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -29,6 +30,7 @@ class SubredditListAdapter() : DiffAdapter<RedditList, RecyclerView.ViewHolder>(
         return when (getItem(position)) {
             is RedditListItem -> R.layout.reddit_list_item
             is RedditListItemWithImage -> R.layout.reddit_list_item_with_image
+            else -> error("error")
         }
     }
 
@@ -39,16 +41,15 @@ class SubredditListAdapter() : DiffAdapter<RedditList, RecyclerView.ViewHolder>(
         }
     }
 
-    override fun getDiffCalculator(
-        oldItems: List<RedditList>,
-        newItems: List<RedditList>
-    ): DiffCalculator<RedditList> = object : DiffCalculator<RedditList>(oldItems, newItems) {
-        override fun areSame(first: RedditList, second: RedditList): Boolean {
-            return first == second
-        }
+    companion object {
+        private val POST_COMPARATOR = object : DiffUtil.ItemCallback<RedditList>() {
+            override fun areItemsTheSame(oldItem: RedditList, newItem: RedditList): Boolean {
+                return oldItem.getItemId() == newItem.getItemId()
+            }
 
-        override fun contentsAreSame(first: RedditList, second: RedditList): Boolean {
-            return first == second
+            override fun areContentsTheSame(oldItem: RedditList, newItem: RedditList): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 }

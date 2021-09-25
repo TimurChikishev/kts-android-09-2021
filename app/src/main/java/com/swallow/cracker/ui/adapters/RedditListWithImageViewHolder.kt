@@ -18,6 +18,9 @@ class RedditListWithImageViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     private val numCommentsTextView: TextView = itemView.findViewById(R.id.numCommentsTextView)
     private val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnailImageView)
 
+    private val upsUpImageView: ImageView = itemView.findViewById(R.id.upsUpImageView)
+    private val upsDownImageView: ImageView = itemView.findViewById(R.id.upsDownImageView)
+
     fun bind(modal: RedditListItemWithImage) {
         avatarImageView.setImageResource(R.drawable.ic_face_24)
         authorTextView.text = modal.author
