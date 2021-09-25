@@ -2,12 +2,15 @@ package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentHomeBinding
+import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.RedditListAdapter
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
@@ -32,10 +35,38 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun initSubredditList() {
         redditAdapter = RedditListAdapter()
 
-        with(viewBinding.redditRecyclerView) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = redditAdapter
-            setHasFixedSize(true)
+        with(viewBinding) {
+            redditRecyclerView.setHasFixedSize(true)
+            redditRecyclerView.layoutManager = LinearLayoutManager(context)
+            redditRecyclerView.adapter = redditAdapter.withLoadStateHeaderAndFooter(
+                header = LoadStateAdapter { redditAdapter.retry() },
+                footer = LoadStateAdapter { redditAdapter.retry() }
+            )
+
+            includedLoadState?.buttonRetry?.setOnClickListener {
+                redditAdapter.retry()
+            }
+        }
+
+        redditAdapter.addLoadStateListener { loadState ->
+            viewBinding.apply {
+                redditRecyclerView.isVisible =
+                    loadState.source.refresh is LoadState.NotLoading
+                includedLoadState?.progressBar?.isVisible = loadState.source.refresh is LoadState.Loading
+                includedLoadState?.buttonRetry?.isVisible = loadState.source.refresh is LoadState.Error
+                includedLoadState?.textViewError?.isVisible = loadState.source.refresh is LoadState.Error
+
+                // for empty view
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    redditAdapter.itemCount < 1
+                ) {
+                    viewBinding.redditRecyclerView.isVisible = false
+                    includedLoadState?.textViewError?.isVisible = true
+                } else {
+                    includedLoadState?.textViewError?.isVisible = false
+                }
+            }
         }
     }
 }

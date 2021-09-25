@@ -19,6 +19,7 @@ class RedditListWithImageViewHolder(private val viewBinding: RedditListItemWithI
             numCommentsTextView.text = modal.numComments.toString()
             Glide.with(itemView)
                 .load(modal.thumbnail)
+                .error(R.drawable.ic_error_24)
                 .into(thumbnailImageView)
         }
     }

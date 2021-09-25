@@ -20,11 +20,11 @@ object Networking {
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
-        .client(okhttpClient)
         .build()
 
     val redditApi: RedditApi
         get() = retrofit.create()
+
 
     var after = ""
 }

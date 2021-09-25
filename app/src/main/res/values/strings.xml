@@ -18,4 +18,6 @@
     <string name="like">like</string>
     <string name="share">Share</string>
     <string name="main_image">main image</string>
+    <string name="data_could_not_be_loaded">Result could not be loaded</string>
+    <string name="retry">retry</string>
 </resources>
