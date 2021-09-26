@@ -68,7 +68,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/like"
-        android:src="@drawable/ic_arrow_up_24"
+        android:src="@drawable/up_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/scoreTextView"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -96,7 +96,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/dislike"
-        android:src="@drawable/ic_arrow_down_24"
+        android:src="@drawable/down_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/scoreTextView"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />

@@ -4,7 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/drawable/ic_arrow_down_24.xml" value="0.2111111111111111" />
+        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/drawable/ic_arrow_up_24.xml" value="0.5755208333333334" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/drawable/ic_cookie_24.xml" value="0.4297435897435897" />
+        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/drawable/up_arrow.xml" value="0.5755208333333334" />
+        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/drawable/up_arrow_rotated.xml" value="0.5361111111111111" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout-land/activity_main.xml" value="0.2808641975308642" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout-land/fragment_home.xml" value="0.2808641975308642" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout-land/fragment_log_in.xml" value="0.2808641975308642" />
@@ -17,8 +20,8 @@
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/fragment_on_boarding.xml" value="0.22" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/load_state_item.xml" value="0.21784420289855072" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/onboarding_item.xml" value="0.20820668693009117" />
-        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/reddit_list_item.xml" value="0.3134057971014493" />
-        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/reddit_list_item_with_image.xml" value="0.29739583333333336" />
+        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/reddit_list_item.xml" value="0.25" />
+        <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/reddit_list_item_with_image.xml" value="0.5" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/rv_item.xml" value="0.22" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/layout/rv_item_with_image.xml" value="0.2740628166160081" />
         <entry key="..\:/GIT/kts-android-09-2021/app/src/main/res/xml/network_security_config.xml" value="0.19791666666666666" />
