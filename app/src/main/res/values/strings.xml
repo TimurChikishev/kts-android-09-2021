@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">Lecture1</string>
+    <string name="app_name">Сracker</string>
     <string name="icon_smile">icon smile</string>
     <string name="skip">Skip</string>
     <string name="welcome_description">This is a welcome screen specially for KTS</string>
     <string name="skip_toast">Skip nothing…</string>
     <string name="welcome">Welcome</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="icon_log_in">icon log in</string>
+    <string name="home">HOME</string>
+    <string name="log_in">Log In</string>
+    <string name="error_email">invalid email address</string>
+    <string name="error_password">invalid password</string>
 </resources>
