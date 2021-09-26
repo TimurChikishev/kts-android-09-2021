@@ -43,7 +43,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 footer = LoadStateAdapter { redditAdapter.retry() }
             )
 
-            includedLoadState?.buttonRetry?.setOnClickListener {
+            includedLoadState.buttonRetry.setOnClickListener {
                 redditAdapter.retry()
             }
         }
@@ -52,9 +52,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             viewBinding.apply {
                 redditRecyclerView.isVisible =
                     loadState.source.refresh is LoadState.NotLoading
-                includedLoadState?.progressBar?.isVisible = loadState.source.refresh is LoadState.Loading
-                includedLoadState?.buttonRetry?.isVisible = loadState.source.refresh is LoadState.Error
-                includedLoadState?.textViewError?.isVisible = loadState.source.refresh is LoadState.Error
+                includedLoadState.progressBar.isVisible =
+                    loadState.source.refresh is LoadState.Loading
+                includedLoadState.buttonRetry.isVisible =
+                    loadState.source.refresh is LoadState.Error
+                includedLoadState.textViewError.isVisible =
+                    loadState.source.refresh is LoadState.Error
 
                 // for empty view
                 if (loadState.source.refresh is LoadState.NotLoading &&
@@ -62,9 +65,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     redditAdapter.itemCount < 1
                 ) {
                     viewBinding.redditRecyclerView.isVisible = false
-                    includedLoadState?.textViewError?.isVisible = true
+                    includedLoadState.textViewError.isVisible = true
                 } else {
-                    includedLoadState?.textViewError?.isVisible = false
+                    includedLoadState.textViewError.isVisible = false
                 }
             }
         }

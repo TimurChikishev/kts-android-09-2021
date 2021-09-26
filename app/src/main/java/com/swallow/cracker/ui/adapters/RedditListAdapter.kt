@@ -32,7 +32,7 @@ class RedditListAdapter() :
         }
     }
 
-    // это метод реализует лайк. jetpack paging 3 сковывет (
+    // это метод реализует лайк.
     private fun scoreUpdate(position: Int, likes: Boolean) {
         val item = getItem(position)
         if (likes) {

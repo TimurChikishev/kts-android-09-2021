@@ -9,7 +9,9 @@ import retrofit2.http.Query
 interface RedditApi {
     @GET("top.json")
     suspend fun getTop(
-        @Query("after") after: String,
-        @Query("limit") limit: String
+        @Query("limit") limit: String,
+        @Query("count") count: String,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
 }
