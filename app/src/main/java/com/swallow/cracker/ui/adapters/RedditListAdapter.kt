@@ -17,19 +17,57 @@ class RedditListAdapter() :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.reddit_list_item -> RedditListViewHolder(
+            R.layout.reddit_list_item -> RedditItemViewHolder(
                 RedditListItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-            )
-            else -> RedditListWithImageViewHolder(
+            ) { position, likes -> scoreUpdate(position = position, likes = likes) }
+            else -> RedditItemWithImageViewHolder(
                 RedditListItemWithImageBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
-            )
+            ) { position, likes -> scoreUpdate(position = position, likes = likes) }
         }
+    }
+
+    // это метод реализует лайк. jetpack paging 3 сковывет (
+    private fun scoreUpdate(position: Int, likes: Boolean) {
+        val item = getItem(position)
+        if (likes) {
+            when (item!!.getLikeStatus()) {
+                true -> {
+                    item.setLikeStatus(null)
+                    item.plusScore(-1)
+                }
+                false -> {
+                    item.setLikeStatus(true)
+                    item.plusScore(2)
+                }
+                null -> {
+                    item.setLikeStatus(true)
+                    item.plusScore(1)
+                }
+            }
+        } else {
+            when (item!!.getLikeStatus()) {
+                true -> {
+                    item.setLikeStatus(false)
+                    item.plusScore(-2)
+                }
+                false -> {
+                    item.setLikeStatus(null)
+                    item.plusScore(1)
+                }
+                null -> {
+                    item.setLikeStatus(false)
+                    item.plusScore(-1)
+                }
+            }
+        }
+
+        notifyItemChanged(position)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -42,8 +80,8 @@ class RedditListAdapter() :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is RedditListViewHolder -> holder.bind(getItem(position) as RedditListItem)
-            is RedditListWithImageViewHolder -> holder.bind(getItem(position) as RedditListItemWithImage)
+            is RedditItemViewHolder -> holder.bind(getItem(position) as RedditListItem)
+            is RedditItemWithImageViewHolder -> holder.bind(getItem(position) as RedditListItemWithImage)
         }
     }
 
@@ -59,3 +97,4 @@ class RedditListAdapter() :
         }
     }
 }
+

@@ -20,4 +20,6 @@
     <string name="main_image">main image</string>
     <string name="data_could_not_be_loaded">Result could not be loaded</string>
     <string name="retry">retry</string>
+    <string name="unvoted">unvoted</string>
+    <string name="dislike">dislike</string>
 </resources>

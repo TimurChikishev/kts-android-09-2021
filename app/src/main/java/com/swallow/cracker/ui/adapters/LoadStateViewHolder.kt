@@ -5,7 +5,8 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.LoadStateItemBinding
 
-class LoadStateViewHolder(private val viewBinding: LoadStateItemBinding, retry: () -> Unit): RecyclerView.ViewHolder(viewBinding.root) {
+class LoadStateViewHolder(private val viewBinding: LoadStateItemBinding, retry: () -> Unit) :
+    RecyclerView.ViewHolder(viewBinding.root) {
 
     init {
         viewBinding.buttonRetry.setOnClickListener {
@@ -13,7 +14,7 @@ class LoadStateViewHolder(private val viewBinding: LoadStateItemBinding, retry: 
         }
     }
 
-    fun bind(loadState: LoadState){
+    fun bind(loadState: LoadState) {
         viewBinding.apply {
             progressBar.isVisible = loadState is LoadState.Loading
             buttonRetry.isVisible = loadState !is LoadState.Loading

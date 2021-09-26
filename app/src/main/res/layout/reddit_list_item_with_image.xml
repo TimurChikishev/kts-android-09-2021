@@ -71,9 +71,9 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="8dp"
-        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:contentDescription="@string/main_image"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_image_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -87,44 +87,44 @@
         app:constraint_referenced_ids="titleTextView,thumbnailImageView" />
 
     <ImageView
-        android:id="@+id/upsUpImageView"
+        android:id="@+id/likesImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_arrow_up_24"
         android:contentDescription="@string/like"
+        android:src="@drawable/ic_arrow_up_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/numUpsTextView"
+        app:layout_constraintEnd_toStartOf="@+id/scoreTextView"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <TextView
-        android:id="@+id/numUpsTextView"
+        android:id="@+id/scoreTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/upsDownImageView"
-        app:layout_constraintStart_toEndOf="@+id/upsUpImageView"
+        app:layout_constraintEnd_toStartOf="@+id/dislikesImageView"
+        app:layout_constraintStart_toEndOf="@+id/likesImageView"
         app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom"
         tools:text="0" />
 
     <ImageView
-        android:id="@+id/upsDownImageView"
+        android:id="@+id/dislikesImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_arrow_down_24"
-        android:contentDescription="@string/like"
+        android:contentDescription="@string/dislike"
+        android:src="@drawable/ic_arrow_down_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/numUpsTextView"
+        app:layout_constraintStart_toEndOf="@+id/scoreTextView"
         app:layout_constraintTop_toBottomOf="@+id/bodyBarrierBottom" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -133,7 +133,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:barrierDirection="end"
-        app:constraint_referenced_ids="upsUpImageView,numUpsTextView,upsDownImageView" />
+        app:constraint_referenced_ids="likesImageView,scoreTextView,dislikesImageView" />
 
     <ImageView
         android:id="@+id/commentsImageView"
@@ -143,7 +143,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/ic_comment_24"
-        android:contentDescription="@string/like"
+        android:contentDescription="@string/icon_comments"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/numCommentsTextView"
         app:layout_constraintHorizontal_chainStyle="packed"

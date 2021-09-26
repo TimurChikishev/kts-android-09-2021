@@ -13,8 +13,10 @@ data class RedditNewsDataResponse(
     val title: String,
     @Json(name = "selftext")
     var selftext: String,
-    @Json(name = "ups")
-    val ups: Int,
+    @Json(name = "score")
+    val score: Int,
+    @Json(name = "likes")
+    val likes: Boolean?,
     @Json(name = "num_comments")
     val num_comments: Int,
     @Json(name = "created")

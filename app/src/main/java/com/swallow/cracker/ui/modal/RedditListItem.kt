@@ -7,7 +7,8 @@ data class RedditListItem(
     var author: String,
     var title: String,
     var selftext: String,
-    val ups: Int,
+    var score: Int,
+    var likes: Boolean?,
     var numComments: Int,
     var created: Long,
     var url: String

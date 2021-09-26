@@ -15,17 +15,20 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class RedditListViewModel: ViewModel() {
+class RedditListViewModel(
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val repository = RedditRepository()
 
-    private val currentQuery = MutableLiveData(DEFAULT_LIMIT_VALUE)
+    private val currentQuery =
+        savedStateHandle.getLiveData("LIMIT_VALUE", DEFAULT_LIMIT_VALUE)
 
     val posts = currentQuery.switchMap {
         repository.getTop(it).cachedIn(viewModelScope)
     }
 
-    fun updateLimitValue(limit: String){
+    fun updateLimitValue(limit: String) {
         currentQuery.value = limit
     }
 
