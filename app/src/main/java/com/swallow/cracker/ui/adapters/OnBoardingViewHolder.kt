@@ -1,17 +1,11 @@
 package com.swallow.cracker.ui.adapters
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.R
+import com.swallow.cracker.databinding.OnboardingItemBinding
 import com.swallow.cracker.ui.modal.OnBoardingUI
 
-class OnBoardingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    private val image: ImageView = itemView.findViewById(R.id.onBoardingImage)
-    private val title: TextView = itemView.findViewById(R.id.onBoardingTitle)
-    private val description: TextView = itemView.findViewById(R.id.onBoardingDescription)
+class OnBoardingViewHolder(private val viewBinding: OnboardingItemBinding) :
+    RecyclerView.ViewHolder(viewBinding.root) {
 
     fun bind(items: OnBoardingUI) {
         setImage(items.image)
@@ -20,14 +14,14 @@ class OnBoardingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private fun setImage(image: Int) {
-        this.image.setImageResource(image)
+        viewBinding.onBoardingImage.setImageResource(image)
     }
 
     private fun setTitle(title: String) {
-        this.title.text = title
+        viewBinding.onBoardingTitle.text = title
     }
 
     private fun setDescription(description: String) {
-        this.description.text = description
+        viewBinding.onBoardingDescription.text = description
     }
 }
