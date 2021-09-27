@@ -19,6 +19,12 @@ class LoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadSta
         parent: ViewGroup,
         loadState: LoadState
     ): LoadStateViewHolder {
-       return LoadStateViewHolder(LoadStateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false), retry)
+        return LoadStateViewHolder(
+            LoadStateItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), retry
+        )
     }
 }

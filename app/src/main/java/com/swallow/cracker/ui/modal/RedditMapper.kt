@@ -2,7 +2,6 @@ package com.swallow.cracker.ui.modal
 
 import com.swallow.cracker.data.modal.RedditNewsDataResponse
 import com.swallow.cracker.utils.isUrl
-import timber.log.Timber
 
 class RedditMapper {
     fun mapApiToUi(item: RedditNewsDataResponse): RedditList {

@@ -24,7 +24,4 @@ object Networking {
 
     val redditApi: RedditApi
         get() = retrofit.create()
-
-
-    var after = ""
 }

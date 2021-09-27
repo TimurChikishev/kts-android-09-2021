@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemBinding
 import com.swallow.cracker.ui.modal.RedditListItem
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
 import timber.log.Timber
 
 class RedditItemViewHolder(
