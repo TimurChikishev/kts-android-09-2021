@@ -11,6 +11,8 @@ import com.swallow.cracker.databinding.RedditListItemWithImageBinding
 import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItem
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.utils.getItemId
+import com.swallow.cracker.utils.updateScore
 
 class RedditListAdapter() :
     PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(POST_COMPARATOR) {
@@ -34,39 +36,7 @@ class RedditListAdapter() :
 
     // это метод реализует лайк.
     private fun scoreUpdate(position: Int, likes: Boolean) {
-        val item = getItem(position)
-        if (likes) {
-            when (item!!.getLikeStatus()) {
-                true -> {
-                    item.setLikeStatus(null)
-                    item.plusScore(-1)
-                }
-                false -> {
-                    item.setLikeStatus(true)
-                    item.plusScore(2)
-                }
-                null -> {
-                    item.setLikeStatus(true)
-                    item.plusScore(1)
-                }
-            }
-        } else {
-            when (item!!.getLikeStatus()) {
-                true -> {
-                    item.setLikeStatus(false)
-                    item.plusScore(-2)
-                }
-                false -> {
-                    item.setLikeStatus(null)
-                    item.plusScore(1)
-                }
-                null -> {
-                    item.setLikeStatus(false)
-                    item.plusScore(-1)
-                }
-            }
-        }
-
+        getItem(position)?.updateScore(likes)
         notifyItemChanged(position)
     }
 
