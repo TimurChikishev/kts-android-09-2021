@@ -36,21 +36,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun initSubredditList() {
         redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
-            .add(RedditListItemDelegateAdapter() { position, likes ->
-                onLikeClick(
-                    position,
-                    likes
-                )
-            })
-            .add(RedditListItemWithImageDelegateAdapter() { position, likes ->
-                onLikeClick(
-                    position,
-                    likes
-                )
-            })
+            .add(RedditListItemDelegateAdapter())
+            .add(RedditListItemWithImageDelegateAdapter())
             .build()
-
-
 
         with(viewBinding) {
             redditRecyclerView.setHasFixedSize(true)
@@ -88,9 +76,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
-    }
-
-    private fun onLikeClick(position: Int, likes: Boolean) {
-        redditAdapter.onLikeClick(position, likes)
     }
 }

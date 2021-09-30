@@ -8,10 +8,13 @@ import com.swallow.cracker.ui.adapters.viewholders.RedditItemWithImageViewHolder
 import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 
-class RedditListItemWithImageDelegateAdapter(private val onLikeClick: (Int, Boolean) -> Unit) :
+class RedditListItemWithImageDelegateAdapter() :
     DelegateAdapter<RedditListItemWithImage, RedditItemWithImageViewHolder>(RedditListItemWithImage::class.java) {
 
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
+    override fun createViewHolder(
+        parent: ViewGroup,
+        onLikeClick: (Int, Boolean) -> Unit
+    ): RecyclerView.ViewHolder =
         RedditItemWithImageViewHolder(
             RedditListItemWithImageBinding.inflate(
                 LayoutInflater.from(parent.context),

@@ -13,7 +13,12 @@ class ComplexDelegatesRedditListAdapter(
     PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return delegates[viewType].createViewHolder(parent = parent)
+        return delegates[viewType].createViewHolder(parent = parent) { position, likes ->
+            onLikeClick(
+                position,
+                likes
+            )
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -49,7 +54,7 @@ class ComplexDelegatesRedditListAdapter(
     }
 
     // этот метод реализует лайк
-    fun onLikeClick(position: Int, likes: Boolean) {
+    private fun onLikeClick(position: Int, likes: Boolean) {
         snapshot()[position]?.updateScore(likes)
         notifyItemChanged(position)
     }

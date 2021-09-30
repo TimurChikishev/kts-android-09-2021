@@ -1,6 +1,6 @@
 package com.swallow.cracker.data.api
 
-import com.swallow.cracker.utils.BASE_URL
+import com.swallow.cracker.data.api.NetworkConfig.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,6 +20,7 @@ object Networking {
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
+        .client(okhttpClient)
         .build()
 
     val redditApi: RedditApi
