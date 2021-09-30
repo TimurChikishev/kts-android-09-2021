@@ -11,14 +11,16 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentHomeBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
-import com.swallow.cracker.ui.adapters.RedditListAdapter
+import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
+import com.swallow.cracker.ui.adapters.delegates.RedditListItemDelegateAdapter
+import com.swallow.cracker.ui.adapters.delegates.RedditListItemWithImageDelegateAdapter
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: RedditListViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
-    private var redditAdapter: RedditListAdapter by autoCleared()
+    private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +35,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initSubredditList() {
-        redditAdapter = RedditListAdapter()
+        redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
+            .add(RedditListItemDelegateAdapter() { position, likes ->
+                onLikeClick(
+                    position,
+                    likes
+                )
+            })
+            .add(RedditListItemWithImageDelegateAdapter() { position, likes ->
+                onLikeClick(
+                    position,
+                    likes
+                )
+            })
+            .build()
+
+
 
         with(viewBinding) {
             redditRecyclerView.setHasFixedSize(true)
@@ -71,5 +88,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+    }
+
+    private fun onLikeClick(position: Int, likes: Boolean) {
+        redditAdapter.onLikeClick(position, likes)
     }
 }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import com.swallow.cracker.databinding.LoadStateItemBinding
+import com.swallow.cracker.ui.adapters.viewholders.LoadStateViewHolder
 
 class LoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<LoadStateViewHolder>() {
 

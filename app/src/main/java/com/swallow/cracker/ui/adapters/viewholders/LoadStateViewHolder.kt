@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.adapters
+package com.swallow.cracker.ui.adapters.viewholders
 
 import androidx.core.view.isVisible
 import androidx.paging.LoadState

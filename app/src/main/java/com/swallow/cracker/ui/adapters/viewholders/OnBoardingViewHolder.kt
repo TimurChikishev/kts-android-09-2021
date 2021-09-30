@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.adapters
+package com.swallow.cracker.ui.adapters.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.OnboardingItemBinding
