@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RedditApi {
-    @GET("top.json")
+    @GET("r/technology/hot.json")
     suspend fun getTop(
         @Query("limit") limit: String,
         @Query("count") count: String,

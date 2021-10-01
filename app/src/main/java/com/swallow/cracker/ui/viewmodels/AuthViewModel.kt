@@ -1,51 +1,74 @@
 package com.swallow.cracker.ui.viewmodels
 
-import android.util.Patterns
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Intent
+import androidx.lifecycle.*
 import com.swallow.cracker.R
-import com.swallow.cracker.utils.set
+import com.swallow.cracker.data.AuthRepository
+import com.swallow.cracker.utils.SingleLiveEvent
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.TokenRequest
 
 class AuthViewModel(
+    application: Application,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
-    private val mutableState =
-        savedStateHandle.getLiveData<LoginState>("login", LoginState.DefaultState)
+    /************************* Авторизация с помощью Reddit API *************************/
+    private val authRepository = AuthRepository()
+    private val authService: AuthorizationService = AuthorizationService(getApplication())
+    private val openAuthPageLiveEvent = SingleLiveEvent<Intent>()
+    private val toastLiveEvent = SingleLiveEvent<Int>()
+    private val loadingMutableLiveData = savedStateHandle.getLiveData(LOADING_KEY,false)
+    private val authSuccessLiveEvent = SingleLiveEvent<Unit>()
 
-    val state: LiveData<LoginState>
-        get() = mutableState
+    val openAuthPageLiveData: LiveData<Intent>
+        get() = openAuthPageLiveEvent
 
-    // т.к. мы делаем кнопку enable только тогда, когда
-    // все поля прошли валидацию, можно убрать валидацию тут,
-    // но малоли кто-то решит ипользовать это подругому и что-то пойдет не так
-    fun login(email: String, password: String) {
-        if (!validateEmail(email = email)) {
-            mutableState.set(newValue = LoginState.ErrorState(message = R.string.error_email))
-            return
-        }
+    val loadingLiveData: LiveData<Boolean>
+        get() = loadingMutableLiveData
 
-        if (!validatePassword(password = password)) {
-            mutableState.set(newValue = LoginState.ErrorState(message = R.string.error_password))
-            return
-        }
+    val toastLiveData: LiveData<Int>
+        get() = toastLiveEvent
 
-        mutableState.set(newValue = LoginState.LoginSuccessfulState)
-        // тут можно будет сделать асинхронную проверку на наличие пользователя в репозитории
-        // (надо будет добавить состояние LoadingState)
+    val authSuccessLiveData: LiveData<Unit>
+        get() = authSuccessLiveEvent
+
+    fun onAuthCodeFailed(exception: AuthorizationException) {
+        toastLiveEvent.postValue(R.string.auth_canceled)
     }
 
-    fun isValidate(email: String, password: String) {
-        if (!validateEmail(email = email) || !validatePassword(password = password)) {
-            mutableState.set(newValue = LoginState.DefaultState)
-            return
-        }
-
-        mutableState.set(newValue = LoginState.LoginButtonEnable)
+    fun onAuthCodeReceived(tokenRequest: TokenRequest) {
+        loadingMutableLiveData.postValue(true)
+        authRepository.performTokenRequest(
+            authService = authService,
+            tokenRequest = tokenRequest,
+            onComplete = {
+                loadingMutableLiveData.postValue(false)
+                authSuccessLiveEvent.postValue(Unit)
+            },
+            onError = {
+                loadingMutableLiveData.postValue(false)
+                toastLiveEvent.postValue(R.string.auth_canceled)
+            }
+        )
     }
 
-    private fun validateEmail(email: String) = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    fun openLoginPage() {
+        val openAuthPageIntent = authService.getAuthorizationRequestIntent(
+            authRepository.getAuthRequest()
+        )
 
-    private fun validatePassword(password: String) = password.length >= 8
+        openAuthPageLiveEvent.postValue(openAuthPageIntent)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        authService.dispose()
+    }
+
+    companion object {
+        private const val LOADING_KEY = "LOADING_KEY"
+    }
 }

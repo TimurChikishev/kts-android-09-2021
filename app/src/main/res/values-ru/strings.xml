@@ -22,4 +22,6 @@
     <string name="retry">retry</string>
     <string name="unvoted">unvoted</string>
     <string name="dislike">dislike</string>
+    <string name="continue_with_reddit">Продолжить с Reddit</string>
+    <string name="auth_canceled">Аутентификация не выполнена</string>
 </resources>
