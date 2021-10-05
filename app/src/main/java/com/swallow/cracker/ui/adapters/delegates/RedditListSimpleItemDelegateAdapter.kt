@@ -4,28 +4,29 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.RedditListItemBinding
-import com.swallow.cracker.ui.adapters.viewholders.RedditItemViewHolder
+import com.swallow.cracker.ui.adapters.viewholders.RedditSimpleItemViewHolder
 import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItem
+import com.swallow.cracker.ui.modal.RedditListSimpleItem
 
-class RedditListItemDelegateAdapter() :
-    DelegateAdapter<RedditListItem, RedditItemViewHolder>(RedditListItem::class.java) {
+class RedditListSimpleItemDelegateAdapter() :
+    DelegateAdapter<RedditListSimpleItem, RedditSimpleItemViewHolder>(RedditListSimpleItem::class.java) {
 
     override fun createViewHolder(
         parent: ViewGroup,
-        onLikeClick: (Int, Boolean) -> Unit
+        clickDelegate: ComplexDelegateAdapterClick?
     ): RecyclerView.ViewHolder =
-        RedditItemViewHolder(
+        RedditSimpleItemViewHolder(
             RedditListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
-        ) { position, likes -> onLikeClick(position, likes) }
+            ),
+            clickDelegate
+        )
 
     override fun bindViewHolder(
-        model: RedditListItem,
-        viewHolder: RedditItemViewHolder,
+        model: RedditListSimpleItem,
+        viewHolder: RedditSimpleItemViewHolder,
         payloads: List<RedditList>
     ) {
         viewHolder.bind(model)

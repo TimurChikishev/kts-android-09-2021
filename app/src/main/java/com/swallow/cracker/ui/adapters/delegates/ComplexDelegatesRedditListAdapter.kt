@@ -2,9 +2,12 @@ package com.swallow.cracker.ui.adapters.delegates
 
 import android.util.SparseArray
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.ui.modal.RedditList
+import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
@@ -12,13 +15,9 @@ class ComplexDelegatesRedditListAdapter(
 ) :
     PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return delegates[viewType].createViewHolder(parent = parent) { position, likes ->
-            onLikeClick(
-                position,
-                likes
-            )
-        }
+        return delegates[viewType].createViewHolder(parent = parent, clickDelegate = clickDelegate)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -54,9 +53,15 @@ class ComplexDelegatesRedditListAdapter(
     }
 
     // этот метод реализует лайк
-    private fun onLikeClick(position: Int, likes: Boolean) {
+    fun onLikeClick(position: Int, likes: Boolean) {
         snapshot()[position]?.updateScore(likes)
         notifyItemChanged(position)
+    }
+
+    var clickDelegate: ComplexDelegateAdapterClick? = null
+
+    fun attachClickDelegate(clickDelegate: ComplexDelegateAdapterClick) {
+        this.clickDelegate = clickDelegate
     }
 
     class Builder {
@@ -77,5 +82,11 @@ class ComplexDelegatesRedditListAdapter(
             return ComplexDelegatesRedditListAdapter(delegates)
         }
     }
+}
+
+interface ComplexDelegateAdapterClick {
+    fun onLikeClick(position: Int, likes: Boolean)
+    fun navigateToDetailsWithImage(item: RedditListItemWithImage)
+    fun navigateToDetailsSimple(item: RedditListSimpleItem)
 }
 

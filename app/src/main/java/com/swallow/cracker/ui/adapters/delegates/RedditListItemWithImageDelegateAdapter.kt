@@ -13,15 +13,16 @@ class RedditListItemWithImageDelegateAdapter() :
 
     override fun createViewHolder(
         parent: ViewGroup,
-        onLikeClick: (Int, Boolean) -> Unit
+        clickDelegate: ComplexDelegateAdapterClick?
     ): RecyclerView.ViewHolder =
         RedditItemWithImageViewHolder(
             RedditListItemWithImageBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
-        ) { position, likes -> onLikeClick(position, likes) }
+            ),
+            clickDelegate
+        )
 
     override fun bindViewHolder(
         model: RedditListItemWithImage,

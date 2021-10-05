@@ -13,7 +13,7 @@
         tools:listitem="@layout/reddit_list_item" />
 
     <include
-        android:id="@+id/included_load_state"
+        android:id="@+id/includedLoadState"
         layout="@layout/load_state_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

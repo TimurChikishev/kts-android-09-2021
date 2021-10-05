@@ -5,26 +5,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemWithImageBinding
+import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 import timber.log.Timber
 
 class RedditItemWithImageViewHolder(
     private val viewBinding: RedditListItemWithImageBinding,
-    upsChange: (Int, Boolean) -> Unit
+    private val clickDelegate: ComplexDelegateAdapterClick?
 ) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
+    private var item: RedditListItemWithImage? = null
+
     init {
         viewBinding.likesImageView.setOnClickListener {
-            upsChange.invoke(layoutPosition, true)
+            clickDelegate?.onLikeClick(layoutPosition, true)
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
-            upsChange.invoke(layoutPosition, false)
+            clickDelegate?.onLikeClick(layoutPosition, false)
+        }
+
+        viewBinding.itemContainer.setOnClickListener {
+            item?.let { clickDelegate?.navigateToDetailsWithImage(it) }
         }
     }
 
     fun bind(modal: RedditListItemWithImage) {
+        item = modal
         viewBinding.apply {
             avatarImageView.setImageResource(R.drawable.ic_face_24)
             authorTextView.text = modal.author

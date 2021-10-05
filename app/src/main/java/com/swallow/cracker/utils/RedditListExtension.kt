@@ -1,42 +1,52 @@
 package com.swallow.cracker.utils
 
 import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItem
+import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 
 fun RedditList.getItemId(): String {
     return when (this) {
-        is RedditListItem -> this.id
+        is RedditListSimpleItem -> this.id
         is RedditListItemWithImage -> this.id
-        else -> error("Нельзя получить id для $this")
     }
 }
 
 fun RedditList.getLikeStatus(): Boolean? {
     return when (this) {
-        is RedditListItem -> this.likes
+        is RedditListSimpleItem -> this.likes
         is RedditListItemWithImage -> this.likes
-        else -> error("Нельзя получить likes для $this")
     }
 }
 
 fun RedditList.setLikeStatus(likes: Boolean?) {
     return when (this) {
-        is RedditListItem -> this.likes = likes
+        is RedditListSimpleItem -> this.likes = likes
         is RedditListItemWithImage -> this.likes = likes
-        else -> error("Нельзя установить likes для $this")
+    }
+}
+
+fun RedditList.getSavedStatus(): Boolean {
+    return when (this) {
+        is RedditListSimpleItem -> this.saved
+        is RedditListItemWithImage -> this.saved
+    }
+}
+
+fun RedditList.setSavedStatus(saved: Boolean) {
+    return when (this) {
+        is RedditListSimpleItem -> this.saved = saved
+        is RedditListItemWithImage -> this.saved = saved
     }
 }
 
 fun RedditList.plusScore(value: Int) {
     return when (this) {
-        is RedditListItem -> this.score += value
+        is RedditListSimpleItem -> this.score += value
         is RedditListItemWithImage -> this.score += value
-        else -> error("Нельзя увеличить score для $this")
     }
 }
 
-fun RedditList.updateScore(likes: Boolean){
+fun RedditList.updateScore(likes: Boolean) {
     if (likes) {
         when (this.getLikeStatus()) {
             true -> {

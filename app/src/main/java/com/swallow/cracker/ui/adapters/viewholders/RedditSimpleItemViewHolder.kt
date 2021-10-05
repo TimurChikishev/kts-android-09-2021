@@ -4,25 +4,33 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemBinding
-import com.swallow.cracker.ui.modal.RedditListItem
+import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import timber.log.Timber
 
-class RedditItemViewHolder(
+class RedditSimpleItemViewHolder(
     private val viewBinding: RedditListItemBinding,
-    upsChange: (Int, Boolean) -> Unit
+    clickDelegate: ComplexDelegateAdapterClick?
 ) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
+    private var item: RedditListSimpleItem? = null
+
     init {
         viewBinding.likesImageView.setOnClickListener {
-            upsChange.invoke(layoutPosition, true)
+            clickDelegate?.onLikeClick(layoutPosition, true)
         }
         viewBinding.dislikesImageView.setOnClickListener {
-            upsChange.invoke(layoutPosition, false)
+            clickDelegate?.onLikeClick(layoutPosition, false)
+        }
+
+        viewBinding.itemContainer.setOnClickListener {
+            item?.let { clickDelegate?.navigateToDetailsSimple(it) }
         }
     }
 
-    fun bind(modal: RedditListItem) {
+    fun bind(modal: RedditListSimpleItem) {
+        item = modal
         viewBinding.apply {
             avatarImageView.setImageResource(R.drawable.ic_face_24)
             authorTextView.text = modal.author
@@ -35,7 +43,7 @@ class RedditItemViewHolder(
         }
     }
 
-    private fun setScoreStyle(modal: RedditListItem) {
+    private fun setScoreStyle(modal: RedditListSimpleItem) {
         val context = viewBinding.root.context
         Timber.d("${modal.likes}")
         when (modal.likes) {

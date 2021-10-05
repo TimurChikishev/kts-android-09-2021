@@ -8,7 +8,7 @@ abstract class DelegateAdapter<M, in VH : RecyclerView.ViewHolder>(val modelClas
 
     abstract fun createViewHolder(
         parent: ViewGroup,
-        onLikeClick: (Int, Boolean) -> Unit
+        clickDelegate: ComplexDelegateAdapterClick?
     ): RecyclerView.ViewHolder
 
     abstract fun bindViewHolder(model: M, viewHolder: VH, payloads: List<RedditList>)

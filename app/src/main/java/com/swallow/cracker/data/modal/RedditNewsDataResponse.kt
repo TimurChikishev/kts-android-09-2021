@@ -7,8 +7,12 @@ import com.squareup.moshi.JsonClass
 data class RedditNewsDataResponse(
     @Json(name = "id")
     val id: String,
+    @Json(name = "name")
+    val t3_id: String,
     @Json(name = "author")
     val author: String,
+    @Json(name = "subreddit")
+    val subreddit: String,
     @Json(name = "title")
     val title: String,
     @Json(name = "selftext")
@@ -17,6 +21,8 @@ data class RedditNewsDataResponse(
     val score: Int,
     @Json(name = "likes")
     val likes: Boolean?,
+    @Json(name = "saved")
+    val saved: Boolean,
     @Json(name = "num_comments")
     val num_comments: Int,
     @Json(name = "created")
