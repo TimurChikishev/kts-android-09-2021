@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListSimpleItem
-import timber.log.Timber
 
 class RedditSimpleItemViewHolder(
     private val viewBinding: RedditListItemBinding,
@@ -25,7 +25,11 @@ class RedditSimpleItemViewHolder(
         }
 
         viewBinding.itemContainer.setOnClickListener {
-            item?.let { clickDelegate?.navigateToDetailsSimple(it) }
+            item?.let { clickDelegate?.navigateTo(it as RedditList) }
+        }
+
+        viewBinding.shareImageView.setOnClickListener {
+            item?.let { clickDelegate?.shared(it.url) }
         }
     }
 
@@ -45,7 +49,7 @@ class RedditSimpleItemViewHolder(
 
     private fun setScoreStyle(modal: RedditListSimpleItem) {
         val context = viewBinding.root.context
-        Timber.d("${modal.likes}")
+
         when (modal.likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(

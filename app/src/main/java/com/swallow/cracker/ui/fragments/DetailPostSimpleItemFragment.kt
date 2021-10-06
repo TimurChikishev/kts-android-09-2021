@@ -10,22 +10,20 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.modal.LoadState
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import com.swallow.cracker.ui.modal.VoteState
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.utils.setSavedStatus
 import com.swallow.cracker.utils.updateScore
 
-class DetailsPostWithImageFragment : Fragment(R.layout.fragment_details) {
-
-    private val args by navArgs<DetailsPostWithImageFragmentArgs>()
+class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
+    private val args by navArgs<DetailPostSimpleItemFragmentArgs>()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
     private val viewModel: PostViewModel by viewModels()
-    private lateinit var item: RedditListItemWithImage
+    private lateinit var item: RedditListSimpleItem
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,7 +44,7 @@ class DetailsPostWithImageFragment : Fragment(R.layout.fragment_details) {
                 }
                 is LoadState.OnError<*> -> {
                     when (state.message) {
-                        is Int -> Toast.makeText(context, getString(state.message),Toast.LENGTH_SHORT).show()
+                        is Int -> Toast.makeText(context, getString(state.message), Toast.LENGTH_SHORT).show()
                         is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -76,6 +74,8 @@ class DetailsPostWithImageFragment : Fragment(R.layout.fragment_details) {
         if (item.selftext.isEmpty())
             selfTextView.visibility = View.GONE
 
+        thumbnailImageView.visibility = View.GONE
+
         avatarImageView.setImageResource(R.drawable.ic_face_24)
         postedByTextView.text = getString(R.string.posted_by, item.author, 0) // StringFormatMatches
         numCommentsTextView.text = item.numComments.toString()
@@ -83,13 +83,6 @@ class DetailsPostWithImageFragment : Fragment(R.layout.fragment_details) {
         authorTextView.text = item.subreddit
         createdTextView.text = item.time
         titleTextView.text = item.title
-
-        thumbnailImageView.apply {
-            Glide.with(this)
-                .load(item.thumbnail)
-                .error(R.drawable.ic_error_24)
-                .into(this)
-        }
 
         bindingOfClicks()
         setScore()
@@ -118,7 +111,6 @@ class DetailsPostWithImageFragment : Fragment(R.layout.fragment_details) {
         dislikesImageView.setOnClickListener {
             viewModel.vote(item, false)
         }
-
 
         shareImageView.setOnClickListener {
             val intent = viewModel.shared(item.url)

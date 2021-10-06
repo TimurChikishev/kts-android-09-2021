@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailPostSimpleItem"
-        android:name="com.swallow.cracker.ui.fragments.DetailPostSimpleItem"
+        android:name="com.swallow.cracker.ui.fragments.DetailPostSimpleItemFragment"
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"

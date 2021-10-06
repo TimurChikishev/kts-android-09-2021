@@ -183,7 +183,7 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/like"
             android:src="@drawable/up_arrow"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/scoreTextView"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +196,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/dislikesImageView"
             app:layout_constraintStart_toEndOf="@+id/likesImageView"
             app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView"
@@ -211,7 +211,7 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/dislike"
             android:src="@drawable/down_arrow"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintStart_toEndOf="@+id/scoreTextView"
             app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView" />
 
@@ -232,7 +232,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/ic_comment_24"
             android:contentDescription="@string/icon_comments"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/numCommentsTextView"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/endUpsBarrier"
@@ -245,7 +245,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/startSharedBarrier"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/commentsImageView"
@@ -269,7 +269,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/ic_share_24"
             android:contentDescription="@string/like"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/shareTextView"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView" />
@@ -283,10 +283,17 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/share"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomMargin"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

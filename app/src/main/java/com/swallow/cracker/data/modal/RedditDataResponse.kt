@@ -6,6 +6,5 @@ import com.squareup.moshi.JsonClass
 class RedditDataResponse(
     val children: List<RedditChildrenResponse>,
     val after: String?,
-    val before: String?,
-    val modhash: String?
+    val before: String?
 )

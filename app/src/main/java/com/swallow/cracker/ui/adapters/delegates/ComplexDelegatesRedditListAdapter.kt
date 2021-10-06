@@ -2,12 +2,9 @@ package com.swallow.cracker.ui.adapters.delegates
 
 import android.util.SparseArray
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
-import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
@@ -86,7 +83,7 @@ class ComplexDelegatesRedditListAdapter(
 
 interface ComplexDelegateAdapterClick {
     fun onLikeClick(position: Int, likes: Boolean)
-    fun navigateToDetailsWithImage(item: RedditListItemWithImage)
-    fun navigateToDetailsSimple(item: RedditListSimpleItem)
+    fun navigateTo(item: RedditList)
+    fun shared(url: String)
 }
 

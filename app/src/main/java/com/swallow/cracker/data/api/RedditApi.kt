@@ -3,15 +3,39 @@ package com.swallow.cracker.data.api
 import com.swallow.cracker.data.modal.RedditDataResponse
 import com.swallow.cracker.data.modal.RedditJsonWrapper
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface RedditApi {
-    @GET("r/technology/hot.json")
-    suspend fun getTop(
+    @GET("r/{subreddit}/{category}.json")
+    suspend fun getSubreddit(
+        @Path("subreddit") subreddit: String,
+        @Path("category") category: String,
         @Query("limit") limit: String,
         @Query("count") count: String,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
+
+    @FormUrlEncoded
+    @POST("api/save")
+    suspend fun savedPost(
+        @Field("category") category: String?,
+        @Field("id") id: String
+    )
+
+    @FormUrlEncoded
+    @POST("api/unsave")
+    suspend fun unSavedPost(
+        @Field("id") id: String
+    )
+
+    @GET("api/v1/me")
+    suspend fun userIdentity() : Response<Unit>
+
+    @FormUrlEncoded
+    @POST("api/vote")
+    suspend fun votePost (
+        @Field("dir") dir: Int,
+        @Field("id") id: String
+    )
 }

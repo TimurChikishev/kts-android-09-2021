@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import timber.log.Timber;
+
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
  * navigation and Snackbar messages.
@@ -48,7 +50,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     public void observe(@NotNull LifecycleOwner owner, @NotNull final Observer<? super T> observer) {
 
         if (hasActiveObservers()) {
-            Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
+            Timber.tag(TAG).w("Multiple observers registered but only one will be notified of changes.");
         }
 
         // Observe the internal MutableLiveData

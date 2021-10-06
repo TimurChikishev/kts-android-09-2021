@@ -2,6 +2,7 @@ package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,49 +17,84 @@ import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
 import com.swallow.cracker.ui.adapters.delegates.RedditListSimpleItemDelegateAdapter
 import com.swallow.cracker.ui.adapters.delegates.RedditListItemWithImageDelegateAdapter
+import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 import com.swallow.cracker.ui.modal.RedditListSimpleItem
+import com.swallow.cracker.ui.modal.VoteState
+import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
-    private val viewModel: RedditListViewModel by viewModels()
+    private val redditViewModel: RedditListViewModel by viewModels()
+    private val postViewModel: PostViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSubredditList()
+        initAdapter()
         bindingViewModel()
+        bindingOfClick()
     }
 
-    private fun bindingViewModel() {
-        viewModel.posts.observe(viewLifecycleOwner, {
-            redditAdapter.submitData(lifecycle, it)
+    private fun bindingOfClick() {
+        redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
+            // TODO: переделать когда появится Room и Mediator
+            override fun onLikeClick(position: Int, likes: Boolean) {
+                val item = redditAdapter.snapshot()[position] ?: return
+                postViewModel.vote(item = item, likes = likes, position = position)
+            }
+
+            override fun navigateTo(item: RedditList) {
+                when(item){
+                    is RedditListSimpleItem -> {
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailPostSimpleItem(item)
+                        findNavController().navigate(action)
+                    }
+                    is RedditListItemWithImage -> {
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item)
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+
+            override fun shared(url: String) {
+                val intent = postViewModel.shared(url)
+                startActivity(intent)
+            }
         })
     }
 
-    private fun initSubredditList() {
+    private fun bindingViewModel() {
+        redditViewModel.posts.observe(viewLifecycleOwner, {
+            redditAdapter.submitData(lifecycle, it)
+        })
+
+        // TODO: переделать когда появится Room и Mediator
+        postViewModel.votePost.observe(viewLifecycleOwner, { state ->
+            when(state) {
+                is VoteState.OnSuccess -> {
+                    state.position?.let { redditAdapter.onLikeClick(position = it, likes = state.likes) }
+                }
+                is VoteState.OnError<*> -> {
+                    when (state.message) {
+                        is Int -> Toast.makeText(context, getString(state.message),Toast.LENGTH_SHORT).show()
+                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is VoteState.OnDefault -> {}
+            }
+        })
+    }
+
+    private fun initAdapter() {
         redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
             .add(RedditListSimpleItemDelegateAdapter())
             .add(RedditListItemWithImageDelegateAdapter())
             .build()
 
-        redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
-            override fun onLikeClick(position: Int, likes: Boolean) {
-                redditAdapter.onLikeClick(position, likes)
-            }
 
-            override fun navigateToDetailsWithImage(item: RedditListItemWithImage) {
-                val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item)
-                findNavController().navigate(action)
-            }
-
-            override fun navigateToDetailsSimple(item: RedditListSimpleItem) {
-                val action = HomeFragmentDirections.actionHomeFragmentToDetailPostSimpleItem(item)
-                findNavController().navigate(action)
-            }
-        })
 
         with(viewBinding) {
             redditRecyclerView.setHasFixedSize(true)

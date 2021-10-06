@@ -4,10 +4,10 @@ import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListSimpleItem
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
 
-fun RedditList.getItemId(): String {
+fun RedditList.id(): String {
     return when (this) {
-        is RedditListSimpleItem -> this.id
-        is RedditListItemWithImage -> this.id
+        is RedditListSimpleItem -> this.t3_id
+        is RedditListItemWithImage -> this.t3_id
     }
 }
 
@@ -76,6 +76,22 @@ fun RedditList.updateScore(likes: Boolean) {
                 this.setLikeStatus(false)
                 this.plusScore(-1)
             }
+        }
+    }
+}
+
+fun RedditList.getVoteDir(likes: Boolean): Int {
+    return if (likes) {
+        when (this.getLikeStatus()) {
+            true -> 0
+            false -> 1
+            null -> 1
+        }
+    } else {
+        when (this.getLikeStatus()) {
+            true -> -1
+            false -> 0
+            null -> -1
         }
     }
 }

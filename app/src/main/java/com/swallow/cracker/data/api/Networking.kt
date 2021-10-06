@@ -2,7 +2,7 @@ package com.swallow.cracker.data.api
 
 import com.swallow.cracker.data.config.AuthConfig
 import com.swallow.cracker.data.config.NetworkConfig
-import com.swallow.cracker.data.config.NetworkConfig.BASE_URL
+import com.swallow.cracker.data.config.NetworkConfig.OAUTH_BASE_URI
 import okhttp3.*
 import okhttp3.OkHttpClient.Builder
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,36 +10,36 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import timber.log.Timber
+import okhttp3.Interceptor
 
 object Networking {
+    private var okhttpClientOauth: OkHttpClient =
+        Builder().addInterceptor(Interceptor { chain ->
+                val original = chain.request()
+                val builder = original.newBuilder()
 
-    private var okhttpClient: OkHttpClient =
-        Builder().addInterceptor(getHeaderInterceptor()).addNetworkInterceptor(
+                if (AuthConfig.token != null) {
+                    builder
+                        .addHeader(NetworkConfig.HEADER_NAME, "bearer " + AuthConfig.token)
+                        .addHeader("User-Agent", "android:com.swallow.cracker:v1.0.0 (by u/swallow)")
+                }
+
+                val request = builder.method(original.method, original.body)
+                    .build()
+                chain.proceed(request)
+            }).addNetworkInterceptor(
             HttpLoggingInterceptor {
                 Timber.tag(NetworkConfig.LOG_TAG).d(it)
             }.setLevel(HttpLoggingInterceptor.Level.BODY)
         ).build()
 
-    private fun getHeaderInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val request = chain.request()
-
-            if (AuthConfig.token != null) {
-                request.newBuilder()
-                    .header(NetworkConfig.HEADER_NAME, "Bearer ${AuthConfig.token}")
-                    .build()
-            }
-
-            chain.proceed(request)
-        }
-    }
-
-    private val retrofit = Retrofit.Builder()
-        .client(okhttpClient)
-        .baseUrl(BASE_URL)
+    private val retrofitOAuth = Retrofit.Builder()
+        .client(okhttpClientOauth)
+        .baseUrl(OAUTH_BASE_URI)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
-    val redditApi: RedditApi
-        get() = retrofit.create()
+    val redditApiOAuth: RedditApi
+        get() = retrofitOAuth.create()
 }
+

@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemWithImageBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.ui.modal.RedditList
 import com.swallow.cracker.ui.modal.RedditListItemWithImage
-import timber.log.Timber
 
 class RedditItemWithImageViewHolder(
     private val viewBinding: RedditListItemWithImageBinding,
@@ -27,7 +27,11 @@ class RedditItemWithImageViewHolder(
         }
 
         viewBinding.itemContainer.setOnClickListener {
-            item?.let { clickDelegate?.navigateToDetailsWithImage(it) }
+            item?.let { clickDelegate?.navigateTo(it as RedditList) }
+        }
+
+        viewBinding.shareImageView.setOnClickListener {
+            item?.let { clickDelegate?.shared(it.url) }
         }
     }
 
@@ -52,7 +56,7 @@ class RedditItemWithImageViewHolder(
 
     private fun setScoreStyle(modal: RedditListItemWithImage) {
         val context = viewBinding.root.context
-        Timber.d("${modal.likes}")
+
         when (modal.likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(

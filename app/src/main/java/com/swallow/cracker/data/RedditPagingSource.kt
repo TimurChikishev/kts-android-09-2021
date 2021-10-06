@@ -8,6 +8,8 @@ import com.swallow.cracker.ui.modal.RedditMapper
 import retrofit2.HttpException
 
 class RedditPagingSource(
+    private val subreddit: String,
+    private val category: String,
     private val limit: String
 ) : PagingSource<String, RedditList>() {
 
@@ -17,7 +19,9 @@ class RedditPagingSource(
         val pageSize: Int = params.loadSize
 
         return try {
-            val response = Networking.redditApi.getTop(
+            val response = Networking.redditApiOAuth.getSubreddit(
+                subreddit = subreddit,
+                category = category,
                 limit = limit,
                 count = pageSize.toString(),
                 after = params.key,
