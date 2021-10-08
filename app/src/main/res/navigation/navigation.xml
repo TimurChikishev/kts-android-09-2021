@@ -45,7 +45,7 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"
-            app:argType="com.swallow.cracker.ui.modal.RedditListItemWithImage" />
+            app:argType="com.swallow.cracker.ui.model.RedditListItemWithImage" />
     </fragment>
     <fragment
         android:id="@+id/detailPostSimpleItem"
@@ -53,6 +53,6 @@
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"
-            app:argType="com.swallow.cracker.ui.modal.RedditListSimpleItem" />
+            app:argType="com.swallow.cracker.ui.model.RedditListSimpleItem" />
     </fragment>
 </navigation>

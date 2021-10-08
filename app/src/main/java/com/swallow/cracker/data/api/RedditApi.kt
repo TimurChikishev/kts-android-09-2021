@@ -1,7 +1,7 @@
 package com.swallow.cracker.data.api
 
-import com.swallow.cracker.data.modal.RedditDataResponse
-import com.swallow.cracker.data.modal.RedditJsonWrapper
+import com.swallow.cracker.data.model.RedditDataResponse
+import com.swallow.cracker.data.model.RedditJsonWrapper
 import retrofit2.Response
 import retrofit2.http.*
 

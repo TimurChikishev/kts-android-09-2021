@@ -3,14 +3,14 @@ package com.swallow.cracker.data.api
 import com.swallow.cracker.data.config.AuthConfig
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.config.NetworkConfig.OAUTH_BASE_URI
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import timber.log.Timber
-import okhttp3.Interceptor
 
 object Networking {
     private var okhttpClientOauth: OkHttpClient =

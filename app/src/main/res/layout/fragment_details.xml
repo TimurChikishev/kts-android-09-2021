@@ -15,7 +15,7 @@
             android:id="@+id/flowActionBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="backImageView,favoriteImageView"
+            app:constraint_referenced_ids="backImageView,savedImageView"
             app:flow_horizontalStyle="spread_inside"
             app:flow_verticalStyle="packed"
             app:flow_wrapMode="chain"
@@ -33,7 +33,7 @@
             android:src="@drawable/ic_arrow_back_24" />
 
         <ImageView
-            android:id="@+id/favoriteImageView"
+            android:id="@+id/savedImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/favorite"
@@ -46,7 +46,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:barrierDirection="top"
-            app:constraint_referenced_ids="avatarImageView,authorTextView,createdTextView" />
+            app:constraint_referenced_ids="avatarImageView,subredditTextView,createdTextView" />
 
         <ImageView
             android:id="@+id/avatarImageView"
@@ -55,7 +55,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/app_icon"
-            app:layout_constraintEnd_toStartOf="@+id/authorTextView"
+            app:layout_constraintEnd_toStartOf="@+id/subredditTextView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +63,7 @@
             tools:src="@drawable/ic_face_24" />
 
         <TextView
-            android:id="@+id/authorTextView"
+            android:id="@+id/subredditTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -81,7 +81,7 @@
             tools:text="@tools:sample/lorem" />
 
         <TextView
-            android:id="@+id/postedByTextView"
+            android:id="@+id/publisherTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -93,7 +93,7 @@
             app:layout_constraintEnd_toStartOf="@+id/subscribeImageView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-            app:layout_constraintTop_toBottomOf="@+id/authorTextView"
+            app:layout_constraintTop_toBottomOf="@+id/subredditTextView"
             app:layout_constraintWidth="wrap_content_constrained"
             tools:text="@string/posted_by" />
 
@@ -103,9 +103,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/postedByTextView"
+            app:layout_constraintBottom_toTopOf="@+id/publisherTextView"
             app:layout_constraintEnd_toStartOf="@+id/subscribeImageView"
-            app:layout_constraintStart_toEndOf="@+id/authorTextView"
+            app:layout_constraintStart_toEndOf="@+id/subredditTextView"
             app:layout_constraintTop_toTopOf="@+id/headerBarrierTop"
             tools:text="@tools:sample/date/hhmm" />
 
@@ -127,7 +127,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="avatarImageView,authorTextView,createdTextView,subscribeImageView,postedByTextView" />
+            app:constraint_referenced_ids="avatarImageView,subredditTextView,createdTextView,subscribeImageView,publisherTextView" />
 
         <TextView
             android:id="@+id/titleTextView"
@@ -172,7 +172,7 @@
             app:layout_constraintTop_toBottomOf="@+id/selfTextView"
             tools:layout_height="300dp"
             tools:scaleType="centerCrop"
-            tools:src="@drawable/ic_launcher_background" />
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <ImageView
             android:id="@+id/likesImageView"

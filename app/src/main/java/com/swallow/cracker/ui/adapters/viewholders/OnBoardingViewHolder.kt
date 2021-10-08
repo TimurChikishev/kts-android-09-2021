@@ -2,7 +2,7 @@ package com.swallow.cracker.ui.adapters.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.OnboardingItemBinding
-import com.swallow.cracker.ui.modal.OnBoardingUI
+import com.swallow.cracker.ui.model.OnBoardingUI
 
 class OnBoardingViewHolder(private val viewBinding: OnboardingItemBinding) :
     RecyclerView.ViewHolder(viewBinding.root) {

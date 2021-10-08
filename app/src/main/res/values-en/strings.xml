@@ -27,7 +27,9 @@
     <string name="favorite">favorite</string>
     <string name="join">Join</string>
     <string name="posted_by">Posted by %1$s</string>
-    <string name="save_error">Failed to save</string>
-    <string name="unsave_error">failed to delete save</string>
+    <string name="post_saved_error">Failed to save</string>
+    <string name="post_unsaved_error">failed to delete save</string>
     <string name="vote_error">failed to vote</string>
+    <string name="post_saved">Post saved!</string>
+    <string name="post_unsaved">Post unsaved!</string>
 </resources>

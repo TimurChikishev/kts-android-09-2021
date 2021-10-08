@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.data.RedditRepository
-import com.swallow.cracker.ui.modal.LoadState
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.VoteState
+import com.swallow.cracker.ui.model.Message
+import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.VoteTransition
 import com.swallow.cracker.utils.default
-import com.swallow.cracker.utils.id
 import com.swallow.cracker.utils.getVoteDir
+import com.swallow.cracker.utils.id
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -20,58 +20,85 @@ import kotlinx.coroutines.launch
 class PostViewModel : ViewModel() {
 
     private val repository = RedditRepository()
-    private var currentSearchJob: Job? = null
-    private var savePostMutableLiveData = MutableLiveData<LoadState>().default(LoadState.OnDefault)
-    private var votePostMutableLiveData = MutableLiveData<VoteState>().default(VoteState.OnDefault)
 
-    val savePost: LiveData<LoadState>
+    private var savePostMutableLiveData = MutableLiveData<Boolean?>().default(null)
+    private var savePostIsClickableMutableLiveData = MutableLiveData<Boolean>().default(true)
+    private var votePostMutableLiveData = MutableLiveData<VoteTransition?>().default(null)
+    private var voteIsClickableMutableLiveData = MutableLiveData<Boolean>().default(true)
+    private var eventMessageMutableLiveData = MutableLiveData<Message<*>?>().default(null)
+
+    val savePost: LiveData<Boolean?>
         get() = savePostMutableLiveData
 
-    val votePost: LiveData<VoteState>
+    val savePostIsClickable: LiveData<Boolean>
+        get() = savePostIsClickableMutableLiveData
+
+    val eventMessage: LiveData<Message<*>?>
+        get() = eventMessageMutableLiveData
+
+    val votePost: LiveData<VoteTransition?>
         get() = votePostMutableLiveData
 
+    val votePostIsClickable: LiveData<Boolean>
+        get() = voteIsClickableMutableLiveData
+
+    private var currentSavePostJob: Job? = null
+    private var currentVotePostJob: Job? = null
+
     fun savePost(category: String?, id: String) {
-        currentSearchJob = viewModelScope.launch {
+        savePostIsClickableMutableLiveData.set(false)
+        currentSavePostJob?.cancel()
+        currentSavePostJob = viewModelScope.launch {
             runCatching {
                 repository.savePost(category = category, id = id)
             }.onSuccess {
-                savePostMutableLiveData.set(LoadState.OnSuccess)
+                savePostIsClickableMutableLiveData.set(true)
+                savePostMutableLiveData.set(true)
+                eventMessageMutableLiveData.set(Message(R.string.post_saved))
             }.onFailure {
-                savePostMutableLiveData.set(LoadState.OnError(R.string.save_error))
+                savePostIsClickableMutableLiveData.set(true)
+                eventMessageMutableLiveData.set(Message(R.string.post_saved_error))
             }
+            eventMessageMutableLiveData.postValue(null) // чтобы сообщение не появилось при перевороте
         }
     }
 
     fun unSavePost(id: String) {
-        currentSearchJob = viewModelScope.launch {
+        savePostIsClickableMutableLiveData.postValue(false)
+        currentSavePostJob?.cancel()
+        currentSavePostJob = viewModelScope.launch {
             runCatching {
                 repository.unSavePost(id = id)
             }.onSuccess {
-                savePostMutableLiveData.set(LoadState.OnSuccess)
+                savePostIsClickableMutableLiveData.set(true)
+                savePostMutableLiveData.set(false)
+                eventMessageMutableLiveData.set(Message(R.string.post_unsaved))
             }.onFailure {
-                savePostMutableLiveData.set(LoadState.OnError(R.string.unsave_error))
+                savePostIsClickableMutableLiveData.set(true)
+                eventMessageMutableLiveData.set(Message(R.string.post_unsaved_error))
             }
+            eventMessageMutableLiveData.postValue(null) // чтобы сообщение не появилось при перевороте
         }
     }
 
-    private fun votePost(dir: Int, id: String, likes: Boolean, position: Int? = null) {
-        currentSearchJob = viewModelScope.launch {
+    fun votePost(item: RedditList, likes: Boolean, position: Int? = null) {
+        voteIsClickableMutableLiveData.set(false)
+        currentVotePostJob?.cancel()
+        currentVotePostJob = viewModelScope.launch {
             runCatching {
-                repository.votePost(dir = dir, id = id)
+                repository.votePost(dir = item.getVoteDir(likes), id = item.id())
             }.onSuccess {
-                votePostMutableLiveData.set(VoteState.OnSuccess(likes = likes, position = position))
-                votePostMutableLiveData.set(VoteState.OnDefault)
+                voteIsClickableMutableLiveData.set(true)
+                votePostMutableLiveData.set(VoteTransition(likes = likes, position = position))
+                votePostMutableLiveData.postValue(null) // чтобы не изменялось состояние vote при перевороте
             }.onFailure {
-                votePostMutableLiveData.set(VoteState.OnError(message = R.string.vote_error))
+                voteIsClickableMutableLiveData.set(true)
+                eventMessageMutableLiveData.set(Message(R.string.vote_error))
+                eventMessageMutableLiveData.set(null)
             }
+
         }
     }
-
-    fun vote(item: RedditList, likes: Boolean, position: Int? = null) {
-        val dir = item.getVoteDir(likes)
-        votePost(dir = dir, id = item.id(), likes = likes, position = position)
-    }
-
 
     fun shared(url: String): Intent = Intent.createChooser(
         Intent().apply {

@@ -1,8 +1,8 @@
 package com.swallow.cracker.utils
 
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListSimpleItem
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 fun RedditList.id(): String {
     return when (this) {

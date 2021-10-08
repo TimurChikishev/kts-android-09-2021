@@ -3,8 +3,8 @@ package com.swallow.cracker.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.swallow.cracker.data.api.Networking
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditMapper
+import com.swallow.cracker.data.model.RedditMapper
+import com.swallow.cracker.ui.model.RedditList
 import retrofit2.HttpException
 
 class RedditPagingSource(
@@ -29,11 +29,11 @@ class RedditPagingSource(
             )
 
             val responseBody = checkNotNull(response.body())
-            val after = responseBody.data.after.toString()
-            val before = if (params.key == null) null else responseBody.data.before.toString()
+            val after = responseBody.data.after
+            val before = params.key?.let { responseBody.data.before }
 
             val data =
-                checkNotNull(response.body()).data.children.map { RedditMapper().mapApiToUi(it.data) }
+                checkNotNull(response.body()).data.children.map { RedditMapper.mapApiToUi(it.data) }
 
             LoadResult.Page(
                 data,

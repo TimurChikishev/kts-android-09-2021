@@ -1,15 +1,15 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentOnBoardingBinding
 import com.swallow.cracker.ui.adapters.OnBoardingAdapter
-import com.swallow.cracker.ui.modal.OnBoardingUI
+import com.swallow.cracker.ui.model.OnBoardingUI
 import com.swallow.cracker.utils.autoCleared
 
 class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {

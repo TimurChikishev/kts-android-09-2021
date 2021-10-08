@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.RedditListItemWithImageBinding
 import com.swallow.cracker.ui.adapters.viewholders.RedditItemWithImageViewHolder
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditListItemWithImage
 
 class RedditListItemWithImageDelegateAdapter() :
     DelegateAdapter<RedditListItemWithImage, RedditItemWithImageViewHolder>(RedditListItemWithImage::class.java) {

@@ -1,4 +1,4 @@
-package com.swallow.cracker.data.modal
+package com.swallow.cracker.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

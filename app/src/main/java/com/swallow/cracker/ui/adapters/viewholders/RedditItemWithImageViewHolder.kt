@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListItemWithImageBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditListItemWithImage
 
 class RedditItemWithImageViewHolder(
     private val viewBinding: RedditListItemWithImageBinding,
@@ -19,11 +19,11 @@ class RedditItemWithImageViewHolder(
 
     init {
         viewBinding.likesImageView.setOnClickListener {
-            clickDelegate?.onLikeClick(layoutPosition, true)
+            clickDelegate?.onVoteClick(layoutPosition, true)
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
-            clickDelegate?.onLikeClick(layoutPosition, false)
+            clickDelegate?.onVoteClick(layoutPosition, false)
         }
 
         viewBinding.itemContainer.setOnClickListener {
@@ -35,23 +35,55 @@ class RedditItemWithImageViewHolder(
         }
     }
 
-    fun bind(modal: RedditListItemWithImage) {
-        item = modal
-        viewBinding.apply {
-            avatarImageView.setImageResource(R.drawable.ic_face_24)
-            authorTextView.text = modal.author
-            createdTextView.text = modal.time
-            titleTextView.text = modal.title
-            scoreTextView.text = modal.score.toString()
-            numCommentsTextView.text = modal.numComments.toString()
-            Glide.with(itemView)
-                .load(modal.thumbnail)
-                .error(R.drawable.ic_error_24)
-                .dontAnimate()
-                .into(thumbnailImageView)
+    fun bind(modal: RedditListItemWithImage) = with(modal){
+        item = this
 
-            setScoreStyle(modal = modal)
-        }
+        setAvatar(R.drawable.ic_face_24)
+        setSubreddit(subreddit)
+        setPublisher(author)
+        setTitle(title)
+        setCreated(time)
+        setNumScore(score.toString())
+        setNumComments(numComments.toString())
+        setThumbnail(thumbnail, url)
+
+        setScoreStyle(this)
+    }
+
+    private fun setPublisher(author: String) {
+        viewBinding.publisherTextView.text =
+            viewBinding.root.context.getString(R.string.posted_by, author)
+    }
+
+    private fun setNumScore(score: String) {
+        viewBinding.scoreTextView.text = score
+    }
+
+    private fun setTitle(title: String) {
+        viewBinding.titleTextView.text = title
+    }
+
+    private fun setCreated(created: String) {
+        viewBinding.createdTextView.text = created
+    }
+
+    private fun setSubreddit(subreddit: String) {
+        viewBinding.subredditTextView.text = subreddit
+    }
+
+    private fun setNumComments(num: String) {
+        viewBinding.numCommentsTextView.text = num
+    }
+
+    private fun setAvatar(res: Int) {
+        viewBinding.avatarImageView.setImageResource(res)
+    }
+
+    private fun setThumbnail(thumbnail: String, url: String? = null) = with(viewBinding){
+        Glide.with(thumbnailImageView)
+            .load(url)
+            .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+            .into(thumbnailImageView)
     }
 
     private fun setScoreStyle(modal: RedditListItemWithImage) {

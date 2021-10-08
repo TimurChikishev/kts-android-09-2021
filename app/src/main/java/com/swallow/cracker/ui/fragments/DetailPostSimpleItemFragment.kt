@@ -1,9 +1,7 @@
 package com.swallow.cracker.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,11 +10,10 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentDetailsBinding
-import com.swallow.cracker.ui.modal.LoadState
-import com.swallow.cracker.ui.modal.RedditListSimpleItem
-import com.swallow.cracker.ui.modal.VoteState
+import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.utils.setSavedStatus
+import com.swallow.cracker.utils.showMessage
 import com.swallow.cracker.utils.updateScore
 
 class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
@@ -32,65 +29,45 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
         initContent()
     }
 
-    private fun bindViewModel() {
-        viewModel.savePost.observe(viewLifecycleOwner, { state ->
-            when (state) {
-                is LoadState.OnDefault -> {
-                    setSaved()
-                }
-                is LoadState.OnSuccess -> {
-                    item.setSavedStatus(!item.saved)
-                    setSaved()
-                }
-                is LoadState.OnError<*> -> {
-                    when (state.message) {
-                        is Int -> Toast.makeText(context, getString(state.message), Toast.LENGTH_SHORT).show()
-                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
-
-        viewModel.votePost.observe(viewLifecycleOwner, { state ->
-            when(state) {
-                is VoteState.OnSuccess -> {
-                    item.updateScore(state.likes)
-                    setScore()
-                }
-                is VoteState.OnError<*> -> {
-                    when (state.message) {
-                        is Int -> Toast.makeText(context, getString(state.message),Toast.LENGTH_SHORT).show()
-                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                is VoteState.OnDefault -> {}
-            }
-        })
-    }
-
-    @SuppressLint("StringFormatMatches")
-    private fun initContent() = with(viewBinding) {
-
-        if (item.selftext.isEmpty())
-            selfTextView.visibility = View.GONE
-
-        thumbnailImageView.visibility = View.GONE
-
-        avatarImageView.setImageResource(R.drawable.ic_face_24)
-        postedByTextView.text = getString(R.string.posted_by, item.author, 0) // StringFormatMatches
-        numCommentsTextView.text = item.numComments.toString()
-        selfTextView.text = item.selftext
-        authorTextView.text = item.subreddit
-        createdTextView.text = item.time
-        titleTextView.text = item.title
+    private fun initContent() = with(item) {
+        setAvatar(R.drawable.ic_face_24)
+        setSubreddit(subreddit)
+        setPublisher(author)
+        setNumComments(numComments.toString())
+        setSelfText(selftext)
+        setCreated(time)
+        setTitle(title)
 
         bindingOfClicks()
         setScore()
     }
 
+    private fun bindViewModel() {
+        viewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
+
+        viewModel.savePost.observe(viewLifecycleOwner, {
+            setSavedStyle(it ?: item.saved)
+            it?.let { item.setSavedStatus(it) }
+        })
+
+        viewModel.savePostIsClickable.observe(viewLifecycleOwner, {
+            viewBinding.savedImageView.isClickable = it
+        })
+
+        viewModel.votePost.observe(viewLifecycleOwner, {
+            it?.let { item.updateScore(it.likes) }
+            setScore()
+        })
+
+        viewModel.votePostIsClickable.observe(viewLifecycleOwner, {
+            viewBinding.likesImageView.isClickable = it
+            viewBinding.dislikesImageView.isClickable = it
+        })
+    }
+
     private fun bindingOfClicks() = with(viewBinding) {
         // button save/unsave
-        favoriteImageView.setOnClickListener {
+        savedImageView.setOnClickListener {
             when (!item.saved) {
                 true -> viewModel.savePost(category = null, id = item.t3_id)
                 false -> viewModel.unSavePost(id = item.t3_id)
@@ -104,36 +81,69 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
 
         // button like
         likesImageView.setOnClickListener {
-            viewModel.vote(item, true)
+            viewModel.votePost(item, true)
         }
 
         // button dislike
         dislikesImageView.setOnClickListener {
-            viewModel.vote(item, false)
+            viewModel.votePost(item, false)
         }
 
+        // shared to internet
         shareImageView.setOnClickListener {
             val intent = viewModel.shared(item.url)
             startActivity(intent)
         }
     }
 
+    private fun setTitle(title: String) {
+        viewBinding.titleTextView.text = title
+    }
+
+    private fun setCreated(created: String) {
+        viewBinding.createdTextView.text = created
+    }
+
+    private fun setSubreddit(subreddit: String) {
+        viewBinding.subredditTextView.text = subreddit
+    }
+
+    private fun setSelfText(selfText: String) {
+        if (item.selftext.isEmpty()) {
+            viewBinding.selfTextView.visibility = View.GONE
+            return
+        }
+        viewBinding.selfTextView.text = selfText
+    }
+
+    private fun setNumComments(num: String) {
+        viewBinding.numCommentsTextView.text = num
+    }
+
+    private fun setPublisher(author: String) {
+        viewBinding.publisherTextView.text = getString(R.string.posted_by, author)
+    }
+
+    private fun setAvatar(res: Int) {
+        viewBinding.avatarImageView.setImageResource(res)
+    }
+
     // setting the style for save/unsave buttons
-    private fun setSaved() = with(viewBinding) {
-        when (item.saved) {
+    private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
+        when (boolean) {
             true -> {
                 val color = ContextCompat.getColor(requireContext(), R.color.red)
-                favoriteImageView.setColorFilter(color)
+                savedImageView.setColorFilter(color)
             }
             false -> {
-                favoriteImageView.colorFilter = null
+                savedImageView.colorFilter = null
             }
         }
     }
 
     // setting the style for rating buttons
     private fun setScore() = with(viewBinding) {
-        val color = ContextCompat.getColor(requireContext(),R.color.red)
+        val color = ContextCompat.getColor(requireContext(), R.color.red)
 
         when (item.likes) {
             true -> {

@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.modal
+package com.swallow.cracker.ui.model
 
 import android.os.Parcelable
 import com.swallow.cracker.utils.convertLongToTime
@@ -18,7 +18,7 @@ data class RedditListSimpleItem(
     var numComments: Int,
     var created: Long,
     var url: String
-) : RedditList, Parcelable {
+) : RedditList(), Parcelable {
 
     val time: String
         get() = created.convertLongToTime()

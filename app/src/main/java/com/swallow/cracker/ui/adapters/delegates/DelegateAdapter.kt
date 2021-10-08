@@ -2,7 +2,7 @@ package com.swallow.cracker.ui.adapters.delegates
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.ui.modal.RedditList
+import com.swallow.cracker.ui.model.RedditList
 
 abstract class DelegateAdapter<M, in VH : RecyclerView.ViewHolder>(val modelClass: Class<out M>) {
 

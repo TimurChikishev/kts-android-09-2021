@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.modal
+package com.swallow.cracker.ui.model
 
 import android.os.Parcelable
 import com.swallow.cracker.utils.convertLongToTime
@@ -19,7 +19,7 @@ class RedditListItemWithImage(
     var created: Long,
     var thumbnail: String,
     var url: String
-) : RedditList, Parcelable {
+) : RedditList(), Parcelable {
 
     val time: String
         get() = created.convertLongToTime()

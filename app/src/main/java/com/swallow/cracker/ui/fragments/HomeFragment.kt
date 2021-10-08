@@ -2,7 +2,6 @@ package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,15 +14,15 @@ import com.swallow.cracker.databinding.FragmentHomeBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
-import com.swallow.cracker.ui.adapters.delegates.RedditListSimpleItemDelegateAdapter
 import com.swallow.cracker.ui.adapters.delegates.RedditListItemWithImageDelegateAdapter
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditListItemWithImage
-import com.swallow.cracker.ui.modal.RedditListSimpleItem
-import com.swallow.cracker.ui.modal.VoteState
+import com.swallow.cracker.ui.adapters.delegates.RedditListSimpleItemDelegateAdapter
+import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
+import com.swallow.cracker.utils.showMessage
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
@@ -41,9 +40,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun bindingOfClick() {
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
             // TODO: переделать когда появится Room и Mediator
-            override fun onLikeClick(position: Int, likes: Boolean) {
+            override fun onVoteClick(position: Int, likes: Boolean) {
                 val item = redditAdapter.snapshot()[position] ?: return
-                postViewModel.vote(item = item, likes = likes, position = position)
+                postViewModel.votePost(item = item, likes = likes, position = position)
             }
 
             override fun navigateTo(item: RedditList) {
@@ -71,20 +70,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             redditAdapter.submitData(lifecycle, it)
         })
 
+        postViewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
+
         // TODO: переделать когда появится Room и Mediator
-        postViewModel.votePost.observe(viewLifecycleOwner, { state ->
-            when(state) {
-                is VoteState.OnSuccess -> {
-                    state.position?.let { redditAdapter.onLikeClick(position = it, likes = state.likes) }
-                }
-                is VoteState.OnError<*> -> {
-                    when (state.message) {
-                        is Int -> Toast.makeText(context, getString(state.message),Toast.LENGTH_SHORT).show()
-                        is String -> Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                is VoteState.OnDefault -> {}
-            }
+        postViewModel.votePost.observe(viewLifecycleOwner, {
+            it?.let { it.position?.let {
+                position -> redditAdapter.onLikeClick(position = position, likes = it.likes)
+            }}
         })
     }
 
@@ -93,8 +85,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .add(RedditListSimpleItemDelegateAdapter())
             .add(RedditListItemWithImageDelegateAdapter())
             .build()
-
-
 
         with(viewBinding) {
             redditRecyclerView.setHasFixedSize(true)

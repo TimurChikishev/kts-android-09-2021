@@ -4,14 +4,13 @@ import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.ui.modal.RedditList
+import com.swallow.cracker.ui.model.RedditList
 import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
     private val delegates: SparseArray<DelegateAdapter<RedditList, RecyclerView.ViewHolder>>
 ) :
     PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return delegates[viewType].createViewHolder(parent = parent, clickDelegate = clickDelegate)
@@ -82,7 +81,7 @@ class ComplexDelegatesRedditListAdapter(
 }
 
 interface ComplexDelegateAdapterClick {
-    fun onLikeClick(position: Int, likes: Boolean)
+    fun onVoteClick(position: Int, likes: Boolean)
     fun navigateTo(item: RedditList)
     fun shared(url: String)
 }

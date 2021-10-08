@@ -4,48 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/avatarImageView"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/app_icon"
-        app:layout_constraintEnd_toStartOf="@+id/authorTextView"
+        app:layout_constraintEnd_toStartOf="@+id/subredditTextView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/ic_face_24" />
 
     <TextView
-        android:id="@+id/authorTextView"
+        android:id="@+id/subredditTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:singleLine="true"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/createdTextView"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth="wrap_content_constrained"
         tools:text="@tools:sample/lorem" />
 
     <TextView
+        android:id="@+id/publisherTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/createdTextView"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+        app:layout_constraintTop_toBottomOf="@+id/subredditTextView"
+        app:layout_constraintWidth="wrap_content_constrained"
+        tools:text="@string/posted_by" />
+
+    <TextView
         android:id="@+id/createdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/thumbnailImageView"
-        app:layout_constraintStart_toEndOf="@+id/authorTextView"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/headerBarrierBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/publisherTextView"
         tools:text="@tools:sample/date/hhmm" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/headerBarrierBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="avatarImageView,subredditTextView,publisherTextView,createdTextView" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -54,7 +78,9 @@
         android:layout_margin="8dp"
         android:ellipsize="end"
         android:maxLines="3"
-        app:layout_constraintEnd_toStartOf="@id/thumbnailImageView"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="wrap_content_constrained"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,25 +88,20 @@
         app:layout_constraintWidth="wrap_content_constrained"
         tools:text="@tools:sample/lorem" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/headerBarrierBottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="avatarImageView,authorTextView,createdTextView" />
 
     <ImageView
         android:id="@+id/thumbnailImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/main_image"
-        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+        tools:layout_height="300dp"
+        tools:scaleType="centerCrop"
+        tools:src="@tools:sample/backgrounds/scenic"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bodyBarrierBottom"
