@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.swallow.cracker.R
 import com.swallow.cracker.utils.set
 
-class AuthViewModal(
+class AuthViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
