@@ -54,6 +54,7 @@ class PostViewModel : ViewModel() {
             }.onSuccess {
                 savePostIsClickableMutableLiveData.set(true)
                 savePostMutableLiveData.set(PBTransition(flag = true, position = position))
+                savePostMutableLiveData.postValue(null)
                 eventMessageMutableLiveData.set(Message(R.string.post_saved))
             }.onFailure {
                 savePostIsClickableMutableLiveData.set(true)
@@ -72,6 +73,7 @@ class PostViewModel : ViewModel() {
             }.onSuccess {
                 savePostIsClickableMutableLiveData.set(true)
                 savePostMutableLiveData.set(PBTransition(flag = false, position = position))
+                savePostMutableLiveData.postValue(null)
                 eventMessageMutableLiveData.set(Message(R.string.post_unsaved))
             }.onFailure {
                 savePostIsClickableMutableLiveData.set(true)
