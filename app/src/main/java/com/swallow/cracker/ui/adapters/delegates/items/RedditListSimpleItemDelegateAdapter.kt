@@ -10,7 +10,7 @@ import com.swallow.cracker.ui.adapters.viewholders.RedditSimpleItemViewHolder
 import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
-class RedditListSimpleItemDelegateAdapter() :
+class RedditListSimpleItemDelegateAdapter :
     DelegateAdapter<RedditListSimpleItem, RedditSimpleItemViewHolder>(RedditListSimpleItem::class.java) {
 
     override fun createViewHolder(

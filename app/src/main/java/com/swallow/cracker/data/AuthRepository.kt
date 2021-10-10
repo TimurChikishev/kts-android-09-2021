@@ -2,7 +2,6 @@ package com.swallow.cracker.data
 
 import android.net.Uri
 import com.swallow.cracker.data.config.AuthConfig
-import com.swallow.cracker.data.config.AuthConfig.CLIENT_SECRET
 import net.openid.appauth.*
 
 class AuthRepository {
@@ -31,7 +30,7 @@ class AuthRepository {
         onComplete: () -> Unit,
         onError: () -> Unit
     ) {
-        authService.performTokenRequest(tokenRequest, ClientSecretBasic(CLIENT_SECRET)) { response, ex ->
+        authService.performTokenRequest(tokenRequest, ClientSecretBasic(AuthConfig.CLIENT_SECRET)) { response, ex ->
             when {
                 response != null -> {
                     AuthConfig.token = response.accessToken.orEmpty()
@@ -40,6 +39,5 @@ class AuthRepository {
                 else -> onError()
             }
         }
-
     }
 }

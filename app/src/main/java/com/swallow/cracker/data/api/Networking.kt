@@ -2,7 +2,6 @@ package com.swallow.cracker.data.api
 
 import com.swallow.cracker.data.config.AuthConfig
 import com.swallow.cracker.data.config.NetworkConfig
-import com.swallow.cracker.data.config.NetworkConfig.OAUTH_BASE_URI
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
@@ -35,11 +34,10 @@ object Networking {
 
     private val retrofitOAuth = Retrofit.Builder()
         .client(okhttpClientOauth)
-        .baseUrl(OAUTH_BASE_URI)
+        .baseUrl(NetworkConfig.OAUTH_BASE_URI)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
-    val redditApiOAuth: RedditApi
-        get() = retrofitOAuth.create()
+    val redditApiOAuth: RedditApi = retrofitOAuth.create()
 }
 

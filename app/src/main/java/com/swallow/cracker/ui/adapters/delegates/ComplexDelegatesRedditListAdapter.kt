@@ -85,10 +85,4 @@ class ComplexDelegatesRedditListAdapter(
     }
 }
 
-interface ComplexDelegateAdapterClick {
-    fun onVoteClick(position: Int, likes: Boolean)
-    fun onSavedClick(category: String?, id: String, position: Int?, saved: Boolean)
-    fun navigateTo(item: RedditItems)
-    fun shared(url: String)
-}
 

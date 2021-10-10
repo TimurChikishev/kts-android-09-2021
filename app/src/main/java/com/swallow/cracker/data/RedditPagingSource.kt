@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.swallow.cracker.data.api.Networking
 import com.swallow.cracker.data.model.RedditMapper
 import com.swallow.cracker.ui.model.RedditItems
-import retrofit2.HttpException
 
 class RedditPagingSource(
     private val subreddit: String,
@@ -41,8 +40,6 @@ class RedditPagingSource(
                 after
             )
         } catch (exception: Throwable) {
-            LoadResult.Error(exception)
-        } catch (exception: HttpException) {
             LoadResult.Error(exception)
         }
     }
