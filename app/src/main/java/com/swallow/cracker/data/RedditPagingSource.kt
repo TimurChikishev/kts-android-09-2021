@@ -25,8 +25,8 @@ class RedditPagingSource(
             )
 
             val responseBody = checkNotNull(response.body())
-            val after = responseBody.data.after.toString()
-            val before = if (params.key == null) null else responseBody.data.before.toString()
+            val after = responseBody.data.after
+            val before = params.key?.let { responseBody.data.before }
 
             val data =
                 checkNotNull(response.body()).data.children.map { RedditMapper().mapApiToUi(it.data) }
