@@ -3,39 +3,51 @@ package com.swallow.cracker.ui.adapters.viewholders
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
-import com.swallow.cracker.databinding.RedditListItemBinding
+import com.swallow.cracker.databinding.RedditListSimpleItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 class RedditSimpleItemViewHolder(
-    private val viewBinding: RedditListItemBinding,
+    private val viewBinding: RedditListSimpleItemBinding,
     clickDelegate: ComplexDelegateAdapterClick?
 ) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
-    private var item: RedditListSimpleItem? = null
+    private lateinit var item: RedditListSimpleItem
 
     init {
         viewBinding.likesImageView.setOnClickListener {
+            viewBinding.likesImageView.isClickable = false
             clickDelegate?.onVoteClick(layoutPosition, true)
         }
+
         viewBinding.dislikesImageView.setOnClickListener {
+            viewBinding.dislikesImageView.isClickable = false
             clickDelegate?.onVoteClick(layoutPosition, false)
         }
 
+        viewBinding.savedImageView.setOnClickListener {
+            viewBinding.savedImageView.isClickable = false
+            when (!item.saved) {
+                true -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = true)
+                false -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = false)
+            }
+        }
+
         viewBinding.itemContainer.setOnClickListener {
-            item?.let { clickDelegate?.navigateTo(it as RedditList) }
+            clickDelegate?.navigateTo(item as RedditItems)
         }
 
         viewBinding.shareImageView.setOnClickListener {
-            item?.let { clickDelegate?.shared(it.url) }
+            clickDelegate?.shared(item.url)
         }
     }
 
     fun bind(modal: RedditListSimpleItem) = with(modal) {
         item = this
 
+        setClickable()
         setAvatar(R.drawable.ic_face_24)
         setSubreddit(subreddit)
         setPublisher(author)
@@ -45,6 +57,7 @@ class RedditSimpleItemViewHolder(
         setNumComments(numComments.toString())
 
         setScoreStyle(this)
+        setSavedStyle(saved)
     }
 
     private fun setPublisher(author: String) {
@@ -74,6 +87,25 @@ class RedditSimpleItemViewHolder(
 
     private fun setAvatar(res: Int) {
         viewBinding.avatarImageView.setImageResource(res)
+    }
+
+    private fun setClickable() = with(viewBinding) {
+        likesImageView.isClickable = true
+        dislikesImageView.isClickable = true
+        savedImageView.isClickable = true
+    }
+
+    // setting the style for save/unsave buttons
+    private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
+        when (boolean) {
+            true -> {
+                val color = ContextCompat.getColor(root.context, R.color.red)
+                savedImageView.setColorFilter(color)
+            }
+            false -> {
+                savedImageView.colorFilter = null
+            }
+        }
     }
 
     private fun setScoreStyle(modal: RedditListSimpleItem) {

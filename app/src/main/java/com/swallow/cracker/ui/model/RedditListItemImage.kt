@@ -5,7 +5,7 @@ import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class RedditListItemWithImage(
+class RedditListItemImage(
     var id: String,
     var t3_id: String,
     var author: String,
@@ -19,7 +19,7 @@ class RedditListItemWithImage(
     var created: Long,
     var thumbnail: String,
     var url: String
-) : RedditList(), Parcelable {
+) : RedditItems(), Parcelable {
 
     val time: String
         get() = created.convertLongToTime()

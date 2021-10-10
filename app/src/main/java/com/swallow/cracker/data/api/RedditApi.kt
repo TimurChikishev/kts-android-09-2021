@@ -21,21 +21,18 @@ interface RedditApi {
     suspend fun savedPost(
         @Field("category") category: String?,
         @Field("id") id: String
-    )
+    ) : Response<Unit>
 
     @FormUrlEncoded
     @POST("api/unsave")
     suspend fun unSavedPost(
         @Field("id") id: String
-    )
-
-    @GET("api/v1/me")
-    suspend fun userIdentity() : Response<Unit>
+    ) : Response<Unit>
 
     @FormUrlEncoded
     @POST("api/vote")
     suspend fun votePost (
         @Field("dir") dir: Int,
         @Field("id") id: String
-    )
+    ): Response<Unit>
 }

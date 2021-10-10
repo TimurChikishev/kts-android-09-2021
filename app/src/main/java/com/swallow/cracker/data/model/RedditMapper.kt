@@ -1,14 +1,14 @@
 package com.swallow.cracker.data.model
 
-import com.swallow.cracker.ui.model.RedditList
-import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.utils.isUrl
 
 object RedditMapper {
-    fun mapApiToUi(item: RedditNewsDataResponse): RedditList {
+    fun mapApiToUi(item: RedditNewsDataResponse): RedditItems {
         return when {
-            item.thumbnail.isUrl() -> RedditListItemWithImage(
+            item.thumbnail.isUrl() -> RedditListItemImage(
                 id = item.id,
                 t3_id = item.t3_id,
                 author = item.author,

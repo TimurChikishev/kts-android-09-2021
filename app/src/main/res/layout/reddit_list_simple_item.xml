@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/avatarImageView"
@@ -30,7 +29,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/savedImageView"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth="wrap_content_constrained"
@@ -60,9 +59,21 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/headerBarrierBottom"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/savedImageView"
         app:layout_constraintStart_toEndOf="@+id/publisherTextView"
+        app:layout_constraintWidth="wrap_content_constrained"
         tools:text="@tools:sample/date/hhmm" />
+
+    <ImageView
+        android:id="@+id/savedImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/favorite"
+        android:padding="4dp"
+        android:src="@drawable/ic_bookmark_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/headerBarrierBottom"
@@ -70,7 +81,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="avatarImageView,subredditTextView,publisherTextView,createdTextView" />
+        app:constraint_referenced_ids="avatarImageView,subredditTextView,publisherTextView,createdTextView,savedImageView" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -82,9 +93,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="wrap_content_constrained"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerBarrierBottom"
-        app:layout_constraintHeight="wrap_content_constrained"
         tools:text="@tools:sample/lorem" />
 
     <ImageView
@@ -95,6 +106,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/like"
+        android:padding="4dp"
         android:src="@drawable/up_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/scoreTextView"
@@ -123,6 +135,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/dislike"
+        android:padding="4dp"
         android:src="@drawable/down_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/scoreTextView"
@@ -143,8 +156,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_comment_24"
         android:contentDescription="@string/icon_comments"
+        android:padding="4dp"
+        android:src="@drawable/ic_comment_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/numCommentsTextView"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -180,8 +194,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_share_24"
         android:contentDescription="@string/like"
+        android:padding="4dp"
+        android:src="@drawable/ic_share_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/shareTextView"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -193,7 +208,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/share"
         app:layout_constraintBottom_toBottomOf="parent"

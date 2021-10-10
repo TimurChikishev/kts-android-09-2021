@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class VoteTransition(val likes: Boolean, val position: Int?) : Parcelable
+class PBTransition(val flag: Boolean, val position: Int?) : Parcelable

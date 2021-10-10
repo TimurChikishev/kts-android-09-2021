@@ -14,10 +14,10 @@ import com.swallow.cracker.databinding.FragmentHomeBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
-import com.swallow.cracker.ui.adapters.delegates.RedditListItemWithImageDelegateAdapter
-import com.swallow.cracker.ui.adapters.delegates.RedditListSimpleItemDelegateAdapter
-import com.swallow.cracker.ui.model.RedditList
-import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.adapters.delegates.items.RedditListItemImageDelegateAdapter
+import com.swallow.cracker.ui.adapters.delegates.items.RedditListSimpleItemDelegateAdapter
+import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
@@ -38,21 +38,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingOfClick() {
+
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
-            // TODO: переделать когда появится Room и Mediator
+
+            // TODO: Переделать когда появится ROOM
             override fun onVoteClick(position: Int, likes: Boolean) {
                 val item = redditAdapter.snapshot()[position] ?: return
                 postViewModel.votePost(item = item, likes = likes, position = position)
             }
 
-            override fun navigateTo(item: RedditList) {
+            // TODO: Переделать когда появится ROOM
+            override fun onSavedClick(category: String?, id: String, position: Int?, saved: Boolean) {
+                if (saved)
+                    postViewModel.savePost(category = category, id = id, position = position)
+                else
+                    postViewModel.unSavePost(id = id, position = position)
+            }
+
+            override fun navigateTo(item: RedditItems) {
                 when(item){
                     is RedditListSimpleItem -> {
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailPostSimpleItem(item)
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
                         findNavController().navigate(action)
                     }
-                    is RedditListItemWithImage -> {
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item)
+                    is RedditListItemImage -> {
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
                         findNavController().navigate(action)
                     }
                 }
@@ -66,24 +76,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingViewModel() {
+        postViewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
+
         redditViewModel.posts.observe(viewLifecycleOwner, {
             redditAdapter.submitData(lifecycle, it)
         })
 
-        postViewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
-
-        // TODO: переделать когда появится Room и Mediator
         postViewModel.votePost.observe(viewLifecycleOwner, {
             it?.let { it.position?.let {
-                position -> redditAdapter.onLikeClick(position = position, likes = it.likes)
+                position -> redditAdapter.onLikeClick(position = position, likes = it.flag)
             }}
+        })
+
+        postViewModel.savePost.observe(viewLifecycleOwner, {
+            it?.let {
+                it.position?.let { position -> redditAdapter.onSavedClick(position = position, it.flag) }
+            }
+        })
+
+        postViewModel.savePostIsClickable.observe(viewLifecycleOwner, {
+//            viewBinding.savedImageView.isClickable = it
         })
     }
 
     private fun initAdapter() {
         redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
             .add(RedditListSimpleItemDelegateAdapter())
-            .add(RedditListItemWithImageDelegateAdapter())
+            .add(RedditListItemImageDelegateAdapter())
             .build()
 
         with(viewBinding) {

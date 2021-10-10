@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.DetailsPostWithImageFragment">
+    tools:context=".ui.fragments.DetailsPostImageFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,8 +90,9 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/subscribeImageView"
+            app:layout_constraintEnd_toStartOf="@+id/createdTextView"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/avatarImageView"
             app:layout_constraintTop_toBottomOf="@+id/subredditTextView"
             app:layout_constraintWidth="wrap_content_constrained"
@@ -102,11 +103,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/publisherTextView"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/headerBarrierBottom"
             app:layout_constraintEnd_toStartOf="@+id/subscribeImageView"
-            app:layout_constraintStart_toEndOf="@+id/subredditTextView"
-            app:layout_constraintTop_toTopOf="@+id/headerBarrierTop"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/publisherTextView"
+            app:layout_constraintWidth="wrap_content_constrained"
             tools:text="@tools:sample/date/hhmm" />
 
         <Button
@@ -182,6 +184,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/like"
+            android:padding="4dp"
             android:src="@drawable/up_arrow"
             app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/scoreTextView"
@@ -210,6 +213,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/dislike"
+            android:padding="4dp"
             android:src="@drawable/down_arrow"
             app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintStart_toEndOf="@+id/scoreTextView"
@@ -230,8 +234,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_comment_24"
             android:contentDescription="@string/icon_comments"
+            android:padding="4dp"
+            android:src="@drawable/ic_comment_24"
             app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/numCommentsTextView"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -267,8 +272,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_share_24"
             android:contentDescription="@string/like"
+            android:padding="4dp"
+            android:src="@drawable/ic_share_24"
             app:layout_constraintBottom_toTopOf="@+id/bottomMargin"
             app:layout_constraintEnd_toStartOf="@+id/shareTextView"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -280,7 +286,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:text="@string/share"
             app:layout_constraintBottom_toTopOf="@+id/bottomMargin"

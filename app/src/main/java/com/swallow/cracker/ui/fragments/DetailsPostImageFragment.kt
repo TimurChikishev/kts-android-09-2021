@@ -8,19 +8,21 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentDetailsBinding
-import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.utils.setSavedStatus
 import com.swallow.cracker.utils.showMessage
 import com.swallow.cracker.utils.updateScore
 
-class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
-    private val args by navArgs<DetailPostSimpleItemFragmentArgs>()
+class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
+
+    private val args by navArgs<DetailsPostImageFragmentArgs>()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
     private val viewModel: PostViewModel by viewModels()
-    private lateinit var item: RedditListSimpleItem
+    private lateinit var item: RedditListItemImage
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,6 +39,7 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
         setSelfText(selftext)
         setCreated(time)
         setTitle(title)
+        setThumbnail(thumbnail = thumbnail, url = url)
 
         bindingOfClicks()
         setScore()
@@ -46,8 +49,8 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
         viewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
 
         viewModel.savePost.observe(viewLifecycleOwner, {
-            setSavedStyle(it ?: item.saved)
-            it?.let { item.setSavedStatus(it) }
+            setSavedStyle(it?.flag ?: item.saved)
+            it?.let { item.setSavedStatus(it.flag) }
         })
 
         viewModel.savePostIsClickable.observe(viewLifecycleOwner, {
@@ -55,7 +58,7 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
         })
 
         viewModel.votePost.observe(viewLifecycleOwner, {
-            it?.let { item.updateScore(it.likes) }
+            it?.let { item.updateScore(it.flag) }
             setScore()
         })
 
@@ -126,6 +129,13 @@ class DetailPostSimpleItemFragment : Fragment(R.layout.fragment_details) {
 
     private fun setAvatar(res: Int) {
         viewBinding.avatarImageView.setImageResource(res)
+    }
+
+    private fun setThumbnail(thumbnail: String, url: String? = null) = with(viewBinding){
+        Glide.with(thumbnailImageView)
+            .load(url)
+            .thumbnail(Glide.with(requireContext()).load(thumbnail))
+            .into(thumbnailImageView)
     }
 
     // setting the style for save/unsave buttons

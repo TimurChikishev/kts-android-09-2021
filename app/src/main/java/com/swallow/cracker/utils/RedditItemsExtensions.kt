@@ -1,52 +1,52 @@
 package com.swallow.cracker.utils
 
-import com.swallow.cracker.ui.model.RedditList
-import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
-fun RedditList.id(): String {
+fun RedditItems.id(): String {
     return when (this) {
         is RedditListSimpleItem -> this.t3_id
-        is RedditListItemWithImage -> this.t3_id
+        is RedditListItemImage -> this.t3_id
     }
 }
 
-fun RedditList.getLikeStatus(): Boolean? {
+fun RedditItems.getLikeStatus(): Boolean? {
     return when (this) {
         is RedditListSimpleItem -> this.likes
-        is RedditListItemWithImage -> this.likes
+        is RedditListItemImage -> this.likes
     }
 }
 
-fun RedditList.setLikeStatus(likes: Boolean?) {
+fun RedditItems.setLikeStatus(likes: Boolean?) {
     return when (this) {
         is RedditListSimpleItem -> this.likes = likes
-        is RedditListItemWithImage -> this.likes = likes
+        is RedditListItemImage -> this.likes = likes
     }
 }
 
-fun RedditList.getSavedStatus(): Boolean {
+fun RedditItems.getSavedStatus(): Boolean {
     return when (this) {
         is RedditListSimpleItem -> this.saved
-        is RedditListItemWithImage -> this.saved
+        is RedditListItemImage -> this.saved
     }
 }
 
-fun RedditList.setSavedStatus(saved: Boolean) {
+fun RedditItems.setSavedStatus(saved: Boolean) {
     return when (this) {
         is RedditListSimpleItem -> this.saved = saved
-        is RedditListItemWithImage -> this.saved = saved
+        is RedditListItemImage -> this.saved = saved
     }
 }
 
-fun RedditList.plusScore(value: Int) {
+fun RedditItems.plusScore(value: Int) {
     return when (this) {
         is RedditListSimpleItem -> this.score += value
-        is RedditListItemWithImage -> this.score += value
+        is RedditListItemImage -> this.score += value
     }
 }
 
-fun RedditList.updateScore(likes: Boolean) {
+fun RedditItems.updateScore(likes: Boolean) {
     if (likes) {
         when (this.getLikeStatus()) {
             true -> {
@@ -80,7 +80,7 @@ fun RedditList.updateScore(likes: Boolean) {
     }
 }
 
-fun RedditList.getVoteDir(likes: Boolean): Int {
+fun RedditItems.getVoteDir(likes: Boolean): Int {
     return if (likes) {
         when (this.getLikeStatus()) {
             true -> 0

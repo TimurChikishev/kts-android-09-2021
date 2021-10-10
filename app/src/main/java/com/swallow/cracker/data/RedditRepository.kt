@@ -36,8 +36,4 @@ class RedditRepository {
     suspend fun votePost(dir: Int, id: String) {
         Networking.redditApiOAuth.votePost(dir = dir, id = id)
     }
-
-    suspend fun userIdentity() {
-        Networking.redditApiOAuth.userIdentity()
-    }
 }

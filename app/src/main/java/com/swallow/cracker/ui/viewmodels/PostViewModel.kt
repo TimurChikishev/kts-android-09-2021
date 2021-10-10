@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.data.RedditRepository
 import com.swallow.cracker.ui.model.Message
-import com.swallow.cracker.ui.model.RedditList
-import com.swallow.cracker.ui.model.VoteTransition
+import com.swallow.cracker.ui.model.PBTransition
+import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.utils.default
 import com.swallow.cracker.utils.getVoteDir
 import com.swallow.cracker.utils.id
@@ -21,13 +21,13 @@ class PostViewModel : ViewModel() {
 
     private val repository = RedditRepository()
 
-    private var savePostMutableLiveData = MutableLiveData<Boolean?>().default(null)
+    private var savePostMutableLiveData = MutableLiveData<PBTransition?>().default(null)
     private var savePostIsClickableMutableLiveData = MutableLiveData<Boolean>().default(true)
-    private var votePostMutableLiveData = MutableLiveData<VoteTransition?>().default(null)
+    private var votePostMutableLiveData = MutableLiveData<PBTransition?>().default(null)
     private var voteIsClickableMutableLiveData = MutableLiveData<Boolean>().default(true)
     private var eventMessageMutableLiveData = MutableLiveData<Message<*>?>().default(null)
 
-    val savePost: LiveData<Boolean?>
+    val savePost: LiveData<PBTransition?>
         get() = savePostMutableLiveData
 
     val savePostIsClickable: LiveData<Boolean>
@@ -36,7 +36,7 @@ class PostViewModel : ViewModel() {
     val eventMessage: LiveData<Message<*>?>
         get() = eventMessageMutableLiveData
 
-    val votePost: LiveData<VoteTransition?>
+    val votePost: LiveData<PBTransition?>
         get() = votePostMutableLiveData
 
     val votePostIsClickable: LiveData<Boolean>
@@ -45,7 +45,7 @@ class PostViewModel : ViewModel() {
     private var currentSavePostJob: Job? = null
     private var currentVotePostJob: Job? = null
 
-    fun savePost(category: String?, id: String) {
+    fun savePost(category: String?, id: String, position: Int? = null) {
         savePostIsClickableMutableLiveData.set(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
@@ -53,7 +53,7 @@ class PostViewModel : ViewModel() {
                 repository.savePost(category = category, id = id)
             }.onSuccess {
                 savePostIsClickableMutableLiveData.set(true)
-                savePostMutableLiveData.set(true)
+                savePostMutableLiveData.set(PBTransition(flag = true, position = position))
                 eventMessageMutableLiveData.set(Message(R.string.post_saved))
             }.onFailure {
                 savePostIsClickableMutableLiveData.set(true)
@@ -63,7 +63,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun unSavePost(id: String) {
+    fun unSavePost(id: String, position: Int? = null) {
         savePostIsClickableMutableLiveData.postValue(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
@@ -71,7 +71,7 @@ class PostViewModel : ViewModel() {
                 repository.unSavePost(id = id)
             }.onSuccess {
                 savePostIsClickableMutableLiveData.set(true)
-                savePostMutableLiveData.set(false)
+                savePostMutableLiveData.set(PBTransition(flag = false, position = position))
                 eventMessageMutableLiveData.set(Message(R.string.post_unsaved))
             }.onFailure {
                 savePostIsClickableMutableLiveData.set(true)
@@ -81,7 +81,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun votePost(item: RedditList, likes: Boolean, position: Int? = null) {
+    fun votePost(item: RedditItems, likes: Boolean, position: Int? = null) {
         voteIsClickableMutableLiveData.set(false)
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
@@ -89,7 +89,7 @@ class PostViewModel : ViewModel() {
                 repository.votePost(dir = item.getVoteDir(likes), id = item.id())
             }.onSuccess {
                 voteIsClickableMutableLiveData.set(true)
-                votePostMutableLiveData.set(VoteTransition(likes = likes, position = position))
+                votePostMutableLiveData.set(PBTransition(flag = likes, position = position))
                 votePostMutableLiveData.postValue(null) // чтобы не изменялось состояние vote при перевороте
             }.onFailure {
                 voteIsClickableMutableLiveData.set(true)

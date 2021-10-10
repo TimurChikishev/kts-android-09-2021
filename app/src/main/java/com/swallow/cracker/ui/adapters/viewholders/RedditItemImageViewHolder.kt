@@ -4,40 +4,51 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
-import com.swallow.cracker.databinding.RedditListItemWithImageBinding
+import com.swallow.cracker.databinding.RedditListImageItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.model.RedditList
-import com.swallow.cracker.ui.model.RedditListItemWithImage
+import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditListItemImage
 
-class RedditItemWithImageViewHolder(
-    private val viewBinding: RedditListItemWithImageBinding,
+class RedditItemImageViewHolder(
+    private val viewBinding: RedditListImageItemBinding,
     private val clickDelegate: ComplexDelegateAdapterClick?
 ) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
-    private var item: RedditListItemWithImage? = null
+    private lateinit var item: RedditListItemImage
 
     init {
         viewBinding.likesImageView.setOnClickListener {
+            viewBinding.likesImageView.isClickable = false
             clickDelegate?.onVoteClick(layoutPosition, true)
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
+            viewBinding.dislikesImageView.isClickable = false
             clickDelegate?.onVoteClick(layoutPosition, false)
         }
 
         viewBinding.itemContainer.setOnClickListener {
-            item?.let { clickDelegate?.navigateTo(it as RedditList) }
+            clickDelegate?.navigateTo(item as RedditItems)
+        }
+
+        viewBinding.savedImageView.setOnClickListener {
+            viewBinding.savedImageView.isClickable = false
+            when (!item.saved) {
+                true -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = true)
+                false -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = false)
+            }
         }
 
         viewBinding.shareImageView.setOnClickListener {
-            item?.let { clickDelegate?.shared(it.url) }
+            clickDelegate?.shared(item.url)
         }
     }
 
-    fun bind(modal: RedditListItemWithImage) = with(modal){
+    fun bind(modal: RedditListItemImage) = with(modal){
         item = this
 
+        setClickable()
         setAvatar(R.drawable.ic_face_24)
         setSubreddit(subreddit)
         setPublisher(author)
@@ -45,9 +56,10 @@ class RedditItemWithImageViewHolder(
         setCreated(time)
         setNumScore(score.toString())
         setNumComments(numComments.toString())
-        setThumbnail(thumbnail, url)
+        setThumbnail(thumbnail = thumbnail)
 
         setScoreStyle(this)
+        setSavedStyle(saved)
     }
 
     private fun setPublisher(author: String) {
@@ -79,14 +91,33 @@ class RedditItemWithImageViewHolder(
         viewBinding.avatarImageView.setImageResource(res)
     }
 
-    private fun setThumbnail(thumbnail: String, url: String? = null) = with(viewBinding){
+    private fun setClickable() = with(viewBinding) {
+        likesImageView.isClickable = true
+        dislikesImageView.isClickable = true
+        savedImageView.isClickable = true
+    }
+
+    private fun setThumbnail(thumbnail: String) = with(viewBinding){
         Glide.with(thumbnailImageView)
-            .load(url)
-            .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+            .load(thumbnail)
+            .override(500, 300)
             .into(thumbnailImageView)
     }
 
-    private fun setScoreStyle(modal: RedditListItemWithImage) {
+    // setting the style for save/unsave buttons
+    private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
+        when (boolean) {
+            true -> {
+                val color = ContextCompat.getColor(root.context, R.color.red)
+                savedImageView.setColorFilter(color)
+            }
+            false -> {
+                savedImageView.colorFilter = null
+            }
+        }
+    }
+
+    private fun setScoreStyle(modal: RedditListItemImage) {
         val context = viewBinding.root.context
 
         when (modal.likes) {

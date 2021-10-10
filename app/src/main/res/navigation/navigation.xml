@@ -33,23 +33,23 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_detailsFragment"
-            app:destination="@id/detailsPostWithImageFragment" />
+            android:id="@+id/action_homeFragment_to_detailsImageFragment"
+            app:destination="@id/detailsPostImageFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_detailPostSimpleItem"
-            app:destination="@id/detailPostSimpleItem" />
+            android:id="@+id/action_homeFragment_to_detailsPostSimple"
+            app:destination="@id/detailsPostSimpleFragment" />
     </fragment>
     <fragment
-        android:id="@+id/detailsPostWithImageFragment"
-        android:name="com.swallow.cracker.ui.fragments.DetailsPostWithImageFragment"
+        android:id="@+id/detailsPostImageFragment"
+        android:name="com.swallow.cracker.ui.fragments.DetailsPostImageFragment"
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"
-            app:argType="com.swallow.cracker.ui.model.RedditListItemWithImage" />
+            app:argType="com.swallow.cracker.ui.model.RedditListItemImage" />
     </fragment>
     <fragment
-        android:id="@+id/detailPostSimpleItem"
-        android:name="com.swallow.cracker.ui.fragments.DetailPostSimpleItemFragment"
+        android:id="@+id/detailsPostSimpleFragment"
+        android:name="com.swallow.cracker.ui.fragments.DetailsPostSimpleFragment"
         tools:layout="@layout/fragment_details">
         <argument
             android:name="post"

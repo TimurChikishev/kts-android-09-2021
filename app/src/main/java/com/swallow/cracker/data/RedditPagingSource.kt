@@ -4,18 +4,18 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.swallow.cracker.data.api.Networking
 import com.swallow.cracker.data.model.RedditMapper
-import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditItems
 import retrofit2.HttpException
 
 class RedditPagingSource(
     private val subreddit: String,
     private val category: String,
     private val limit: String
-) : PagingSource<String, RedditList>() {
+) : PagingSource<String, RedditItems>() {
 
-    override fun getRefreshKey(state: PagingState<String, RedditList>): String? = null
+    override fun getRefreshKey(state: PagingState<String, RedditItems>): String? = null
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditList> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditItems> {
         val pageSize: Int = params.loadSize
 
         return try {

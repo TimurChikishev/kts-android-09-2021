@@ -1,11 +1,13 @@
-package com.swallow.cracker.ui.adapters.delegates
+package com.swallow.cracker.ui.adapters.delegates.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.databinding.RedditListItemBinding
+import com.swallow.cracker.databinding.RedditListSimpleItemBinding
+import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.ui.adapters.delegates.DelegateAdapter
 import com.swallow.cracker.ui.adapters.viewholders.RedditSimpleItemViewHolder
-import com.swallow.cracker.ui.model.RedditList
+import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 class RedditListSimpleItemDelegateAdapter() :
@@ -16,7 +18,7 @@ class RedditListSimpleItemDelegateAdapter() :
         clickDelegate: ComplexDelegateAdapterClick?
     ): RecyclerView.ViewHolder =
         RedditSimpleItemViewHolder(
-            RedditListItemBinding.inflate(
+            RedditListSimpleItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -27,7 +29,7 @@ class RedditListSimpleItemDelegateAdapter() :
     override fun bindViewHolder(
         model: RedditListSimpleItem,
         viewHolder: RedditSimpleItemViewHolder,
-        payloads: List<RedditList>
+        payloads: List<RedditItems>
     ) {
         viewHolder.bind(model)
     }

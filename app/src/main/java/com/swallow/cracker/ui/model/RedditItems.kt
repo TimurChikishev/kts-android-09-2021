@@ -1,3 +1,3 @@
 package com.swallow.cracker.ui.model
 
-sealed class RedditList
+sealed class RedditItems

@@ -18,7 +18,7 @@ data class RedditListSimpleItem(
     var numComments: Int,
     var created: Long,
     var url: String
-) : RedditList(), Parcelable {
+) : RedditItems(), Parcelable {
 
     val time: String
         get() = created.convertLongToTime()
