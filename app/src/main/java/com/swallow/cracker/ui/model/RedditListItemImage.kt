@@ -1,6 +1,7 @@
 package com.swallow.cracker.ui.model
 
 import android.os.Parcelable
+import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
@@ -18,7 +19,8 @@ class RedditListItemImage(
     var numComments: Int,
     var created: Long,
     var thumbnail: String,
-    var url: String
+    var url: String,
+    val preview: RedditChildrenPreview?
 ) : RedditItems(), Parcelable {
 
     val time: String

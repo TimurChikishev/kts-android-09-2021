@@ -30,5 +30,7 @@ data class RedditNewsDataResponse(
     @Json(name = "thumbnail")
     val thumbnail: String,
     @Json(name = "url")
-    val url: String
+    val url: String,
+    @Json(name="preview")
+    val preview: RedditChildrenPreview?
 )

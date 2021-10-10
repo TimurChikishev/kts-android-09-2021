@@ -93,10 +93,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 it.position?.let { position -> redditAdapter.onSavedClick(position = position, it.flag) }
             }
         })
-
-        postViewModel.savePostIsClickable.observe(viewLifecycleOwner, {
-//            viewBinding.savedImageView.isClickable = it
-        })
     }
 
     private fun initAdapter() {

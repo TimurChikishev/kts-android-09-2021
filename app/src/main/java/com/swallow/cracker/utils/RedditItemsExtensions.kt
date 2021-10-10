@@ -25,13 +25,6 @@ fun RedditItems.setLikeStatus(likes: Boolean?) {
     }
 }
 
-fun RedditItems.getSavedStatus(): Boolean {
-    return when (this) {
-        is RedditListSimpleItem -> this.saved
-        is RedditListItemImage -> this.saved
-    }
-}
-
 fun RedditItems.setSavedStatus(saved: Boolean) {
     return when (this) {
         is RedditListSimpleItem -> this.saved = saved

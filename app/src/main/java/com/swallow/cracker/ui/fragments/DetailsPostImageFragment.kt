@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
+import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.viewmodels.PostViewModel
@@ -39,7 +40,7 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         setSelfText(selftext)
         setCreated(time)
         setTitle(title)
-        setThumbnail(thumbnail = thumbnail, url = url)
+        setThumbnail(thumbnail = thumbnail, preview = preview)
 
         bindingOfClicks()
         setScore()
@@ -131,11 +132,18 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         viewBinding.avatarImageView.setImageResource(res)
     }
 
-    private fun setThumbnail(thumbnail: String, url: String? = null) = with(viewBinding){
-        Glide.with(thumbnailImageView)
-            .load(url)
-            .thumbnail(Glide.with(requireContext()).load(thumbnail))
-            .into(thumbnailImageView)
+    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) = with(viewBinding){
+        try {
+            val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
+            Glide.with(thumbnailImageView)
+                .load(url)
+                .placeholder(R.drawable.ic_cookie_24)
+                .error(R.drawable.ic_error_24)
+                .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+                .into(thumbnailImageView)
+        } catch (exception: Throwable) {
+            error(exception)
+        }
     }
 
     // setting the style for save/unsave buttons

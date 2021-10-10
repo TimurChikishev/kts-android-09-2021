@@ -3,12 +3,11 @@ package com.swallow.cracker.data.model
 import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
-import com.swallow.cracker.utils.isUrl
 
 object RedditMapper {
     fun mapApiToUi(item: RedditNewsDataResponse): RedditItems {
         return when {
-            item.thumbnail.isUrl() -> RedditListItemImage(
+            item.preview?.enabled == true -> RedditListItemImage(
                 id = item.id,
                 t3_id = item.t3_id,
                 author = item.author,
@@ -21,7 +20,8 @@ object RedditMapper {
                 numComments = item.num_comments,
                 created = item.created,
                 thumbnail = item.thumbnail,
-                url = item.url
+                url = item.url,
+                preview = item.preview
             )
             else -> RedditListSimpleItem(
                 id = item.id,

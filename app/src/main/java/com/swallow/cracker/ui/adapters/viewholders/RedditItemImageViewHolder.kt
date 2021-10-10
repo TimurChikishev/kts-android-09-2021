@@ -4,6 +4,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
+import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.databinding.RedditListImageItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.model.RedditItems
@@ -56,7 +57,7 @@ class RedditItemImageViewHolder(
         setCreated(time)
         setNumScore(score.toString())
         setNumComments(numComments.toString())
-        setThumbnail(thumbnail = thumbnail)
+        setThumbnail(thumbnail = thumbnail, preview = preview)
 
         setScoreStyle(this)
         setSavedStyle(saved)
@@ -97,11 +98,18 @@ class RedditItemImageViewHolder(
         savedImageView.isClickable = true
     }
 
-    private fun setThumbnail(thumbnail: String) = with(viewBinding){
-        Glide.with(thumbnailImageView)
-            .load(thumbnail)
-            .override(500, 300)
-            .into(thumbnailImageView)
+    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) = with(viewBinding){
+        try {
+            val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
+            Glide.with(thumbnailImageView)
+                .load(url)
+                .placeholder(R.drawable.ic_cookie_24)
+                .error(R.drawable.ic_error_24)
+                .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+                .into(thumbnailImageView)
+        } catch (exception: Throwable) {
+            error(exception)
+        }
     }
 
     // setting the style for save/unsave buttons

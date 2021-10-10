@@ -20,7 +20,7 @@ object Networking {
                 if (AuthConfig.token != null) {
                     builder
                         .addHeader(NetworkConfig.HEADER_NAME, "bearer " + AuthConfig.token)
-                        .addHeader("User-Agent", "android:com.swallow.cracker:v1.0.0 (by u/swallow)")
+                        .addHeader(NetworkConfig.HEADER_USER_AGENT, NetworkConfig.HEADER_USER_AGENT_VALUE)
                 }
 
                 val request = builder.method(original.method, original.body)

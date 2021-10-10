@@ -15,7 +15,7 @@ class RedditListViewModel(
     private val repository = RedditRepository()
 
     private val currentQuery =
-        savedStateHandle.getLiveData(QUERY_SUBREDDIT, QuerySubreddit("popular", "", "20"))
+        savedStateHandle.getLiveData(QUERY_SUBREDDIT, QuerySubreddit("Popular", "top", "20"))
 
     val posts = currentQuery.switchMap { querySub ->
         repository.getSubreddit(querySub.subreddit, querySub.category, querySub.limit)
