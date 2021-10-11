@@ -16,7 +16,7 @@ class RedditItemImageViewHolder(
 ) :
     RecyclerView.ViewHolder(viewBinding.root) {
 
-    private lateinit var item: RedditListItemImage
+    private var item: RedditListItemImage? = null
 
     init {
         viewBinding.likesImageView.setOnClickListener {
@@ -29,20 +29,25 @@ class RedditItemImageViewHolder(
             clickDelegate?.onVoteClick(layoutPosition, false)
         }
 
-        viewBinding.itemContainer.setOnClickListener {
-            clickDelegate?.navigateTo(item as RedditItems)
+        viewBinding.savedImageView.setOnClickListener {
+            item?.let {
+                viewBinding.savedImageView.isClickable = false
+                when (!it.saved)  {
+                    true -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = true)
+                    false -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = false)
+                }
+            }
         }
 
-        viewBinding.savedImageView.setOnClickListener {
-            viewBinding.savedImageView.isClickable = false
-            when (!item.saved) {
-                true -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = true)
-                false -> clickDelegate?.onSavedClick(category = null, id = item.t3_id, position = layoutPosition, saved = false)
+        viewBinding.itemContainer.setOnClickListener {
+            item?.let {
+                viewBinding.itemContainer.isEnabled = false
+                clickDelegate?.navigateTo(it as RedditItems)
             }
         }
 
         viewBinding.shareImageView.setOnClickListener {
-            clickDelegate?.shared(item.url)
+            item?.let { clickDelegate?.shared(it.url) }
         }
     }
 

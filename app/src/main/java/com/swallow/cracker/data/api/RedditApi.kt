@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface RedditApi {
+
     @GET("r/{subreddit}/{category}.json")
     suspend fun getSubreddit(
         @Path("subreddit") subreddit: String,
@@ -35,4 +36,5 @@ interface RedditApi {
         @Field("dir") dir: Int,
         @Field("id") id: String
     ): Response<Unit>
+
 }

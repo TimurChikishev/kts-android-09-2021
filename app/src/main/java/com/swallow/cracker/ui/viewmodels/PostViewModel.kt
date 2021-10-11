@@ -98,7 +98,6 @@ class PostViewModel : ViewModel() {
                 eventMessageMutableLiveData.set(Message(R.string.vote_error))
                 eventMessageMutableLiveData.set(null)
             }
-
         }
     }
 

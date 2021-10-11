@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import com.swallow.cracker.data.api.Networking
+import retrofit2.Response
 
 class RedditRepository {
 
@@ -25,15 +26,15 @@ class RedditRepository {
         }
     ).liveData
 
-    suspend fun savePost(category: String?, id: String) {
-        Networking.redditApiOAuth.savedPost(category = category, id = id)
+    suspend fun savePost(category: String?, id: String): Response<Unit> {
+        return Networking.redditApiOAuth.savedPost(category = category, id = id)
     }
 
-    suspend fun unSavePost(id: String) {
-        Networking.redditApiOAuth.unSavedPost(id = id)
+    suspend fun unSavePost(id: String): Response<Unit> {
+        return Networking.redditApiOAuth.unSavedPost(id = id)
     }
 
-    suspend fun votePost(dir: Int, id: String) {
-        Networking.redditApiOAuth.votePost(dir = dir, id = id)
+    suspend fun votePost(dir: Int, id: String): Response<Unit> {
+        return Networking.redditApiOAuth.votePost(dir = dir, id = id)
     }
 }
