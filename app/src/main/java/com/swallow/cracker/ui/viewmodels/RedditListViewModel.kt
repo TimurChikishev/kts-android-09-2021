@@ -20,9 +20,9 @@ class RedditListViewModel(
 
     private var querySavedState =
         savedStateHandle.get<QuerySubreddit>(QUERY_SUBREDDIT) ?: QuerySubreddit(
-            "Popular",
-            "top",
-            "20"
+            subreddit = "Popular",
+            category = "top",
+            limit = "20"
         )
         set(value) {
             field = value
