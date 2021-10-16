@@ -1,19 +1,12 @@
 package com.swallow.cracker.ui.viewmodels
 
-import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.swallow.cracker.data.RedditRepository
-import com.swallow.cracker.ui.modal.RedditList
-import com.swallow.cracker.ui.modal.RedditMapper
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.swallow.cracker.ui.model.QuerySubreddit
 
 class RedditListViewModel(
     savedStateHandle: SavedStateHandle
@@ -22,18 +15,18 @@ class RedditListViewModel(
     private val repository = RedditRepository()
 
     private val currentQuery =
-        savedStateHandle.getLiveData("LIMIT_VALUE", DEFAULT_LIMIT_VALUE)
+        savedStateHandle.getLiveData(QUERY_SUBREDDIT, QuerySubreddit("Popular", "top", "20"))
 
-    val posts = currentQuery.switchMap {
-        repository.getTop(it).cachedIn(viewModelScope)
-    }
-
-    fun updateLimitValue(limit: String) {
-        currentQuery.value = limit
+    val posts = currentQuery.switchMap { querySub ->
+        repository.getSubreddit(querySub.subreddit, querySub.category, querySub.limit)
+            .cachedIn(viewModelScope)
     }
 
     companion object {
-        private const val DEFAULT_LIMIT_VALUE = "20"
+        private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
     }
 }
+
+
+
 

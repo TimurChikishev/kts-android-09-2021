@@ -10,10 +10,10 @@
         android:id="@+id/redditRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/reddit_list_item" />
+        tools:listitem="@layout/reddit_list_simple_item" />
 
     <include
-        android:id="@+id/included_load_state"
+        android:id="@+id/includedLoadState"
         layout="@layout/load_state_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

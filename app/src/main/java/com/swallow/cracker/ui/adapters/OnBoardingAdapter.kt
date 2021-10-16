@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.OnboardingItemBinding
 import com.swallow.cracker.ui.adapters.viewholders.OnBoardingViewHolder
-import com.swallow.cracker.ui.modal.OnBoardingUI
+import com.swallow.cracker.ui.model.OnBoardingUI
 
-class OnBoardingAdapter() : RecyclerView.Adapter<OnBoardingViewHolder>() {
+class OnBoardingAdapter : RecyclerView.Adapter<OnBoardingViewHolder>() {
 
     private var items: List<OnBoardingUI> = listOf()
 

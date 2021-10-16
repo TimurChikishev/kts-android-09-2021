@@ -15,6 +15,10 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
+
+        manifestPlaceholders = [
+                appAuthRedirectScheme: "com.swallow"
+        ]
     }
 
     buildTypes {
@@ -44,6 +48,10 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
+    // coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+
     // for AutoClearedValue
     implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
 
@@ -59,20 +67,26 @@ dependencies {
     // glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-    //Moshi
+    // Moshi
     def moshiVersion = '1.12.0'
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 
-    //Retrofit
+    // Retrofit
     def retrofitVersion = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
 
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
 
+    // Jetpack Paging 3
     def paging_version = "3.0.1"
-
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // AppAuth
+    implementation 'net.openid:appauth:0.10.0'
+
+    // pretty time
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 }

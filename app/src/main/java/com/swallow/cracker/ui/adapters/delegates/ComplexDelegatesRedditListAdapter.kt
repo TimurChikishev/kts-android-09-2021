@@ -4,21 +4,17 @@ import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.ui.modal.RedditList
+import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.utils.setSavedStatus
 import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
-    private val delegates: SparseArray<DelegateAdapter<RedditList, RecyclerView.ViewHolder>>
+    private val delegates: SparseArray<DelegateAdapter<RedditItems, RecyclerView.ViewHolder>>
 ) :
-    PagingDataAdapter<RedditList, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
+    PagingDataAdapter<RedditItems, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return delegates[viewType].createViewHolder(parent = parent) { position, likes ->
-            onLikeClick(
-                position,
-                likes
-            )
-        }
+        return delegates[viewType].createViewHolder(parent = parent, clickDelegate = clickDelegate)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -53,21 +49,31 @@ class ComplexDelegatesRedditListAdapter(
         super.onViewAttachedToWindow(holder)
     }
 
-    // этот метод реализует лайк
-    private fun onLikeClick(position: Int, likes: Boolean) {
+    fun onLikeClick(position: Int, likes: Boolean) {
         snapshot()[position]?.updateScore(likes)
         notifyItemChanged(position)
     }
 
+    fun onSavedClick(position: Int, saved: Boolean) {
+        snapshot()[position]?.setSavedStatus(saved)
+        notifyItemChanged(position)
+    }
+
+    var clickDelegate: ComplexDelegateAdapterClick? = null
+
+    fun attachClickDelegate(clickDelegate: ComplexDelegateAdapterClick) {
+        this.clickDelegate = clickDelegate
+    }
+
     class Builder {
         private var count: Int = 0
-        private val delegates: SparseArray<DelegateAdapter<RedditList, RecyclerView.ViewHolder>> =
+        private val delegates: SparseArray<DelegateAdapter<RedditItems, RecyclerView.ViewHolder>> =
             SparseArray()
 
-        fun add(delegateAdapter: DelegateAdapter<out RedditList, *>): Builder {
+        fun add(delegateAdapter: DelegateAdapter<out RedditItems, *>): Builder {
             delegates.put(
                 count++,
-                delegateAdapter as DelegateAdapter<RedditList, RecyclerView.ViewHolder>
+                delegateAdapter as DelegateAdapter<RedditItems, RecyclerView.ViewHolder>
             )
             return this
         }
@@ -78,4 +84,5 @@ class ComplexDelegatesRedditListAdapter(
         }
     }
 }
+
 

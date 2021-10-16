@@ -22,4 +22,14 @@
     <string name="retry">retry</string>
     <string name="unvoted">unvoted</string>
     <string name="dislike">dislike</string>
+    <string name="continue_with_reddit">Continue with Reddit</string>
+    <string name="auth_canceled">Authentication failed</string>
+    <string name="favorite">favorite</string>
+    <string name="join">Join</string>
+    <string name="posted_by">Posted by %1$s</string>
+    <string name="post_saved_error">Failed to save</string>
+    <string name="post_unsaved_error">failed to delete save</string>
+    <string name="vote_error">failed to vote</string>
+    <string name="post_saved">Post saved!</string>
+    <string name="post_unsaved">Post unsaved!</string>
 </resources>

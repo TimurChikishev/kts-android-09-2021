@@ -2,16 +2,16 @@ package com.swallow.cracker.ui.adapters.delegates
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.ui.modal.RedditList
+import com.swallow.cracker.ui.model.RedditItems
 
 abstract class DelegateAdapter<M, in VH : RecyclerView.ViewHolder>(val modelClass: Class<out M>) {
 
     abstract fun createViewHolder(
         parent: ViewGroup,
-        onLikeClick: (Int, Boolean) -> Unit
+        clickDelegate: ComplexDelegateAdapterClick?
     ): RecyclerView.ViewHolder
 
-    abstract fun bindViewHolder(model: M, viewHolder: VH, payloads: List<RedditList>)
+    abstract fun bindViewHolder(model: M, viewHolder: VH, payloads: List<RedditItems>)
 
     open fun onViewRecycled(viewHolder: VH) = Unit
     open fun onViewDetachedFromWindow(viewHolder: VH) = Unit
