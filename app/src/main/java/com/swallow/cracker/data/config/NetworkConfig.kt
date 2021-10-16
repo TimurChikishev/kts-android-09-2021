@@ -6,4 +6,6 @@ object NetworkConfig {
     const val HEADER_USER_AGENT = "User-Agent"
     const val HEADER_USER_AGENT_VALUE = "android:com.swallow.cracker:v1.0.0 (by u/swallow)"
     const val LOG_TAG = "Network"
+    const val PAGE_SIZE = 20
+    const val INITIAL_LOAD_SIZE = 3 * PAGE_SIZE
 }

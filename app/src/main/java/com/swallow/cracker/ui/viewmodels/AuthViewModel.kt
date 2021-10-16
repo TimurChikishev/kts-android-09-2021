@@ -3,66 +3,82 @@ package com.swallow.cracker.ui.viewmodels
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.data.AuthRepository
-import com.swallow.cracker.utils.SingleLiveEvent
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 
 class AuthViewModel(
     application: Application,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(application) {
 
-    /************************* Авторизация с помощью Reddit API *************************/
+    private var loadingSavedState = savedStateHandle.get<Boolean>(LOADING_KEY) ?: false
+        set(value) {
+            field = value
+            savedStateHandle.set(LOADING_KEY, value)
+        }
+
+    private val loadingMutableStateFlow = MutableStateFlow(loadingSavedState)
+
     private val authRepository = AuthRepository()
     private val authService: AuthorizationService = AuthorizationService(getApplication())
-    private val openAuthPageLiveEvent = SingleLiveEvent<Intent>()
-    private val toastLiveEvent = SingleLiveEvent<Int>()
-    private val loadingMutableLiveData = savedStateHandle.getLiveData(LOADING_KEY,false)
-    private val authSuccessLiveEvent = SingleLiveEvent<Unit>()
+    private val openAuthPageChannel = Channel<Intent>(Channel.BUFFERED)
+    private val toastChannel = Channel<Int>(Channel.BUFFERED)
 
-    val openAuthPageLiveData: LiveData<Intent>
-        get() = openAuthPageLiveEvent
+    private val authSuccessChannel = Channel<Unit>(Channel.BUFFERED)
 
-    val loadingLiveData: LiveData<Boolean>
-        get() = loadingMutableLiveData
+    val openAuthPageStateFlow: Flow<Intent>
+        get() = openAuthPageChannel.receiveAsFlow()
 
-    val toastLiveData: LiveData<Int>
-        get() = toastLiveEvent
+    val loadingStateFlow: StateFlow<Boolean>
+        get() = loadingMutableStateFlow
 
-    val authSuccessLiveData: LiveData<Unit>
-        get() = authSuccessLiveEvent
+    val toastStateFlow: Flow<Int>
+        get() = toastChannel.receiveAsFlow()
 
-    fun onAuthCodeFailed(exception: AuthorizationException) {
-        toastLiveEvent.postValue(R.string.auth_canceled)
+    val authSuccessStateFlow: Flow<Unit>
+        get() = authSuccessChannel.receiveAsFlow()
+
+    suspend fun onAuthCodeFailed(exception: AuthorizationException) {
+        toastChannel.send(R.string.auth_canceled)
     }
 
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
-        loadingMutableLiveData.postValue(true)
+        loadingMutableStateFlow.value = true
         authRepository.performTokenRequest(
             authService = authService,
             tokenRequest = tokenRequest,
             onComplete = {
-                loadingMutableLiveData.postValue(false)
-                authSuccessLiveEvent.postValue(Unit)
+                viewModelScope.launch {
+                    loadingMutableStateFlow.value = false
+                    authSuccessChannel.send(Unit)
+                }
             },
             onError = {
-                loadingMutableLiveData.postValue(false)
-                toastLiveEvent.postValue(R.string.auth_canceled)
+                viewModelScope.launch {
+                    loadingMutableStateFlow.value = false
+                    toastChannel.send(R.string.auth_canceled)
+                }
             }
         )
     }
 
-    fun openLoginPage() {
+    suspend fun openLoginPage() {
         val openAuthPageIntent = authService.getAuthorizationRequestIntent(
             authRepository.getAuthRequest()
         )
 
-        openAuthPageLiveEvent.postValue(openAuthPageIntent)
+        openAuthPageChannel.send(openAuthPageIntent)
     }
 
     override fun onCleared() {

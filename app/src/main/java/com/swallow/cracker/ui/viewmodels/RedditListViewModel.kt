@@ -2,24 +2,45 @@ package com.swallow.cracker.ui.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.swallow.cracker.data.RedditRepository
 import com.swallow.cracker.ui.model.QuerySubreddit
+import com.swallow.cracker.ui.model.RedditItems
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 class RedditListViewModel(
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val repository = RedditRepository()
 
-    private val currentQuery =
-        savedStateHandle.getLiveData(QUERY_SUBREDDIT, QuerySubreddit("Popular", "top", "20"))
+    private var querySavedState =
+        savedStateHandle.get<QuerySubreddit>(QUERY_SUBREDDIT) ?: QuerySubreddit(
+            "Popular",
+            "top",
+            "20"
+        )
+        set(value) {
+            field = value
+            savedStateHandle.set(QUERY_SUBREDDIT, value)
+        }
 
-    val posts = currentQuery.switchMap { querySub ->
-        repository.getSubreddit(querySub.subreddit, querySub.category, querySub.limit)
-            .cachedIn(viewModelScope)
+    private val queryMutableStateFlow = MutableStateFlow(querySavedState)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val posts: StateFlow<PagingData<RedditItems>> = queryMutableStateFlow
+        .map(::newPager)
+        .flatMapLatest { pager -> pager.flow }
+        .catch { error(it) }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+
+    private fun newPager(query: QuerySubreddit): Pager<String, RedditItems> {
+        return repository.getPager(query)
     }
 
     companion object {

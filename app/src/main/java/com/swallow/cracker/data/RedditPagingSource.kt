@@ -4,12 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.swallow.cracker.data.api.Networking
 import com.swallow.cracker.data.model.RedditMapper
+import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItems
 
 class RedditPagingSource(
-    private val subreddit: String,
-    private val category: String,
-    private val limit: String
+    private val query: QuerySubreddit
 ) : PagingSource<String, RedditItems>() {
 
     override fun getRefreshKey(state: PagingState<String, RedditItems>): String? = null
@@ -19,9 +18,9 @@ class RedditPagingSource(
 
         return try {
             val response = Networking.redditApiOAuth.getSubreddit(
-                subreddit = subreddit,
-                category = category,
-                limit = limit,
+                subreddit = query.subreddit,
+                category = query.category,
+                limit = query.limit,
                 count = pageSize.toString(),
                 after = params.key,
                 before = null

@@ -5,10 +5,12 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentHomeBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
@@ -19,22 +21,34 @@ import com.swallow.cracker.ui.adapters.delegates.items.RedditListSimpleItemDeleg
 import com.swallow.cracker.ui.model.RedditItems
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
+import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.showMessage
+import kotlinx.coroutines.flow.collect
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
+    private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
 
+    private var noInternetSnackBar: Snackbar? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initNoInternetSnackBar()
         initAdapter()
         bindingViewModel()
         bindingOfClick()
+    }
+
+    private fun initNoInternetSnackBar() {
+        noInternetSnackBar = getNoInternetConnectionSnackBar(viewBinding.root)
+        networkStatusViewModel.checkNetworkState()
     }
 
     private fun bindingOfClick() {
@@ -48,7 +62,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             // TODO: Переделать когда появится ROOM
-            override fun onSavedClick(category: String?, id: String, position: Int?, saved: Boolean) {
+            override fun onSavedClick(
+                category: String?,
+                id: String,
+                position: Int?,
+                saved: Boolean
+            ) {
                 if (saved)
                     postViewModel.savePost(category = category, id = id, position = position)
                 else
@@ -56,13 +75,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             override fun navigateTo(item: RedditItems) {
-                when(item){
+                when (item) {
                     is RedditListSimpleItem -> {
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
                         findNavController().navigate(action)
                     }
                     is RedditListItemImage -> {
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
                         findNavController().navigate(action)
                     }
                 }
@@ -76,23 +97,47 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingViewModel() {
-        postViewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
+        }
 
-        redditViewModel.posts.observe(viewLifecycleOwner, {
-            redditAdapter.submitData(lifecycle, it)
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            postViewModel.eventMessage.collect { it?.let { msg -> showMessage(msg) } }
+        }
 
-        postViewModel.votePost.observe(viewLifecycleOwner, {
-            it?.let { it.position?.let {
-                position -> redditAdapter.onLikeClick(position = position, likes = it.flag)
-            }}
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            redditViewModel.posts.collect { redditAdapter.submitData(it) }
+        }
 
-        postViewModel.savePost.observe(viewLifecycleOwner, {
-            it?.let {
-                it.position?.let { position -> redditAdapter.onSavedClick(position = position, it.flag) }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            postViewModel.votePost.collect {
+                it?.let {
+                    it.position?.let { position ->
+                        redditAdapter.onLikeClick(position = position, likes = it.flag)
+                    }
+                }
             }
-        })
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            postViewModel.savePost.collect {
+                it?.let {
+                    it.position?.let { position ->
+                        redditAdapter.onSavedClick(
+                            position = position,
+                            it.flag
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showNetworkState(isNoInternet: Boolean) {
+        when (isNoInternet) {
+            true -> noInternetSnackBar?.show()
+            false -> noInternetSnackBar?.dismiss()
+        }
     }
 
     private fun initAdapter() {
@@ -137,5 +182,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        noInternetSnackBar?.dismiss()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        noInternetSnackBar = null
     }
 }
