@@ -184,11 +184,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        noInternetSnackBar?.dismiss()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         noInternetSnackBar = null
