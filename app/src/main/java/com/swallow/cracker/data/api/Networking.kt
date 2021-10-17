@@ -12,7 +12,6 @@ import retrofit2.create
 import timber.log.Timber
 
 object Networking {
-
     private var okhttpClientOauth: OkHttpClient =
         Builder().addInterceptor(Interceptor { chain ->
                 val original = chain.request()

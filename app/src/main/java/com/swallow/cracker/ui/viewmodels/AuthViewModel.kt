@@ -30,7 +30,7 @@ class AuthViewModel(
 
     private val loadingMutableStateFlow = MutableStateFlow(loadingSavedState)
 
-    private val authRepository = AuthRepository()
+    private val authRepository = AuthRepository(application)
     private val authService: AuthorizationService = AuthorizationService(getApplication())
     private val openAuthPageChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
@@ -58,8 +58,9 @@ class AuthViewModel(
         authRepository.performTokenRequest(
             authService = authService,
             tokenRequest = tokenRequest,
-            onComplete = {
+            onComplete = { token ->
                 viewModelScope.launch {
+                    authRepository.saveAuthToken(token)
                     loadingMutableStateFlow.value = false
                     authSuccessChannel.send(Unit)
                 }
