@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout-land/fragment_on_boarding.xml" value="0.2689594356261023" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/custom_toast.xml" value="0.36594202898550726" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/fragment_details.xml" value="0.32760416666666664" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/fragment_home.xml" value="0.36594202898550726" />
+        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/fragment_on_boarding.xml" value="0.2708333333333333" />
+        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/onboarding_item.xml" value="0.2708333333333333" />
         <entry key="..\:/GIT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_details.xml" value="0.4078125" />
         <entry key="..\:/GIT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_item.xml" value="0.5" />
         <entry key="..\:/GIT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_item_with_image.xml" value="0.5" />

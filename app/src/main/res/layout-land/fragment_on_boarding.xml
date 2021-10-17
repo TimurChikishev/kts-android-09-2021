@@ -10,6 +10,7 @@
         android:id="@+id/flowActionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="iconAppImageView,buttonSkip"
         app:flow_horizontalStyle="spread_inside"
         app:flow_verticalGap="8dp"
@@ -17,7 +18,8 @@
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <ImageView
         android:id="@+id/iconAppImageView"
