@@ -7,7 +7,7 @@ import com.swallow.cracker.databinding.RedditListSimpleItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.DelegateAdapter
 import com.swallow.cracker.ui.adapters.viewholders.RedditSimpleItemViewHolder
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 class RedditListSimpleItemDelegateAdapter :
@@ -29,7 +29,7 @@ class RedditListSimpleItemDelegateAdapter :
     override fun bindViewHolder(
         model: RedditListSimpleItem,
         viewHolder: RedditSimpleItemViewHolder,
-        payloads: List<RedditItems>
+        payloads: List<RedditItem>
     ) {
         viewHolder.bind(model)
     }

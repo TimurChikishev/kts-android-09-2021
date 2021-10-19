@@ -4,14 +4,13 @@ import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.swallow.cracker.ui.model.RedditItems
-import com.swallow.cracker.utils.setSavedStatus
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
-    private val delegates: SparseArray<DelegateAdapter<RedditItems, RecyclerView.ViewHolder>>
+    private val delegates: SparseArray<DelegateAdapter<RedditItem, RecyclerView.ViewHolder>>
 ) :
-    PagingDataAdapter<RedditItems, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
+    PagingDataAdapter<RedditItem, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return delegates[viewType].createViewHolder(parent = parent, clickDelegate = clickDelegate)
@@ -34,21 +33,6 @@ class ComplexDelegatesRedditListAdapter(
         delegateAdapter.bindViewHolder(item, holder, emptyList())
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        delegates[holder.itemViewType].onViewRecycled(holder)
-        super.onViewRecycled(holder)
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        delegates[holder.itemViewType].onViewDetachedFromWindow(holder)
-        super.onViewDetachedFromWindow(holder)
-    }
-
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        delegates[holder.itemViewType].onViewAttachedToWindow(holder)
-        super.onViewAttachedToWindow(holder)
-    }
-
     fun onLikeClick(position: Int, likes: Boolean) {
         snapshot()[position]?.updateScore(likes)
         notifyItemChanged(position)
@@ -67,13 +51,14 @@ class ComplexDelegatesRedditListAdapter(
 
     class Builder {
         private var count: Int = 0
-        private val delegates: SparseArray<DelegateAdapter<RedditItems, RecyclerView.ViewHolder>> =
+        private val delegates: SparseArray<DelegateAdapter<RedditItem, RecyclerView.ViewHolder>> =
             SparseArray()
 
-        fun add(delegateAdapter: DelegateAdapter<out RedditItems, *>): Builder {
+        @Suppress("UNCHECKED_CAST")
+        fun add(delegateAdapter: DelegateAdapter<out RedditItem, *>): Builder {
             delegates.put(
                 count++,
-                delegateAdapter as DelegateAdapter<RedditItems, RecyclerView.ViewHolder>
+                delegateAdapter as DelegateAdapter<RedditItem, RecyclerView.ViewHolder>
             )
             return this
         }

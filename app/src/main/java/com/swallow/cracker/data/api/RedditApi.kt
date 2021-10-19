@@ -12,7 +12,6 @@ interface RedditApi {
         @Path("subreddit") subreddit: String,
         @Path("category") category: String,
         @Query("limit") limit: String,
-        @Query("count") count: String,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
@@ -22,17 +21,17 @@ interface RedditApi {
     suspend fun savedPost(
         @Field("category") category: String?,
         @Field("id") id: String
-    ) : Response<Unit>
+    ): Response<Unit>
 
     @FormUrlEncoded
     @POST("api/unsave")
     suspend fun unSavedPost(
         @Field("id") id: String
-    ) : Response<Unit>
+    ): Response<Unit>
 
     @FormUrlEncoded
     @POST("api/vote")
-    suspend fun votePost (
+    suspend fun votePost(
         @Field("dir") dir: Int,
         @Field("id") id: String
     ): Response<Unit>

@@ -1,11 +1,14 @@
-package com.swallow.cracker.data.model
+package com.swallow.cracker.data
 
-import com.swallow.cracker.ui.model.RedditItems
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.swallow.cracker.data.model.RedditPost
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 object RedditMapper {
-    fun mapApiToUi(item: RedditNewsDataResponse): RedditItems {
+    fun mapApiToUi(item: RedditPost): RedditItem {
         return when {
             item.preview?.enabled == true -> RedditListItemImage(
                 id = item.id,
@@ -37,6 +40,12 @@ object RedditMapper {
                 created = item.created,
                 url = item.url
             )
+        }
+    }
+
+    fun replaceRedditPostToRedditItem(pagingData: PagingData<RedditPost>): PagingData<RedditItem> {
+        return pagingData.map {
+            mapApiToUi(it)
         }
     }
 }

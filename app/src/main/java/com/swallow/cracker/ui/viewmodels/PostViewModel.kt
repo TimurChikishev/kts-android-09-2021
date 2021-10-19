@@ -1,22 +1,22 @@
 package com.swallow.cracker.ui.viewmodels
 
+import android.app.Application
 import android.content.Intent
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.data.RedditRepository
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.PBTransition
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.getVoteDir
-import com.swallow.cracker.utils.id
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class PostViewModel : ViewModel() {
+class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = RedditRepository()
 
@@ -99,7 +99,7 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun votePost(item: RedditItems, likes: Boolean, position: Int? = null) {
+    fun votePost(item: RedditItem, likes: Boolean, position: Int? = null) {
         voteIsClickableMutableStateFlow.set(false)
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {

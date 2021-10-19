@@ -1,12 +1,16 @@
 package com.swallow.cracker.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Entity(tableName = "redditPosts")
 @JsonClass(generateAdapter = true)
-data class RedditNewsDataResponse(
+data class RedditPost(
     @Json(name = "id")
     val id: String,
+    @PrimaryKey
     @Json(name = "name")
     val t3_id: String,
     @Json(name = "author")

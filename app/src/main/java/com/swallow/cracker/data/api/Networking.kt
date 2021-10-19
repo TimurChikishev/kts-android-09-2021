@@ -5,11 +5,9 @@ import com.swallow.cracker.data.config.NetworkConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import timber.log.Timber
 
 object Networking {
     private var okhttpClientOauth: OkHttpClient =
@@ -26,11 +24,7 @@ object Networking {
                 val request = builder.method(original.method, original.body)
                     .build()
                 chain.proceed(request)
-            }).addNetworkInterceptor(
-            HttpLoggingInterceptor {
-                Timber.tag(NetworkConfig.LOG_TAG).d(it)
-            }.setLevel(HttpLoggingInterceptor.Level.BODY)
-        ).build()
+            }).build()
 
     private val retrofitOAuth = Retrofit.Builder()
         .client(okhttpClientOauth)

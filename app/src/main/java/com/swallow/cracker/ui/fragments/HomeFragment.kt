@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
@@ -18,16 +20,18 @@ import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
 import com.swallow.cracker.ui.adapters.delegates.items.RedditListItemImageDelegateAdapter
 import com.swallow.cracker.ui.adapters.delegates.items.RedditListSimpleItemDelegateAdapter
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.autoCleared
+import com.swallow.cracker.utils.getDataFormCacheSnackBar
 import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
@@ -35,8 +39,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
+    private var dataFromCache: Boolean? = null
 
     private var noInternetSnackBar: Snackbar? = null
+    private var dataFromCacheSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,8 +52,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         bindingOfClick()
     }
 
-    private fun initNoInternetSnackBar() {
-        noInternetSnackBar = getNoInternetConnectionSnackBar(viewBinding.root)
+    private fun initNoInternetSnackBar() = with(viewBinding) {
+        dataFromCacheSnackBar = getDataFormCacheSnackBar(root)
+        noInternetSnackBar = getNoInternetConnectionSnackBar(root)
         networkStatusViewModel.checkNetworkState()
     }
 
@@ -74,7 +81,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     postViewModel.unSavePost(id = id, position = position)
             }
 
-            override fun navigateTo(item: RedditItems) {
+            override fun navigateTo(item: RedditItem) {
                 when (item) {
                     is RedditListSimpleItem -> {
                         val action =
@@ -98,15 +105,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun bindingViewModel() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            redditViewModel.items.collectLatest {
+                redditAdapter.submitData(it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             postViewModel.eventMessage.collect { it?.let { msg -> showMessage(msg) } }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            redditViewModel.posts.collect { redditAdapter.submitData(it) }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -136,7 +145,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun showNetworkState(isNoInternet: Boolean) {
         when (isNoInternet) {
             true -> noInternetSnackBar?.show()
-            false -> noInternetSnackBar?.dismiss()
+            false -> {
+                noInternetSnackBar?.dismiss()
+                if (dataFromCache == true) {
+                    redditAdapter.refresh()
+                    dataFromCache = false
+                }
+            }
         }
     }
 
@@ -146,46 +161,49 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .add(RedditListItemImageDelegateAdapter())
             .build()
 
-        with(viewBinding) {
-            redditRecyclerView.setHasFixedSize(true)
-            redditRecyclerView.layoutManager = LinearLayoutManager(context)
-            redditRecyclerView.adapter = redditAdapter.withLoadStateHeaderAndFooter(
+        with(viewBinding.redditRecyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = redditAdapter
+            adapter = redditAdapter.withLoadStateHeaderAndFooter(
                 header = LoadStateAdapter { redditAdapter.retry() },
                 footer = LoadStateAdapter { redditAdapter.retry() }
             )
-
-            includedLoadState.buttonRetry.setOnClickListener {
-                redditAdapter.retry()
-            }
         }
 
-        redditAdapter.addLoadStateListener { loadState ->
-            viewBinding.apply {
-                redditRecyclerView.isVisible =
-                    loadState.source.refresh is LoadState.NotLoading
-                includedLoadState.progressBar.isVisible =
-                    loadState.source.refresh is LoadState.Loading
-                includedLoadState.buttonRetry.isVisible =
-                    loadState.source.refresh is LoadState.Error
-                includedLoadState.textViewError.isVisible =
-                    loadState.source.refresh is LoadState.Error
+        viewBinding.buttonRetry.setOnClickListener { redditAdapter.retry() }
 
-                // for empty view
-                if (loadState.source.refresh is LoadState.NotLoading &&
-                    loadState.append.endOfPaginationReached &&
-                    redditAdapter.itemCount < 1
-                ) {
-                    viewBinding.redditRecyclerView.isVisible = false
-                    includedLoadState.textViewError.isVisible = true
-                } else {
-                    includedLoadState.textViewError.isVisible = false
-                }
-            }
+        redditAdapter.addLoadStateListener(::loadStateListener)
+    }
+
+    private fun loadStateListener(loadState: CombinedLoadStates) = with(viewBinding) {
+        val isEmptyList = loadState.refresh is LoadState.NotLoading
+                && loadState.append.endOfPaginationReached && redditAdapter.itemCount == 0
+
+        val isEmptyCache = loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
+
+        val isFullCache = loadState.source.refresh is LoadState.NotLoading
+                && redditAdapter.itemCount != 0
+
+        val isRemoteRefreshFailed = loadState.mediator?.refresh is LoadState.Error
+
+        textViewError.isVisible = isEmptyList
+
+        redditRecyclerView.isVisible = isFullCache || loadState.refresh is LoadState.NotLoading
+
+        if (isRemoteRefreshFailed && isFullCache && dataFromCacheSnackBar?.isShown == false) {
+            dataFromCache = true
+            dataFromCacheSnackBar?.show()
         }
+
+        progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
+
+        buttonRetry.isVisible = isRemoteRefreshFailed && isEmptyCache
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         noInternetSnackBar = null
+        dataFromCacheSnackBar = null
     }
 }

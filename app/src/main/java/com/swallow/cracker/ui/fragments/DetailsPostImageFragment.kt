@@ -18,7 +18,6 @@ import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
-import com.swallow.cracker.utils.setSavedStatus
 import com.swallow.cracker.utils.showMessage
 import com.swallow.cracker.utils.updateScore
 import kotlinx.coroutines.flow.collect

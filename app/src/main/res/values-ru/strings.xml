@@ -34,4 +34,5 @@
     <string name="post_unsaved">Post unsaved!</string>
     <string name="toast_icon">toast icon</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="data_from_the_cache">Data from the cache</string>
 </resources>

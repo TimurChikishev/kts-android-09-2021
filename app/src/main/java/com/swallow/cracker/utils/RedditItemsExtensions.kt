@@ -1,45 +1,8 @@
 package com.swallow.cracker.utils
 
-import com.swallow.cracker.ui.model.RedditItems
-import com.swallow.cracker.ui.model.RedditListItemImage
-import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.model.RedditItem
 
-fun RedditItems.id(): String {
-    return when (this) {
-        is RedditListSimpleItem -> this.t3_id
-        is RedditListItemImage -> this.t3_id
-    }
-}
-
-fun RedditItems.getLikeStatus(): Boolean? {
-    return when (this) {
-        is RedditListSimpleItem -> this.likes
-        is RedditListItemImage -> this.likes
-    }
-}
-
-fun RedditItems.setLikeStatus(likes: Boolean?) {
-    return when (this) {
-        is RedditListSimpleItem -> this.likes = likes
-        is RedditListItemImage -> this.likes = likes
-    }
-}
-
-fun RedditItems.setSavedStatus(saved: Boolean) {
-    return when (this) {
-        is RedditListSimpleItem -> this.saved = saved
-        is RedditListItemImage -> this.saved = saved
-    }
-}
-
-fun RedditItems.plusScore(value: Int) {
-    return when (this) {
-        is RedditListSimpleItem -> this.score += value
-        is RedditListItemImage -> this.score += value
-    }
-}
-
-fun RedditItems.updateScore(likes: Boolean) {
+fun RedditItem.updateScore(likes: Boolean) {
     if (likes) {
         when (this.getLikeStatus()) {
             true -> {
@@ -73,7 +36,7 @@ fun RedditItems.updateScore(likes: Boolean) {
     }
 }
 
-fun RedditItems.getVoteDir(likes: Boolean): Int {
+fun RedditItem.getVoteDir(likes: Boolean): Int {
     return if (likes) {
         when (this.getLikeStatus()) {
             true -> 0

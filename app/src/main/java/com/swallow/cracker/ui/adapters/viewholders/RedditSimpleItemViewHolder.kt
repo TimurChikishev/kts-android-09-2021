@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListSimpleItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 class RedditSimpleItemViewHolder(
@@ -43,7 +43,7 @@ class RedditSimpleItemViewHolder(
         viewBinding.itemContainer.setOnClickListener {
             item?.let {
                 viewBinding.itemContainer.isEnabled = false
-                clickDelegate?.navigateTo(it as RedditItems)
+                clickDelegate?.navigateTo(it as RedditItem)
             }
         }
 

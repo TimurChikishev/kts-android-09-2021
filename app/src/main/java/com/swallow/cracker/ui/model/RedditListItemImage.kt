@@ -21,8 +21,28 @@ class RedditListItemImage(
     var thumbnail: String,
     var url: String,
     val preview: RedditChildrenPreview?
-) : RedditItems(), Parcelable {
+) : RedditItem, Parcelable {
 
     val time: String
         get() = created.convertLongToTime()
+
+    override fun id() = t3_id
+
+    override fun equalsContent(other: Any?) = this === other
+
+    override fun getLikeStatus(): Boolean? {
+        return likes
+    }
+
+    override fun setLikeStatus(likes: Boolean?) {
+        this.likes = likes
+    }
+
+    override fun setSavedStatus(saved: Boolean) {
+        this.saved = saved
+    }
+
+    override fun plusScore(value: Int) {
+        this.score += value
+    }
 }

@@ -84,9 +84,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
 
     // Jetpack Paging 3
-    def paging_version = "3.0.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.1'
     // AppAuth
     implementation 'net.openid:appauth:0.10.0'
 
