@@ -38,7 +38,7 @@ class NetworkStatusViewModel(
         }
     }
 
-    private fun isNoNetwork(): Boolean {
+    fun isNoNetwork(): Boolean {
         val cm = getSystemService(getApplication(), ConnectivityManager::class.java)
         return cm?.isActiveNetworkMetered ?: false
     }

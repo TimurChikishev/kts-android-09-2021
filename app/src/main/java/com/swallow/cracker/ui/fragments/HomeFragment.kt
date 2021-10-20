@@ -27,12 +27,12 @@ import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
-import com.swallow.cracker.utils.autoCleared
-import com.swallow.cracker.utils.getDataFormCacheSnackBar
-import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
-import com.swallow.cracker.utils.showMessage
+import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
@@ -54,9 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initSwipeRefreshLayout() = with(viewBinding) {
-        swipeContainer.setOnRefreshListener {
-            if (redditAdapter.itemCount != 0) redditAdapter.refresh()
-        }
+        swipeContainer.setOnRefreshListener(redditAdapter::refresh)
 
         swipeContainer.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -73,15 +71,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingOfClick() {
+        viewBinding.buttonRetry.setOnClickListener { redditAdapter.retry() }
+
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
 
-            // TODO: Переделать когда появится ROOM
             override fun onVoteClick(position: Int, likes: Boolean) {
                 val item = redditAdapter.snapshot()[position] ?: return
                 postViewModel.votePost(item = item, likes = likes, position = position)
             }
 
-            // TODO: Переделать когда появится ROOM
             override fun onSavedClick(
                 category: String?,
                 id: String,
@@ -94,47 +92,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     postViewModel.unSavePost(id = id, position = position)
             }
 
-            override fun navigateTo(item: RedditItem) {
-                when (item) {
-                    is RedditListSimpleItem -> {
-                        val action =
-                            HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
-                        findNavController().navigate(action)
-                    }
-                    is RedditListItemImage -> {
-                        val action =
-                            HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
-                        findNavController().navigate(action)
-                    }
-                }
+            override fun navigateTo(item: RedditItem) = when (item) {
+                is RedditListSimpleItem -> navigateToDetailSimple(item)
+                is RedditListItemImage -> navigateToDetailsImage(item)
             }
 
-            override fun shared(url: String) {
-                val intent = postViewModel.shared(url)
-                startActivity(intent)
-            }
+            override fun shared(url: String) = startActivity(postViewModel.shared(url))
         })
     }
 
     private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenStarted {
-            redditViewModel.items.collectLatest {
-                if (viewBinding.swipeContainer.isRefreshing) {
-                    redditAdapter.submitData(PagingData.empty())
-                    viewBinding.swipeContainer.isRefreshing = false
-                }
+        launchWhenStarted { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
 
-                redditAdapter.submitData(it)
-            }
-        }
+        launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
 
-        launchWhenStarted {
-            networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
-        }
-
-        launchWhenStarted {
-            postViewModel.eventMessage.collect { it?.let { msg -> showMessage(msg) } }
-        }
+        launchWhenStarted { postViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
 
         launchWhenStarted {
             postViewModel.votePost.collect {
@@ -160,17 +132,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun showNetworkState(isNoInternet: Boolean) {
-        when (isNoInternet) {
-            true -> noInternetSnackBar?.show()
-            false -> {
-                noInternetSnackBar?.dismiss()
-                if (dataFromCache == true) {
-                    redditAdapter.refresh()
-                    dataFromCache = false
-                }
-            }
-        }
+    private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
+        true -> noInternetSnackBar?.show()
+        false -> noInternetSnackBar?.dismiss()
     }
 
     private fun initAdapter() {
@@ -188,10 +152,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 footer = LoadStateAdapter { redditAdapter.retry() }
             )
         }
-
-        viewBinding.buttonRetry.setOnClickListener { redditAdapter.retry() }
-
         redditAdapter.addLoadStateListener(::loadStateListener)
+
+        initAdapterRefreshListener()
+    }
+
+    private fun initAdapterRefreshListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            redditAdapter.loadStateFlow
+                // Use a state-machine to track LoadStates such that we only transition to
+                // NotLoading from a RemoteMediator load if it was also presented to UI.
+                .asMergedLoadStates()
+                // Only emit when REFRESH changes, as we only want to react on loads replacing the
+                // list.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
+                .collect {
+                    viewBinding.redditRecyclerView.scrollToPosition(0)
+                    viewBinding.swipeContainer.isRefreshing = false
+                }
+        }
     }
 
     private fun loadStateListener(loadState: CombinedLoadStates) = with(viewBinding) {
@@ -218,6 +200,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
         buttonRetry.isVisible = isRemoteRefreshFailed && isEmptyCache
+    }
+
+    private fun navigateToDetailsImage(item: RedditListItemImage) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToDetailSimple(item: RedditListSimpleItem) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

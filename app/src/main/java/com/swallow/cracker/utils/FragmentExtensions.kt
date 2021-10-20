@@ -32,10 +32,7 @@ fun Fragment.getNoInternetConnectionSnackBar(view: View): Snackbar {
 
 fun Fragment.getDataFormCacheSnackBar(view: View): Snackbar {
     val tint = ContextCompat.getColor(requireContext(), R.color.gray)
-    val actionTextColor = ContextCompat.getColor(requireContext(), R.color.white)
 
-    return Snackbar.make(view, R.string.data_from_the_cache, Snackbar.LENGTH_INDEFINITE)
-        .setAction("Hide") {}
+    return Snackbar.make(view, R.string.data_from_the_cache, Snackbar.LENGTH_SHORT)
         .setBackgroundTint(tint)
-        .setActionTextColor(actionTextColor)
 }
