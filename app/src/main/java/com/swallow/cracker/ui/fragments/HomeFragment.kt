@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -32,6 +33,7 @@ import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
@@ -40,6 +42,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
     private var dataFromCache: Boolean? = null
+    private var swipeRefresh: Boolean? = null
 
     private var noInternetSnackBar: Snackbar? = null
     private var dataFromCacheSnackBar: Snackbar? = null
@@ -50,6 +53,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         initAdapter()
         bindingViewModel()
         bindingOfClick()
+        initSwipeRefreshLayout()
+    }
+
+    private fun initSwipeRefreshLayout() = with(viewBinding) {
+        swipeContainer.setOnRefreshListener {
+            if (redditAdapter.itemCount != 0) redditAdapter.refresh()
+        }
+
+        swipeContainer.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light
+        )
     }
 
     private fun initNoInternetSnackBar() = with(viewBinding) {
@@ -59,7 +76,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingOfClick() {
-
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
 
             // TODO: Переделать когда появится ROOM
@@ -103,22 +119,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun bindingViewModel() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+    private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
+        launchWhenStarted {
             redditViewModel.items.collectLatest {
+                if (viewBinding.swipeContainer.isRefreshing) {
+                    redditAdapter.submitData(PagingData.empty())
+                    viewBinding.swipeContainer.isRefreshing = false
+                }
+
                 redditAdapter.submitData(it)
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        launchWhenStarted {
             networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        launchWhenStarted {
             postViewModel.eventMessage.collect { it?.let { msg -> showMessage(msg) } }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        launchWhenStarted {
             postViewModel.votePost.collect {
                 it?.let {
                     it.position?.let { position ->
@@ -128,7 +149,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        launchWhenStarted {
             postViewModel.savePost.collect {
                 it?.let {
                     it.position?.let { position ->
@@ -180,7 +201,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val isEmptyList = loadState.refresh is LoadState.NotLoading
                 && loadState.append.endOfPaginationReached && redditAdapter.itemCount == 0
 
-        val isEmptyCache = loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
+        val isEmptyCache =
+            loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
 
         val isFullCache = loadState.source.refresh is LoadState.NotLoading
                 && redditAdapter.itemCount != 0

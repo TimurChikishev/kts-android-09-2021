@@ -85,6 +85,10 @@ dependencies {
 
     // Jetpack Paging 3
     implementation 'androidx.paging:paging-runtime-ktx:3.0.1'
+
+    // Swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
     // AppAuth
     implementation 'net.openid:appauth:0.10.0'
 
