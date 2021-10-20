@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.swallow.cracker.data.RedditMapper
 import com.swallow.cracker.data.RedditRemoteMediator
-import com.swallow.cracker.data.api.Networking
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.RedditDatabase
+import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.QuerySubreddit
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map

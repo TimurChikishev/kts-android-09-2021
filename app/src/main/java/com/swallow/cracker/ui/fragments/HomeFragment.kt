@@ -33,7 +33,6 @@ import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
@@ -42,8 +41,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
     private var dataFromCache: Boolean? = null
-    private var swipeRefresh: Boolean? = null
-
     private var noInternetSnackBar: Snackbar? = null
     private var dataFromCacheSnackBar: Snackbar? = null
 

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Lecture1" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.Cracker" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -14,4 +14,9 @@
         <item name="dotsColor">@color/white</item>
         <item name="selectedDotColor">@color/white</item>
     </style>
+
+<!--    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
+<!--        <item name="android:windowBackground">@drawable/splash_screen</item>-->
+<!--    </style>-->
+
 </resources>

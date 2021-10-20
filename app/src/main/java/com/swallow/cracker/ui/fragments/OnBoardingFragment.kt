@@ -9,13 +9,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
-import com.swallow.cracker.data.config.AuthConfig
+import com.swallow.cracker.UserPreferences
 import com.swallow.cracker.databinding.FragmentOnBoardingBinding
 import com.swallow.cracker.ui.adapters.OnBoardingAdapter
-import com.swallow.cracker.ui.model.TokenState
 import com.swallow.cracker.ui.viewmodels.OnBoardingViewModel
 import com.swallow.cracker.utils.autoCleared
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 
 class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
@@ -25,42 +25,35 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.checkFirstLaunch()
-        bindViewModel()
+        bindingViewModel()
     }
 
-    private fun bindViewModel() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.firstLaunchFlow.collect(::checkFirstLaunch)
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.authToken.collect(::tokenAvailability)
+    private fun bindingViewModel() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.userPreferencesFlow.take(1).collect(::navigateToStartFragment)
         }
     }
 
-    private fun tokenAvailability(state: TokenState) {
-        when (state) {
-            is TokenState.IsToken -> {
-                AuthConfig.token = state.token // сохраняем token в singleton object
-                navigateToHomeFragment()
-            }
-            is TokenState.IsNoToken -> navigateToAuthFragment()
-            is TokenState.Default -> return
+    private fun navigateToStartFragment(pref: UserPreferences) {
+        when {
+            pref.authToken.isNotEmpty() -> navigateToHomeFragment()
+            !pref.onBoardingShown -> updateOnBoardingShown()
+            pref.onBoardingShown -> navigateToAuthFragment()
+            else -> initOnBoardingFragment()
         }
     }
 
-    private fun checkFirstLaunch(isFirstLaunch: Boolean?) {
-        when(isFirstLaunch){
-            true -> initOnBoarding()
-            false -> viewModel.getToken()
-            null -> return
-        }
+    private fun updateOnBoardingShown() {
+        viewModel.updateOnboardShown(true)
+        initOnBoardingFragment()
+    }
+
+    private fun initOnBoardingFragment() {
+        bindingOfClick()
+        initOnBoarding()
     }
 
     private fun initOnBoarding() = with(viewBinding) {
-        bindingOfClick()
-
         adapter = OnBoardingAdapter()
 
         flowActionBar.visibility = View.VISIBLE
@@ -73,7 +66,7 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
     }
 
     private fun bindingOfClick() {
-        viewBinding.buttonSkip.setOnClickListener { viewModel.initFirstLaunch() }
+        viewBinding.buttonSkip.setOnClickListener { navigateToAuthFragment() }
     }
 
     private fun navigateToAuthFragment() {

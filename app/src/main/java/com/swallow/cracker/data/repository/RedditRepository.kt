@@ -1,11 +1,11 @@
-package com.swallow.cracker.data
+package com.swallow.cracker.data.repository
 
-import com.swallow.cracker.data.api.Networking
+import com.swallow.cracker.data.network.Networking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-class RedditRepository() {
+class RedditRepository {
     fun savePost(category: String?, id: String): Flow<Response<Unit>> = flow {
         emit(Networking.redditApiOAuth.savedPost(category = category, id = id))
     }

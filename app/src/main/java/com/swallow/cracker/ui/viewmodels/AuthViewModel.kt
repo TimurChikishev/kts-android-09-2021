@@ -6,7 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
-import com.swallow.cracker.data.AuthRepository
+import com.swallow.cracker.data.repository.AuthRepository
+import com.swallow.cracker.data.repository.Repository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,8 @@ class AuthViewModel(
 
     private val loadingMutableStateFlow = MutableStateFlow(loadingSavedState)
 
-    private val authRepository = AuthRepository(application)
+    private val authRepository = AuthRepository()
+    private val userPreferencesRepository = Repository.userPreferencesRepository
     private val authService: AuthorizationService = AuthorizationService(getApplication())
     private val openAuthPageChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
@@ -60,7 +62,7 @@ class AuthViewModel(
             tokenRequest = tokenRequest,
             onComplete = { token ->
                 viewModelScope.launch {
-                    authRepository.saveAuthToken(token)
+                    saveAuthToken(token)
                     loadingMutableStateFlow.value = false
                     authSuccessChannel.send(Unit)
                 }
@@ -72,6 +74,10 @@ class AuthViewModel(
                 }
             }
         )
+    }
+
+    private suspend fun saveAuthToken(token: String) {
+        userPreferencesRepository.updateAuthToken(token)
     }
 
     suspend fun openLoginPage() {

@@ -1,11 +1,10 @@
 package com.swallow.cracker.ui.viewmodels
 
-import android.app.Application
 import android.content.Intent
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
-import com.swallow.cracker.data.RedditRepository
+import com.swallow.cracker.data.repository.RedditRepository
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.PBTransition
 import com.swallow.cracker.ui.model.RedditItem
@@ -16,7 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class PostViewModel(application: Application) : AndroidViewModel(application) {
+class PostViewModel() : ViewModel() {
 
     private val repository = RedditRepository()
 
