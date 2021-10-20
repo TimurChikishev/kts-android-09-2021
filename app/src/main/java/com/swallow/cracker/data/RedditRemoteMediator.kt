@@ -25,21 +25,12 @@ class RedditRemoteMediator(
         state: PagingState<Int, RedditPost>
     ): MediatorResult {
         return try {
-            val loadKey = when (loadType) {
-                LoadType.REFRESH -> {
-                    getClosestRemoteKey(state)
+            val loadKey = when (val pageKeyData = getKeyPageData(loadType, state)) {
+                is MediatorResult.Success -> {
+                    return pageKeyData
                 }
-                LoadType.PREPEND -> {
-                    val remoteKeys = getFirstRemoteKey(state)
-                    remoteKeys?.before
-                        ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
-                    remoteKeys
-                }
-                LoadType.APPEND -> {
-                    val remoteKeys = getLastRemoteKey(state)
-                    remoteKeys?.after
-                        ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
-                    remoteKeys
+                else -> {
+                    pageKeyData as  RedditKeys?
                 }
             }
 
@@ -73,6 +64,29 @@ class RedditRemoteMediator(
     }
 
     /**
+     * this returns the page key or the final end of list success result
+     */
+    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, RedditPost>): Any? {
+        return when (loadType) {
+            LoadType.REFRESH -> {
+                getClosestRemoteKey(state)
+            }
+            LoadType.PREPEND -> {
+                val remoteKeys = getFirstRemoteKey(state)
+                remoteKeys?.before
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                remoteKeys
+            }
+            LoadType.APPEND -> {
+                val remoteKeys = getLastRemoteKey(state)
+                remoteKeys?.after
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                remoteKeys
+            }
+        }
+    }
+
+    /**
      * get the last remote key inserted which had the data
      */
     private suspend fun getFirstRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
@@ -92,6 +106,9 @@ class RedditRemoteMediator(
             ?.let { database.redditKeysDao().getRedditKeys(it.t3_id).lastOrNull() }
     }
 
+    /**
+     * get the closest remote key inserted which had the data
+     */
     private suspend fun getClosestRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { repoId ->
