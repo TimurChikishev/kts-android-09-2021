@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -25,7 +24,6 @@ import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
-import com.swallow.cracker.ui.viewmodels.PostViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
@@ -36,11 +34,9 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
-    private val postViewModel: PostViewModel by viewModels()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
-    private var dataFromCache: Boolean? = null
     private var noInternetSnackBar: Snackbar? = null
     private var dataFromCacheSnackBar: Snackbar? = null
 
@@ -74,22 +70,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewBinding.buttonRetry.setOnClickListener { redditAdapter.retry() }
 
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
-
-            override fun onVoteClick(position: Int, likes: Boolean) {
-                val item = redditAdapter.snapshot()[position] ?: return
-                postViewModel.votePost(item = item, likes = likes, position = position)
+            override fun onVoteClick(item: RedditItem, likes: Boolean) {
+                redditViewModel.votePost(item, likes)
             }
 
-            override fun onSavedClick(
-                category: String?,
-                id: String,
-                position: Int?,
-                saved: Boolean
-            ) {
-                if (saved)
-                    postViewModel.savePost(category = category, id = id, position = position)
-                else
-                    postViewModel.unSavePost(id = id, position = position)
+            override fun onSavedClick(item: RedditItem, saved: Boolean) = when(saved){
+                true -> redditViewModel.savePost(item)
+                false -> redditViewModel.unSavePost(item)
             }
 
             override fun navigateTo(item: RedditItem) = when (item) {
@@ -97,7 +84,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is RedditListItemImage -> navigateToDetailsImage(item)
             }
 
-            override fun shared(url: String) = startActivity(postViewModel.shared(url))
+            override fun shared(url: String): Unit = startActivity(sharedUrl(url))
         })
     }
 
@@ -106,30 +93,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
 
-        launchWhenStarted { postViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
-
-        launchWhenStarted {
-            postViewModel.votePost.collect {
-                it?.let {
-                    it.position?.let { position ->
-                        redditAdapter.onLikeClick(position = position, likes = it.flag)
-                    }
-                }
-            }
-        }
-
-        launchWhenStarted {
-            postViewModel.savePost.collect {
-                it?.let {
-                    it.position?.let { position ->
-                        redditAdapter.onSavedClick(
-                            position = position,
-                            it.flag
-                        )
-                    }
-                }
-            }
-        }
+        launchWhenStarted { redditViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
     }
 
     private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
@@ -193,7 +157,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         redditRecyclerView.isVisible = isFullCache || loadState.refresh is LoadState.NotLoading
 
         if (isRemoteRefreshFailed && isFullCache && dataFromCacheSnackBar?.isShown == false) {
-            dataFromCache = true
             dataFromCacheSnackBar?.show()
         }
 

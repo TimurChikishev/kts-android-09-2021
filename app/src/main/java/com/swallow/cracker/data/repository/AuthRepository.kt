@@ -4,7 +4,7 @@ import android.net.Uri
 import com.swallow.cracker.data.config.AuthConfig
 import net.openid.appauth.*
 
-class AuthRepository{
+class AuthRepository {
 
     fun getAuthRequest(): AuthorizationRequest {
         val serviceConfiguration = AuthorizationServiceConfiguration(
@@ -35,11 +35,7 @@ class AuthRepository{
             ClientSecretBasic(AuthConfig.CLIENT_SECRET)
         ) { response, ex ->
             when {
-                response != null -> {
-                    val token = response.accessToken.orEmpty()
-                    AuthConfig.token = token
-                    onComplete(token)
-                }
+                response != null -> onComplete(response.accessToken.orEmpty())
                 else -> onError()
             }
         }

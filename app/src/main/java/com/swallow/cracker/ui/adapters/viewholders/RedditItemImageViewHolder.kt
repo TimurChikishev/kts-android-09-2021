@@ -21,24 +21,23 @@ class RedditItemImageViewHolder(
 
     init {
         viewBinding.likesImageView.setOnClickListener {
-            viewBinding.likesImageView.isClickable = false
-            clickDelegate?.onVoteClick(layoutPosition, true)
+            item?.let {
+                viewBinding.likesImageView.isClickable = false
+                clickDelegate?.onVoteClick(it, true)
+            }
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
-            viewBinding.dislikesImageView.isClickable = false
-            clickDelegate?.onVoteClick(layoutPosition, false)
+            item?.let {
+                viewBinding.dislikesImageView.isClickable = false
+                clickDelegate?.onVoteClick(it, false)
+            }
         }
 
         viewBinding.savedImageView.setOnClickListener {
             item?.let {
                 viewBinding.savedImageView.isClickable = false
-                clickDelegate?.onSavedClick(
-                    category = null,
-                    id = it.t3_id,
-                    position = layoutPosition,
-                    saved = !it.saved
-                )
+                clickDelegate?.onSavedClick(it, !it.saved)
             }
         }
 

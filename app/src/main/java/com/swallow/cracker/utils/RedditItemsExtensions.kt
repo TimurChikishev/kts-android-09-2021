@@ -4,32 +4,32 @@ import com.swallow.cracker.ui.model.RedditItem
 
 fun RedditItem.updateScore(likes: Boolean) {
     if (likes) {
-        when (this.getLikeStatus()) {
+        when (this.likes()) {
             true -> {
-                this.setLikeStatus(null)
+                this.setItemLikes(null)
                 this.plusScore(-1)
             }
             false -> {
-                this.setLikeStatus(true)
+                this.setItemLikes(true)
                 this.plusScore(2)
             }
             null -> {
-                this.setLikeStatus(true)
+                this.setItemLikes(true)
                 this.plusScore(1)
             }
         }
     } else {
-        when (this.getLikeStatus()) {
+        when (this.likes()) {
             true -> {
-                this.setLikeStatus(false)
+                this.setItemLikes(false)
                 this.plusScore(-2)
             }
             false -> {
-                this.setLikeStatus(null)
+                this.setItemLikes(null)
                 this.plusScore(1)
             }
             null -> {
-                this.setLikeStatus(false)
+                this.setItemLikes(false)
                 this.plusScore(-1)
             }
         }
@@ -38,13 +38,13 @@ fun RedditItem.updateScore(likes: Boolean) {
 
 fun RedditItem.getVoteDir(likes: Boolean): Int {
     return if (likes) {
-        when (this.getLikeStatus()) {
+        when (this.likes()) {
             true -> 0
             false -> 1
             null -> 1
         }
     } else {
-        when (this.getLikeStatus()) {
+        when (this.likes()) {
             true -> -1
             false -> 0
             null -> -1

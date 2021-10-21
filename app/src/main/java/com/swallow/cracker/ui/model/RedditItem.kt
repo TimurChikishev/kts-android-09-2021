@@ -3,13 +3,15 @@ package com.swallow.cracker.ui.model
 sealed interface RedditItem {
     fun id(): String
 
-    fun getLikeStatus(): Boolean?
+    fun likes(): Boolean?
 
-    fun setLikeStatus(likes: Boolean?)
+    fun setItemLikes(likes: Boolean?)
 
-    fun setSavedStatus(saved: Boolean)
+    fun setItemSaved(saved: Boolean)
 
     fun plusScore(value: Int)
+
+    fun score(): Int
 
     fun equalsContent(other: Any?) : Boolean
 }

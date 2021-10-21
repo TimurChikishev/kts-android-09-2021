@@ -14,16 +14,16 @@ import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
-import com.swallow.cracker.ui.viewmodels.PostViewModel
+import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
 import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
+import com.swallow.cracker.utils.sharedUrl
 import com.swallow.cracker.utils.showMessage
-import com.swallow.cracker.utils.updateScore
 import kotlinx.coroutines.flow.collect
 
 class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
     private val args by navArgs<DetailsPostSimpleFragmentArgs>()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
-    private val viewModel: PostViewModel by viewModels()
+    private val viewModel: PostDetailViewModel by viewModels()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private lateinit var item: RedditListSimpleItem
     private var noInternetSnackBar: Snackbar? = null
@@ -56,7 +56,9 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
 
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
+            networkStatusViewModel.isNoNetwork.collect {
+                showNetworkState(it)
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -66,9 +68,9 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.savePost.collect {
-                setSavedStyle(it?.flag ?: item.saved)
-                it?.let { item.setSavedStatus(it.flag) }
+            viewModel.savePost.collect { saved ->
+                setSavedStyle(saved ?: item.saved)
+                saved?.let { item.setItemSaved(saved) }
             }
         }
 
@@ -79,10 +81,7 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.votePost.collect {
-                it?.let { item.updateScore(it.flag) }
-                setScore()
-            }
+            viewModel.votePost.collect { setScore() }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -104,8 +103,8 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         // button save/unsave
         savedImageView.setOnClickListener {
             when (!item.saved) {
-                true -> viewModel.savePost(category = null, id = item.t3_id)
-                false -> viewModel.unSavePost(id = item.t3_id)
+                true -> viewModel.savePost(item)
+                false -> viewModel.unSavePost(item)
             }
         }
 
@@ -125,10 +124,7 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         }
 
         // shared to internet
-        shareImageView.setOnClickListener {
-            val intent = viewModel.shared(item.url)
-            startActivity(intent)
-        }
+        shareImageView.setOnClickListener { startActivity(sharedUrl(item.url)) }
     }
 
     private fun setTitle(title: String) {

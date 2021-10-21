@@ -30,19 +30,19 @@ class RedditListItemImage(
 
     override fun equalsContent(other: Any?) = this === other
 
-    override fun getLikeStatus(): Boolean? {
-        return likes
-    }
+    override fun likes() = likes
 
-    override fun setLikeStatus(likes: Boolean?) {
+    override fun setItemLikes(likes: Boolean?) {
         this.likes = likes
     }
 
-    override fun setSavedStatus(saved: Boolean) {
+    override fun setItemSaved(saved: Boolean) {
         this.saved = saved
     }
 
     override fun plusScore(value: Int) {
         this.score += value
     }
+
+    override fun score() = score
 }

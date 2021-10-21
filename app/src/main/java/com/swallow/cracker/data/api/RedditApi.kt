@@ -19,7 +19,7 @@ interface RedditApi {
     @FormUrlEncoded
     @POST("api/save")
     suspend fun savedPost(
-        @Field("category") category: String?,
+        @Field("category") category: String? = null,
         @Field("id") id: String
     ): Response<Unit>
 
@@ -35,5 +35,4 @@ interface RedditApi {
         @Field("dir") dir: Int,
         @Field("id") id: String
     ): Response<Unit>
-
 }

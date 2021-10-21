@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.ui.model.RedditItem
-import com.swallow.cracker.utils.updateScore
 
 class ComplexDelegatesRedditListAdapter(
     private val delegates: SparseArray<DelegateAdapter<RedditItem, RecyclerView.ViewHolder>>
@@ -31,16 +30,6 @@ class ComplexDelegatesRedditListAdapter(
         val delegateAdapter = delegates[getItemViewType(position)]
         val item = getItem(position) ?: return
         delegateAdapter.bindViewHolder(item, holder, emptyList())
-    }
-
-    fun onLikeClick(position: Int, likes: Boolean) {
-        snapshot()[position]?.updateScore(likes)
-        notifyItemChanged(position)
-    }
-
-    fun onSavedClick(position: Int, saved: Boolean) {
-        snapshot()[position]?.setSavedStatus(saved)
-        notifyItemChanged(position)
     }
 
     var clickDelegate: ComplexDelegateAdapterClick? = null

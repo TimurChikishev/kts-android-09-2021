@@ -14,11 +14,9 @@ class LoadStateViewHolder(private val viewBinding: LoadStateItemBinding, retry: 
         }
     }
 
-    fun bind(loadState: LoadState) {
-        viewBinding.apply {
-            progressBar.isVisible = loadState is LoadState.Loading
-            buttonRetry.isVisible = loadState !is LoadState.Loading
-            textViewError.isVisible = loadState !is LoadState.Loading
-        }
+    fun bind(loadState: LoadState) = with(viewBinding) {
+        progressBar.isVisible = loadState is LoadState.Loading
+        buttonRetry.isVisible = loadState is LoadState.Error
+        textViewError.isVisible = !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
     }
 }
