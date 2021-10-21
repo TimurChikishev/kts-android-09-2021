@@ -66,7 +66,7 @@ class RedditItemImageViewHolder(
         setNumComments(numComments.toString())
         setThumbnail(thumbnail = thumbnail, preview = preview)
 
-        setScoreStyle(this)
+        setScoreStyle(likes)
         setSavedStyle(saved)
     }
 
@@ -133,8 +133,8 @@ class RedditItemImageViewHolder(
         }
     }
 
-    private fun setScoreStyle(modal: RedditListItemImage) {
-        when (modal.likes) {
+    private fun setScoreStyle(likes: Boolean?) {
+        when (likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(
                     ContextCompat.getColor(
@@ -158,5 +158,14 @@ class RedditItemImageViewHolder(
                 viewBinding.likesImageView.colorFilter = null
             }
         }
+    }
+
+    fun bindLikes(likes: Boolean?, score: Int) {
+        setScoreStyle(likes)
+        viewBinding.scoreTextView.text = score.toString()
+    }
+
+    fun bindSaved(saved: Boolean) {
+        setSavedStyle(saved)
     }
 }

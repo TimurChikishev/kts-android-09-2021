@@ -51,14 +51,14 @@ class PostDetailViewModel : ViewModel() {
                     .flowOn(Dispatchers.IO)
                     .catch {
                         savePostIsClickableMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
+                        eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
                         eventMessageMutableStateFlow.set(null)
                     }
                     .flowOn(Dispatchers.Main)
                     .collect {
                         savePostIsClickableMutableStateFlow.set(true)
                         savePostMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
+                        eventMessageMutableStateFlow.set(Message(R.string.post_saved))
                         savePostMutableStateFlow.set(null)
                         eventMessageMutableStateFlow.set(null)
                     }

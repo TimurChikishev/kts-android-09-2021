@@ -54,8 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.search -> {
-                    // Handle favorite icon press
-                    true
+                    false
                 }
                 R.id.logout -> {
                     redditViewModel.logout()
@@ -84,7 +83,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 redditViewModel.votePost(item, likes)
             }
 
-            override fun onSavedClick(item: RedditItem, saved: Boolean) = when(saved){
+            override fun onSavedClick(item: RedditItem, saved: Boolean) = when (saved) {
                 true -> redditViewModel.savePost(item)
                 false -> redditViewModel.unSavePost(item)
             }
@@ -192,7 +191,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         findNavController().navigate(action)
     }
 
-    private fun logout(logout: Boolean){
+    private fun logout(logout: Boolean) {
         if (logout)
             navigateToAuthFragment()
     }

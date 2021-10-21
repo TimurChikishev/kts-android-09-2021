@@ -12,7 +12,7 @@ internal class DelegateAdapterItemDiffCallback : DiffUtil.ItemCallback<RedditIte
         return oldItem.equalsContent(newItem)
     }
 
-    override fun getChangePayload(oldItem: RedditItem, newItem: RedditItem): Any? {
-        return super.getChangePayload(oldItem, newItem)
+    override fun getChangePayload(oldItem: RedditItem, newItem: RedditItem): Any {
+        return oldItem.payload(newItem)
     }
 }

@@ -42,4 +42,17 @@ data class RedditListSimpleItem(
     }
 
     override fun score() = score
+
+    override fun payload(other: Any): RedditItem.Payload {
+        if (other is RedditListSimpleItem) {
+            if (likes != other.likes) {
+                return ChangePayload.LikeChanged(other.likes, other.score)
+            }
+
+            if (saved != other.saved) {
+                return ChangePayload.SavedChanged(other.saved)
+            }
+        }
+        return RedditItem.Payload.None
+    }
 }

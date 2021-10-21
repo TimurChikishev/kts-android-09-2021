@@ -7,6 +7,7 @@ import com.swallow.cracker.databinding.RedditListSimpleItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.DelegateAdapter
 import com.swallow.cracker.ui.adapters.viewholders.RedditSimpleItemViewHolder
+import com.swallow.cracker.ui.model.ChangePayload
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 
@@ -31,6 +32,14 @@ class RedditListSimpleItemDelegateAdapter :
         viewHolder: RedditSimpleItemViewHolder,
         payloads: List<RedditItem>
     ) {
-        viewHolder.bind(model)
+        when (val payload = payloads.firstOrNull() as? ChangePayload) {
+            is ChangePayload.LikeChanged ->
+                viewHolder.bindLikes(payload.likes, payload.score)
+
+            is ChangePayload.SavedChanged ->
+                viewHolder.bindSaved(payload.saved)
+
+            else -> viewHolder.bind(model)
+        }
     }
 }

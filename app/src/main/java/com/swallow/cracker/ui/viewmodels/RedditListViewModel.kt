@@ -61,12 +61,12 @@ class RedditListViewModel(
                     .map { it }
                     .flowOn(Dispatchers.IO)
                     .catch {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
+                        eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
                         eventMessageMutableStateFlow.set(null)
                     }
                     .flowOn(Dispatchers.Main)
                     .collect {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
+                        eventMessageMutableStateFlow.set(Message(R.string.post_saved))
                         eventMessageMutableStateFlow.set(null)
                     }
             }
