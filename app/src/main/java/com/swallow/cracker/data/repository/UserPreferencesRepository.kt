@@ -44,4 +44,10 @@ class UserPreferencesRepository (context: Context) {
             preferences.toBuilder().setAuthToken(authToken).build()
         }
     }
+
+    suspend fun updateAuthRefreshToken(refreshToken: String) {
+        userPreferencesStore.updateData { preferences ->
+            preferences.toBuilder().setAuthRefreshToken(refreshToken).build()
+        }
+    }
 }

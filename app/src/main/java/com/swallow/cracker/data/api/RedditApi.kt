@@ -1,5 +1,6 @@
 package com.swallow.cracker.data.api
 
+import com.swallow.cracker.data.model.AccessTokenResponse
 import com.swallow.cracker.data.model.RedditDataResponse
 import com.swallow.cracker.data.model.RedditJsonWrapper
 import retrofit2.Response
@@ -35,4 +36,12 @@ interface RedditApi {
         @Field("dir") dir: Int,
         @Field("id") id: String
     ): Response<Unit>
+
+    @FormUrlEncoded
+    @POST("access_token")
+    suspend fun refreshAuthToken(
+        @Header("Authorization") authorization: String,
+        @Field("grant_type") grantType: String,
+        @Field("refresh_token") refreshToken: String
+    ): Response<AccessTokenResponse>
 }

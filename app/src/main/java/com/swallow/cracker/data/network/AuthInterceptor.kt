@@ -8,18 +8,19 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 
+
 class AuthInterceptor : Interceptor {
 
     private val repository = Repository.userPreferencesRepository
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        var originalReq = chain.request()
+        var request = chain.request()
 
         runBlocking {
             repository.userPreferencesFlow.take(1).collect {
                 val authToken = it.authToken
                 if (authToken.isNotEmpty()) {
-                    originalReq = originalReq
+                    request = request
                         .newBuilder()
                         .addHeader(NetworkConfig.HEADER_AUTHORIZATION, "Bearer $authToken")
                         .build()
@@ -27,6 +28,7 @@ class AuthInterceptor : Interceptor {
             }
         }
 
-        return chain.proceed(originalReq)
+        return chain.proceed(request)
     }
 }
+

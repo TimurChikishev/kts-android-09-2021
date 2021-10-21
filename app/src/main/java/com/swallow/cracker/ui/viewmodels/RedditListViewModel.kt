@@ -52,7 +52,7 @@ class RedditListViewModel(
     private var currentSavePostJob: Job? = null
     private var currentVotePostJob: Job? = null
 
-    fun savePost(item: RedditItem){
+    fun savePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
             runCatching {

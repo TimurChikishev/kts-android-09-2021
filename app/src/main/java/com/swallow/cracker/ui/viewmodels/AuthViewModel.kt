@@ -60,9 +60,10 @@ class AuthViewModel(
         authRepository.performTokenRequest(
             authService = authService,
             tokenRequest = tokenRequest,
-            onComplete = { token ->
+            onComplete = { token, refreshToken ->
                 viewModelScope.launch {
                     saveAuthToken(token)
+                    saveAuthRefreshToken(refreshToken)
                     loadingMutableStateFlow.value = false
                     authSuccessChannel.send(Unit)
                 }
@@ -78,6 +79,10 @@ class AuthViewModel(
 
     private suspend fun saveAuthToken(token: String) {
         userPreferencesRepository.updateAuthToken(token)
+    }
+
+    private suspend fun saveAuthRefreshToken(refreshToken: String) {
+        userPreferencesRepository.updateAuthRefreshToken(refreshToken)
     }
 
     suspend fun openLoginPage() {

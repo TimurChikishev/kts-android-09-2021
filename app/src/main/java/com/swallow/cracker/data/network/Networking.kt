@@ -17,6 +17,7 @@ object Networking {
                 Timber.tag("Network").d(it)
             }.setLevel(HttpLoggingInterceptor.Level.BODY)
         )
+        .authenticator(TokenRefreshAuthenticator())
         .addInterceptor(AuthInterceptor())
         .build()
 
@@ -27,5 +28,15 @@ object Networking {
         .build()
 
     val redditApiOAuth: RedditApi = retrofitOAuth.create()
+
+    private var okhttp = Builder().build()
+
+    private val retrofitApiV1 = Retrofit.Builder()
+        .client(okhttp)
+        .baseUrl(NetworkConfig.URL_API_V1)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+
+    val redditApiV1: RedditApi = retrofitApiV1.create()
 }
 
