@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import com.swallow.cracker.R
 import com.swallow.cracker.data.RedditMapper
 import com.swallow.cracker.data.repository.RedditRepository
+import com.swallow.cracker.data.repository.Repository
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
@@ -108,6 +109,24 @@ class RedditListViewModel(
             }
         }
     }
+
+    private val userPreferences = Repository.userPreferencesRepository
+    private var logoutStateFlow = MutableStateFlow(false)
+
+    val logout: Flow<Boolean>
+        get() = logoutStateFlow
+
+    private var logoutJob: Job? = null
+
+    fun logout() {
+        logoutJob?.cancel()
+        logoutJob = viewModelScope.launch {
+            userPreferences.clearAuthToken()
+            userPreferences.clearAuthRefreshToken()
+            logoutStateFlow.set(true)
+        }
+    }
+
 
     companion object {
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"

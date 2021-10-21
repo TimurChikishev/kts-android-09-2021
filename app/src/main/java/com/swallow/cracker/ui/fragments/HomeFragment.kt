@@ -47,17 +47,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         bindingViewModel()
         bindingOfClick()
         initSwipeRefreshLayout()
+        initTopAppBar()
+    }
+
+    private fun initTopAppBar() {
+        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.search -> {
+                    // Handle favorite icon press
+                    true
+                }
+                R.id.logout -> {
+                    redditViewModel.logout()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun initSwipeRefreshLayout() = with(viewBinding) {
         swipeContainer.setOnRefreshListener(redditAdapter::refresh)
-
-        swipeContainer.setColorSchemeResources(
-            android.R.color.holo_blue_bright,
-            android.R.color.holo_green_light,
-            android.R.color.holo_orange_light,
-            android.R.color.holo_red_light
-        )
     }
 
     private fun initNoInternetSnackBar() = with(viewBinding) {
@@ -94,6 +104,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
 
         launchWhenStarted { redditViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
+
+        launchWhenStarted { redditViewModel.logout.collect(::logout) }
     }
 
     private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
@@ -173,6 +185,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun navigateToDetailSimple(item: RedditListSimpleItem) {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
         findNavController().navigate(action)
+    }
+
+    private fun navigateToAuthFragment() {
+        val action = HomeFragmentDirections.actionHomeFragmentToAuthFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun logout(logout: Boolean){
+        if (logout)
+            navigateToAuthFragment()
     }
 
     override fun onDestroyView() {

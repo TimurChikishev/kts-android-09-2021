@@ -6,7 +6,6 @@ import androidx.datastore.dataStore
 import com.swallow.cracker.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import timber.log.Timber
 import java.io.IOException
 
 class UserPreferencesRepository (context: Context) {
@@ -26,7 +25,6 @@ class UserPreferencesRepository (context: Context) {
         .catch { exception ->
             // dataStore.data throws an IOException when an error is encountered when reading data
             if (exception is IOException) {
-                Timber.e("Error reading user preferences.", exception)
                 emit(UserPreferences.getDefaultInstance())
             } else {
                 throw exception
@@ -48,6 +46,18 @@ class UserPreferencesRepository (context: Context) {
     suspend fun updateAuthRefreshToken(refreshToken: String) {
         userPreferencesStore.updateData { preferences ->
             preferences.toBuilder().setAuthRefreshToken(refreshToken).build()
+        }
+    }
+
+    suspend fun clearAuthToken() {
+        userPreferencesStore.updateData { preferences ->
+            preferences.toBuilder().clearAuthToken().build()
+        }
+    }
+
+    suspend fun clearAuthRefreshToken() {
+        userPreferencesStore.updateData { preferences ->
+            preferences.toBuilder().clearAuthRefreshToken().build()
         }
     }
 }

@@ -43,6 +43,11 @@
         <action
             android:id="@+id/action_homeFragment_to_detailsPostSimple"
             app:destination="@id/detailsPostSimpleFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_authFragment"
+            app:destination="@id/authFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/detailsPostImageFragment"
