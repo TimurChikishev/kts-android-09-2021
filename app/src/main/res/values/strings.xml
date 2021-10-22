@@ -38,4 +38,11 @@
     <string name="splashscreen_image">splash screen image</string>
     <string name="search">search</string>
     <string name="content_description_search">search description</string>
+    <string name="logout">logout</string>
+    <string name="header_image">header image</string>
+    <string name="profile_icon">profile icon</string>
+    <string name="logout_failure">logout failure</string>
+    <string name="logout_dialog_text">Are you sure you want to get out? All local data will be deleted!</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
 </resources>

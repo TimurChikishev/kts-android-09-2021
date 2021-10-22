@@ -4,6 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.room.withTransaction
 import com.swallow.cracker.data.RedditRemoteMediator
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database
@@ -58,7 +59,6 @@ class RedditRepository {
         )
     }
 
-
     suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
         val response = Networking.redditApiOAuth.savedPost(id = item.id())
 
@@ -79,5 +79,12 @@ class RedditRepository {
 
     private fun updateSavedPost(saved: Boolean, id: String) {
         redditDatabase.redditPostsDao().updatePostSaved(saved, id)
+    }
+
+    suspend fun clearDataBase() {
+        redditDatabase.withTransaction {
+            redditDatabase.redditPostsDao().clearPosts()
+            redditDatabase.redditKeysDao().clearRedditKeys()
+        }
     }
 }

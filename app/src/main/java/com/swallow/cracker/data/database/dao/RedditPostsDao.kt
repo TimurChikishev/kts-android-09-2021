@@ -13,6 +13,9 @@ interface RedditPostsDao {
     @Insert(onConflict = REPLACE)
     suspend fun savePosts(redditPosts: List<RedditPost>)
 
+    @Query("DELETE FROM redditPosts")
+    suspend fun clearPosts()
+
     @Query("SELECT * FROM redditPosts")
     fun getPosts(): PagingSource<Int, RedditPost>
 

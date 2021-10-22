@@ -53,11 +53,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun initTopAppBar() {
         viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.search -> {
-                    false
-                }
-                R.id.logout -> {
-                    redditViewModel.logout()
+                R.id.profile -> {
+                    navigateToProfileFragment()
                     true
                 }
                 else -> false
@@ -103,8 +100,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
 
         launchWhenStarted { redditViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
-
-        launchWhenStarted { redditViewModel.logout.collect(::logout) }
     }
 
     private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
@@ -186,14 +181,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         findNavController().navigate(action)
     }
 
-    private fun navigateToAuthFragment() {
-        val action = HomeFragmentDirections.actionHomeFragmentToAuthFragment()
+    private fun navigateToProfileFragment() {
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment()
         findNavController().navigate(action)
-    }
-
-    private fun logout(logout: Boolean) {
-        if (logout)
-            navigateToAuthFragment()
     }
 
     override fun onDestroyView() {

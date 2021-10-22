@@ -41,28 +41,26 @@ class PostDetailViewModel : ViewModel() {
     private var currentVotePostJob: Job? = null
 
 
-    fun savePost(item: RedditItem){
+    fun savePost(item: RedditItem) {
         savePostIsClickableMutableStateFlow.set(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            runCatching {
-                repository.savePost(item)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        savePostIsClickableMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        savePostIsClickableMutableStateFlow.set(true)
-                        savePostMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_saved))
-                        savePostMutableStateFlow.set(null)
-                        eventMessageMutableStateFlow.set(null)
-                    }
-            }
+            repository.savePost(item)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    savePostIsClickableMutableStateFlow.set(true)
+                    eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    savePostIsClickableMutableStateFlow.set(true)
+                    savePostMutableStateFlow.set(true)
+                    eventMessageMutableStateFlow.set(Message(R.string.post_saved))
+                    savePostMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.set(null)
+                }
         }
     }
 
@@ -70,24 +68,22 @@ class PostDetailViewModel : ViewModel() {
         savePostIsClickableMutableStateFlow.set(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            runCatching {
-                repository.unSavePost(item)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        savePostIsClickableMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        savePostIsClickableMutableStateFlow.set(true)
-                        savePostMutableStateFlow.set(false)
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
-                        savePostMutableStateFlow.set(null)
-                        eventMessageMutableStateFlow.set(null)
-                    }
-            }
+            repository.unSavePost(item)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    savePostIsClickableMutableStateFlow.set(true)
+                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    savePostIsClickableMutableStateFlow.set(true)
+                    savePostMutableStateFlow.set(false)
+                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
+                    savePostMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.set(null)
+                }
         }
     }
 
@@ -95,22 +91,20 @@ class PostDetailViewModel : ViewModel() {
         voteIsClickableMutableStateFlow.set(false)
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
-            runCatching {
-                repository.votePost(item, likes)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        voteIsClickableMutableStateFlow.set(true)
-                        eventMessageMutableStateFlow.set(Message(R.string.vote_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        voteIsClickableMutableStateFlow.set(true)
-                        votePostMutableStateFlow.set(likes)
-                        votePostMutableStateFlow.set(null)
-                    }
-            }
+            repository.votePost(item, likes)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    voteIsClickableMutableStateFlow.set(true)
+                    eventMessageMutableStateFlow.set(Message(R.string.vote_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    voteIsClickableMutableStateFlow.set(true)
+                    votePostMutableStateFlow.set(likes)
+                    votePostMutableStateFlow.set(null)
+                }
         }
     }
 }

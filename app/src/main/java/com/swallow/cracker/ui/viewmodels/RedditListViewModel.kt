@@ -9,7 +9,6 @@ import androidx.paging.cachedIn
 import com.swallow.cracker.R
 import com.swallow.cracker.data.RedditMapper
 import com.swallow.cracker.data.repository.RedditRepository
-import com.swallow.cracker.data.repository.Repository
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
@@ -44,7 +43,6 @@ class RedditListViewModel(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-
     private var eventMessageMutableStateFlow = MutableStateFlow<Message<*>?>(null)
 
     val eventMessage: StateFlow<Message<*>?>
@@ -56,77 +54,53 @@ class RedditListViewModel(
     fun savePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            runCatching {
-                redditRepository.savePost(item)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_saved))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-            }
+            redditRepository.savePost(item)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    eventMessageMutableStateFlow.set(Message(R.string.post_saved))
+                    eventMessageMutableStateFlow.set(null)
+                }
         }
     }
 
     fun unSavePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            runCatching {
-                redditRepository.unSavePost(item)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-            }
+            redditRepository.unSavePost(item)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
+                    eventMessageMutableStateFlow.set(null)
+                }
         }
     }
 
     fun votePost(item: RedditItem, likes: Boolean) {
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
-            runCatching {
-                redditRepository.votePost(item, likes)
-                    .map { it }
-                    .flowOn(Dispatchers.IO)
-                    .catch {
-                        eventMessageMutableStateFlow.set(Message(R.string.vote_error))
-                        eventMessageMutableStateFlow.set(null)
-                    }
-                    .flowOn(Dispatchers.Main)
-                    .collect()
-            }
+            redditRepository.votePost(item, likes)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    eventMessageMutableStateFlow.set(Message(R.string.vote_error))
+                    eventMessageMutableStateFlow.set(null)
+                }
+                .flowOn(Dispatchers.Main)
+                .collect()
         }
     }
-
-    private val userPreferences = Repository.userPreferencesRepository
-    private var logoutStateFlow = MutableStateFlow(false)
-
-    val logout: Flow<Boolean>
-        get() = logoutStateFlow
-
-    private var logoutJob: Job? = null
-
-    fun logout() {
-        logoutJob?.cancel()
-        logoutJob = viewModelScope.launch {
-            userPreferences.clearAuthToken()
-            userPreferences.clearAuthRefreshToken()
-            logoutStateFlow.set(true)
-        }
-    }
-
 
     companion object {
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
