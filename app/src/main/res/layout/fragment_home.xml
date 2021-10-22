@@ -15,11 +15,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            style="@style/MaterialToolbarCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/ic_cookie_24"
-            style="@style/MaterialToolbarCracker"/>
+            app:menu="@menu/top_app_bar_home"
+            app:navigationIcon="@drawable/ic_cookie_24" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

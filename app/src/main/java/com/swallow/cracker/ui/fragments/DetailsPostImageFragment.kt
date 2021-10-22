@@ -1,8 +1,8 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +17,7 @@ import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
+import com.swallow.cracker.utils.getColor
 import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.sharedUrl
 import com.swallow.cracker.utils.showMessage
@@ -30,10 +31,12 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     private val viewModel: PostDetailViewModel by viewModels()
     private lateinit var item: RedditListItemImage
     private var noInternetSnackBar: Snackbar? = null
+    private var savedItem: MenuItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         item = args.post
+        initTopAppBar()
         initNoInternetSnackBar()
         bindViewModel()
         initContent()
@@ -54,8 +57,30 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         setTitle(title)
         setThumbnail(thumbnail = thumbnail, preview = preview)
 
+
         bindingOfClicks()
         setScore()
+    }
+
+    private fun initTopAppBar() {
+        savedItem = viewBinding.topAppBar.menu.findItem(R.id.saved)
+
+        viewBinding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.saved -> {
+                    when (!item.saved) {
+                        true -> viewModel.savePost(item)
+                        false -> viewModel.unSavePost(item)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun bindViewModel() {
@@ -80,7 +105,7 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.savePostIsClickable.collect {
-                viewBinding.savedImageView.isClickable = it
+                savedItem?.isEnabled = it
             }
         }
 
@@ -104,19 +129,6 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun bindingOfClicks() = with(viewBinding) {
-        // button save/unsave
-        savedImageView.setOnClickListener {
-            when (!item.saved) {
-                true -> viewModel.savePost(item)
-                false -> viewModel.unSavePost(item)
-            }
-        }
-
-        // button back
-        backImageView.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         // button like
         likesImageView.setOnClickListener {
             viewModel.votePost(item, true)
@@ -179,21 +191,14 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         }
 
     // setting the style for save/unsave buttons
-    private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
-        when (boolean) {
-            true -> {
-                val color = ContextCompat.getColor(requireContext(), R.color.red)
-                savedImageView.setColorFilter(color)
-            }
-            false -> {
-                savedImageView.colorFilter = null
-            }
-        }
+    private fun setSavedStyle(boolean: Boolean) = when (boolean) {
+        true -> savedItem?.icon?.setTint(getColor(R.color.red))
+        false -> savedItem?.icon?.setTint(getColor(R.color.white))
     }
 
     // setting the style for rating buttons
     private fun setScore() = with(viewBinding) {
-        val color = ContextCompat.getColor(requireContext(), R.color.red)
+        val color = getColor(R.color.red)
 
         when (item.likes) {
             true -> {
@@ -216,5 +221,6 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     override fun onDestroyView() {
         super.onDestroyView()
         noInternetSnackBar = null
+        savedItem = null
     }
 }
