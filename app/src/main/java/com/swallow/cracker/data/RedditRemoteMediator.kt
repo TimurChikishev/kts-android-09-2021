@@ -55,8 +55,10 @@ class RedditRemoteMediator(
 
             if (redditPosts != null) {
                 database.withTransaction {
-                    database.redditKeysDao()
-                        .saveRedditKeys(RedditKeys(0, listing.after, listing.before))
+                    redditPosts.map {
+                        database.redditKeysDao()
+                            .saveRedditKeys(RedditKeys(it.t3_id, listing.after, listing.before))
+                    }
                     database.redditPostsDao().savePosts(redditPosts)
                 }
             }
@@ -117,8 +119,8 @@ class RedditRemoteMediator(
      */
     private suspend fun getClosestRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { repoId ->
-                database.redditKeysDao().getRedditKeys(repoId).lastOrNull()
+            state.closestItemToPosition(position)?.t3_id?.let { repoId ->
+                database.redditKeysDao().getRedditKeys(repoId).firstOrNull()
             }
         }
     }

@@ -12,8 +12,8 @@ interface RedditKeysDao {
     @Insert(onConflict = REPLACE)
     suspend fun saveRedditKeys(redditKey: RedditKeys)
 
-    @Query("SELECT * FROM redditKeys ORDER BY id = :id")
-    suspend fun getRedditKeys(id: String): List<RedditKeys>
+    @Query("SELECT * FROM redditKeys WHERE id=:t3_id")
+    suspend fun getRedditKeys(t3_id: String): List<RedditKeys>
 
     @Query("DELETE FROM redditKeys")
     suspend fun clearRedditKeys()
