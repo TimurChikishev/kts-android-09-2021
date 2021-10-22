@@ -27,7 +27,7 @@ class RedditListViewModel(
     private val redditRepository = RedditRepository()
 
     private val defaultItems = QuerySubreddit(
-        subreddit = "Popular",
+        subreddit = "Art",
         category = "top",
         limit = "10"
     )

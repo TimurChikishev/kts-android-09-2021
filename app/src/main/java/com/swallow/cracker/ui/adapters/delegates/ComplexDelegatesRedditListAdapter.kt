@@ -2,6 +2,7 @@ package com.swallow.cracker.ui.adapters.delegates
 
 import android.util.SparseArray
 import android.view.ViewGroup
+import androidx.core.util.forEach
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.ui.model.RedditItem
@@ -17,12 +18,14 @@ class ComplexDelegatesRedditListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-            ?: throw NullPointerException("Can not get viewType for position $position")
-        for (i in 0 until delegates.size()) {
-            if (delegates[i].modelClass == item.javaClass) {
-                return delegates.keyAt(i)
+            ?: return delegates.keyAt(0)
+
+        delegates.forEach { key,adapter ->
+            if (adapter.modelClass == item::class.java){
+                return key
             }
         }
+
         throw NullPointerException("Can not get viewType for position $position")
     }
 

@@ -26,10 +26,9 @@ class RedditRepository {
         return Pager(
             config = PagingConfig(
                 pageSize = NetworkConfig.PAGE_SIZE,
-                enablePlaceholders = false,
+                enablePlaceholders = true,
                 maxSize = NetworkConfig.MAX_SIZE,
-                initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE,
-                prefetchDistance = NetworkConfig.PAGE_SIZE / 2
+                initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE
             ),
             remoteMediator = RedditRemoteMediator(query, Networking.redditApiOAuth, redditDatabase),
             pagingSourceFactory = { redditDatabase.redditPostsDao().getPosts() }

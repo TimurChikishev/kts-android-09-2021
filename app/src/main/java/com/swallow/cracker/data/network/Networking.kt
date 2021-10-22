@@ -4,19 +4,12 @@ import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.config.NetworkConfig
 import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import timber.log.Timber
 
 object Networking {
     private var okhttpClientOauth: OkHttpClient = Builder()
-        .addNetworkInterceptor(
-            HttpLoggingInterceptor {
-                Timber.tag("Network").d(it)
-            }.setLevel(HttpLoggingInterceptor.Level.BODY)
-        )
         .authenticator(TokenRefreshAuthenticator())
         .addInterceptor(AuthInterceptor())
         .build()
