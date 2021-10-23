@@ -3,6 +3,7 @@ package com.swallow.cracker.ui.adapters.viewholders
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.RedditListSimpleItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
@@ -55,7 +56,7 @@ class RedditSimpleItemViewHolder(
         item = this
 
         setClickable()
-        setAvatar(R.drawable.ic_face_24)
+        setAvatar(communityIcon)
         setSubreddit(subreddit)
         setPublisher(author)
         setTitle(title)
@@ -92,8 +93,16 @@ class RedditSimpleItemViewHolder(
         viewBinding.numCommentsTextView.text = num
     }
 
-    private fun setAvatar(res: Int) {
-        viewBinding.avatarImageView.setImageResource(res)
+    private fun setAvatar(communityIcon: String?) = with(viewBinding) {
+        if (communityIcon.isNullOrEmpty()) {
+            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+        } else {
+            Glide.with(context)
+                .load(communityIcon)
+                .circleCrop()
+                .error(R.drawable.ic_account_circle_24)
+                .into(avatarImageView)
+        }
     }
 
     private fun setClickable() = with(viewBinding) {

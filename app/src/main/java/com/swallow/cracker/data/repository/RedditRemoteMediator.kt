@@ -10,6 +10,7 @@ import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.model.RedditKeys
 import com.swallow.cracker.data.model.RedditPost
 import com.swallow.cracker.ui.model.QuerySubreddit
+import com.swallow.cracker.utils.fixImgUrl
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -19,6 +20,8 @@ class RedditRemoteMediator(
     private val redditApi: RedditApi,
     private val database: RedditDatabase
 ) : RemoteMediator<Int, RedditPost>() {
+
+    private var subredditHashMap: HashMap<String, String?> = hashMapOf()
 
     override suspend fun initialize(): InitializeAction {
         // Require that remote REFRESH is launched on initial load and succeeds before launching
@@ -55,7 +58,14 @@ class RedditRemoteMediator(
 
             if (redditPosts != null) {
                 database.withTransaction {
+                    if (loadType == LoadType.REFRESH) {
+                        database.redditKeysDao().clearRedditKeys()
+                        database.redditPostsDao().clearPosts()
+                    }
+
                     redditPosts.map {
+                        it.communityIcon = getSubredditIcon(it)
+
                         database.redditKeysDao()
                             .saveRedditKeys(RedditKeys(it.t3_id, listing.after, listing.before))
                     }
@@ -68,6 +78,18 @@ class RedditRemoteMediator(
             MediatorResult.Error(exception)
         } catch (exception: HttpException) {
             MediatorResult.Error(exception)
+        }
+    }
+
+    private suspend fun getSubredditIcon(post: RedditPost): String? {
+        val subredditId = post.subredditId
+
+        return if (subredditHashMap.containsKey(subredditId)) {
+            subredditHashMap[subredditId]
+        } else {
+            val info = redditApi.getSubredditInfo(post.subreddit).body()
+            subredditHashMap[subredditId] = info?.data?.communityIcon?.fixImgUrl()
+            subredditHashMap[subredditId]
         }
     }
 

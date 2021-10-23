@@ -1,9 +1,6 @@
 package com.swallow.cracker.data.api
 
-import com.swallow.cracker.data.model.AccessTokenResponse
-import com.swallow.cracker.data.model.RedditDataResponse
-import com.swallow.cracker.data.model.RedditJsonWrapper
-import com.swallow.cracker.data.model.RemoteProfileInfo
+import com.swallow.cracker.data.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -48,4 +45,9 @@ interface RedditApi {
 
     @GET("api/v1/me")
     suspend fun getProfileInfo(): Response<RemoteProfileInfo>
+
+    @GET("r/{subreddit}/about.json")
+    suspend fun getSubredditInfo(
+        @Path("subreddit") subreddit: String
+    ): Response<RedditJsonWrapper<RemoteSubredditAbout>>
 }

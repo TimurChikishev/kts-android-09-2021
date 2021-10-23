@@ -10,6 +10,7 @@ data class RedditListSimpleItem(
     var t3_id: String,
     var author: String,
     var subreddit: String,
+    val subredditId: String,
     var title: String,
     var selftext: String,
     var score: Int,
@@ -17,7 +18,8 @@ data class RedditListSimpleItem(
     var saved: Boolean,
     var numComments: Int,
     var created: Long,
-    var url: String
+    var url: String,
+    val communityIcon: String?
 ) : RedditItem, Parcelable {
 
     val time: String

@@ -11,6 +11,7 @@ class RedditListItemImage(
     var t3_id: String,
     var author: String,
     var subreddit: String,
+    val subredditId: String,
     var title: String,
     var selftext: String,
     var score: Int,
@@ -20,7 +21,8 @@ class RedditListItemImage(
     var created: Long,
     var thumbnail: String,
     var url: String,
-    val preview: RedditChildrenPreview?
+    val preview: RedditChildrenPreview?,
+    val communityIcon: String?
 ) : RedditItem, Parcelable {
 
     val time: String

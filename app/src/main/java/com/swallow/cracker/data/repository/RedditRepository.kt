@@ -50,13 +50,15 @@ class RedditRepository {
         emit(response)
     }
 
-    private fun updatePostLikes(item: RedditItem, likes: Boolean) {
+    private suspend fun updatePostLikes(item: RedditItem, likes: Boolean) {
         item.updateScore(likes)
-        redditDatabase.redditPostsDao().updatePostLikes(
-            likes = item.likes(),
-            score = item.score(),
-            id = item.id()
-        )
+        redditDatabase.withTransaction {
+            redditDatabase.redditPostsDao().updatePostLikes(
+                likes = item.likes(),
+                score = item.score(),
+                id = item.id()
+            )
+        }
     }
 
     suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
@@ -81,8 +83,10 @@ class RedditRepository {
         emit(Networking.redditApiOAuth.getProfileInfo().body())
     }
 
-    private fun updateSavedPost(saved: Boolean, id: String) {
-        redditDatabase.redditPostsDao().updatePostSaved(saved, id)
+    private suspend fun updateSavedPost(saved: Boolean, id: String) {
+        redditDatabase.withTransaction {
+            redditDatabase.redditPostsDao().updatePostSaved(saved, id)
+        }
     }
 
     suspend fun clearDataBase() {

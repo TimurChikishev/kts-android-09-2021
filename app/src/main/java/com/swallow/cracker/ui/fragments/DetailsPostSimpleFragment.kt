@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentDetailsBinding
@@ -41,7 +42,7 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun initContent() = with(item) {
-        setAvatar(R.drawable.ic_face_24)
+        setAvatar(communityIcon)
         setSubreddit(subreddit)
         setPublisher(author)
         setNumComments(numComments.toString())
@@ -167,8 +168,16 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         viewBinding.publisherTextView.text = getString(R.string.posted_by, author)
     }
 
-    private fun setAvatar(res: Int) {
-        viewBinding.avatarImageView.setImageResource(res)
+    private fun setAvatar(communityIcon: String?) = with(viewBinding) {
+        if (communityIcon.isNullOrEmpty()){
+            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+        }else {
+            Glide.with(avatarImageView)
+                .load(communityIcon)
+                .circleCrop()
+                .error(R.drawable.ic_account_circle_24)
+                .into(avatarImageView)
+        }
     }
 
     // setting the style for save/unsave buttons

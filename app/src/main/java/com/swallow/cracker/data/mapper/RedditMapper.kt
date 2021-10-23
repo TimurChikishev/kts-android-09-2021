@@ -19,6 +19,7 @@ object RedditMapper {
                 t3_id = item.t3_id,
                 author = item.author,
                 subreddit = item.subreddit,
+                subredditId = item.subredditId,
                 title = item.title,
                 selftext = item.selftext,
                 score = item.score,
@@ -28,13 +29,15 @@ object RedditMapper {
                 created = item.created,
                 thumbnail = item.thumbnail,
                 url = item.url,
-                preview = item.preview
+                preview = item.preview,
+                communityIcon = item.communityIcon
             )
             else -> RedditListSimpleItem(
                 id = item.id,
                 t3_id = item.t3_id,
                 author = item.author,
                 subreddit = item.subreddit,
+                subredditId = item.subredditId,
                 title = item.title,
                 selftext = item.selftext,
                 score = item.score,
@@ -42,7 +45,8 @@ object RedditMapper {
                 saved = item.saved,
                 numComments = item.num_comments,
                 created = item.created,
-                url = item.url
+                url = item.url,
+                communityIcon = item.communityIcon
             )
         }
     }

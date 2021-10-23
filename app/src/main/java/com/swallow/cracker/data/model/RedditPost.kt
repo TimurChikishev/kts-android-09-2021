@@ -17,6 +17,8 @@ data class RedditPost(
     val author: String,
     @Json(name = "subreddit")
     val subreddit: String,
+    @Json(name = "subreddit_id")
+    val subredditId: String,
     @Json(name = "title")
     val title: String,
     @Json(name = "selftext")
@@ -35,6 +37,7 @@ data class RedditPost(
     val thumbnail: String,
     @Json(name = "url")
     val url: String,
-    @Json(name="preview")
-    val preview: RedditChildrenPreview?
+    @Json(name = "preview")
+    val preview: RedditChildrenPreview?,
+    var communityIcon: String?
 )
