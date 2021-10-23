@@ -6,44 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.OnBoardingFragment">
 
-    <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/flowActionBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="iconAppImageView,buttonSkip"
-        app:flow_horizontalStyle="spread_inside"
-        app:flow_verticalGap="8dp"
-        app:flow_verticalStyle="packed"
-        app:flow_wrapMode="chain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"/>
-
-    <ImageView
-        android:id="@+id/iconAppImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_icon"
-        android:padding="14dp"
-        android:src="@drawable/ic_cookie_24" />
-
-    <Button
-        android:id="@+id/buttonSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/skip" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/onBoardingVewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSkip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/skip"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/dotsIndicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flowActionBar" />
+        app:layout_constraintTop_toBottomOf="@+id/onBoardingVewPager"
+        tools:visibility="visible" />
 
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/dotsIndicator"
@@ -54,9 +38,10 @@
         app:dotsCornerRadius="8dp"
         app:dotsSize="16dp"
         app:dotsSpacing="4dp"
-        app:dotsStrokeWidth="2dp"
+        app:dotsWidthFactor="2.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSkip" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

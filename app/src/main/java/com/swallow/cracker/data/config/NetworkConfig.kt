@@ -1,6 +1,7 @@
 package com.swallow.cracker.data.config
 
 object NetworkConfig {
+    const val LOG_TAG = "Network"
     const val OAUTH_BASE_URI = "https://oauth.reddit.com/"
     const val URL_API_V1 = "https://ssl.reddit.com/api/v1/"
     const val HEADER_AUTHORIZATION = "Authorization"

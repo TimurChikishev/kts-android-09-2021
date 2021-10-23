@@ -5,10 +5,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
-import com.swallow.cracker.data.RedditRemoteMediator
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database
 import com.swallow.cracker.data.model.RedditPost
+import com.swallow.cracker.data.model.RemoteProfileInfo
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
@@ -75,6 +75,10 @@ class RedditRepository {
             updateSavedPost(false, item.id())
 
         emit(response)
+    }
+
+    suspend fun getProfileInfo(): Flow<RemoteProfileInfo?> = flow {
+        emit(Networking.redditApiOAuth.getProfileInfo().body())
     }
 
     private fun updateSavedPost(saved: Boolean, id: String) {

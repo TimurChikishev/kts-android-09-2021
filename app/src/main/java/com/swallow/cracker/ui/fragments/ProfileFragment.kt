@@ -7,13 +7,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentProfileBinding
+import com.swallow.cracker.ui.model.ProfileInfo
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
-
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -44,9 +45,29 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenStarted { viewModel.logout.collect(::logout) }
+        launchWhenStarted { viewModel.logoutFlow.collect(::logout) }
 
-        launchWhenCreated { viewModel.toastStateFlow.collect(::toast) }
+        launchWhenCreated { viewModel.toastFlow.collect(::toast) }
+
+        launchWhenCreated { viewModel.getProfileInfo() }
+
+        launchWhenCreated { viewModel.remoteProfileInfoFlow.collect(::setContentProfileHeader) }
+    }
+
+    private fun setContentProfileHeader(profile: ProfileInfo) = with(viewBinding.headerInclude) {
+        Glide.with(bannerImageView)
+            .load(profile.bannerImg)
+            .error(R.drawable.header_image)
+            .into(bannerImageView)
+
+        Glide.with(avatarImageView)
+            .load(profile.avatarImg ?: profile.iconImage)
+            .error(R.drawable.ic_account_circle_24)
+            .into(avatarImageView)
+
+        nameTextView.text = profile.name
+        displayNameTextView.text = profile.displayName
+        totalKarmaTextView.text = context?.getString(R.string.karma, profile.totalKarma)
     }
 
     private fun initTopAppBar() {

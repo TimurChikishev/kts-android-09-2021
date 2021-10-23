@@ -45,4 +45,10 @@
     <string name="logout_dialog_text">Are you sure you want to get out? All local data will be deleted!</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
+    <string name="data_acquisition_error">data acquisition error</string>
+    <string name="posts">Posts</string>
+    <string name="comments">Comments</string>
+    <string name="about">About</string>
+    <string name="karma">%1$x karma</string>
+    <string name="separator">•</string>
 </resources>

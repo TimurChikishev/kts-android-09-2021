@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Cracker</string>
     <string name="icon_smile">значок улыбки</string>
-    <string name="skip">Далее</string>
+    <string name="skip">Пропустить</string>
     <string name="welcome_description">Это приветственный экран специально для KTS</string>
     <string name="skip_toast">Пропускать нечего…</string>
     <string name="welcome">Добро пожаловать</string>
@@ -45,4 +45,10 @@
     <string name="logout_dialog_text">Вы уверены, что хотите выйти? Все локальные данные будут удалены!</string>
     <string name="yes">да</string>
     <string name="no">нет</string>
+    <string name="data_acquisition_error">data acquisition error</string>
+    <string name="posts">Posts</string>
+    <string name="comments">Comments</string>
+    <string name="about">About</string>
+    <string name="karma">%1$x karma</string>
+    <string name="separator">•</string>
 </resources>

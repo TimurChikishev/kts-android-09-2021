@@ -1,4 +1,4 @@
-package com.swallow.cracker.data
+package com.swallow.cracker.data.repository
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -36,7 +36,7 @@ class RedditRemoteMediator(
                     return pageKeyData
                 }
                 else -> {
-                    pageKeyData as  RedditKeys?
+                    pageKeyData as RedditKeys?
                 }
             }
 
@@ -74,7 +74,10 @@ class RedditRemoteMediator(
     /**
      * this returns the page key or the final end of list success result
      */
-    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, RedditPost>): Any? {
+    private suspend fun getKeyPageData(
+        loadType: LoadType,
+        state: PagingState<Int, RedditPost>
+    ): Any? {
         return when (loadType) {
             LoadType.REFRESH -> {
                 getClosestRemoteKey(state)

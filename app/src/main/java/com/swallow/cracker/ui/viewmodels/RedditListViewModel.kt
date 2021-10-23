@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.swallow.cracker.R
-import com.swallow.cracker.data.RedditMapper
+import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.data.repository.RedditRepository
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.QuerySubreddit

@@ -2,13 +2,15 @@
     <!-- Base application theme. -->
     <style name="Theme.Cracker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+
+        <item name="colorControlNormal">?attr/colorControlNormal</item>
     </style>
 
     <style name="DotsIndicator">
@@ -19,5 +21,10 @@
     <style name="MaterialToolbarCracker">
         <item name="colorControlNormal">?attr/colorControlNormal</item>
         <item name="android:background">@color/black</item>
+    </style>
+
+    <style name="MaterialToolbarProfileCracker">
+        <item name="colorControlNormal">?attr/colorControlNormal</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

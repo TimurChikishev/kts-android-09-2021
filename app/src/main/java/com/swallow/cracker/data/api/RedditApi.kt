@@ -3,6 +3,7 @@ package com.swallow.cracker.data.api
 import com.swallow.cracker.data.model.AccessTokenResponse
 import com.swallow.cracker.data.model.RedditDataResponse
 import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.swallow.cracker.data.model.RemoteProfileInfo
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -44,4 +45,7 @@ interface RedditApi {
         @Field("grant_type") grantType: String,
         @Field("refresh_token") refreshToken: String
     ): Response<AccessTokenResponse>
+
+    @GET("api/v1/me")
+    suspend fun getProfileInfo(): Response<RemoteProfileInfo>
 }

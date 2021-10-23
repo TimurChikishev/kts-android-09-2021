@@ -37,7 +37,7 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
     private fun navigateToStartFragment(pref: UserPreferences) {
         when {
             pref.authToken.isNotEmpty() -> navigateToHomeFragment()
-            !pref.onBoardingShown -> updateOnBoardingShown()
+            !pref.onBoardingShown -> initOnBoardingFragment()
             pref.onBoardingShown -> navigateToAuthFragment()
             else -> initOnBoardingFragment()
         }
@@ -45,7 +45,6 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
     private fun updateOnBoardingShown() {
         viewModel.updateOnboardShown(true)
-        initOnBoardingFragment()
     }
 
     private fun initOnBoardingFragment() {
@@ -56,7 +55,7 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
     private fun initOnBoarding() = with(viewBinding) {
         adapter = OnBoardingAdapter()
 
-        flowActionBar.visibility = View.VISIBLE
+        buttonSkip.visibility = View.VISIBLE
         onBoardingVewPager.adapter = adapter
         viewBinding.dotsIndicator.setViewPager2(onBoardingVewPager)
         (onBoardingVewPager.getChildAt(0) as RecyclerView)
@@ -66,7 +65,10 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
     }
 
     private fun bindingOfClick() {
-        viewBinding.buttonSkip.setOnClickListener { navigateToAuthFragment() }
+        viewBinding.buttonSkip.setOnClickListener {
+            updateOnBoardingShown()
+            navigateToAuthFragment()
+        }
     }
 
     private fun navigateToAuthFragment() {
