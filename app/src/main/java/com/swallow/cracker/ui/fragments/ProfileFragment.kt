@@ -21,7 +21,6 @@ import com.swallow.cracker.ui.model.ProfileInfo
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -58,10 +57,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         launchWhenCreated { viewModel.getProfileInfo() }
 
-        launchWhenCreated { viewModel.remoteProfileInfoFlow.collect(::setContentProfileHeader) }
+        launchWhenCreated { viewModel.profileInfoFlow.collect(::setContentProfileHeader) }
     }
 
-    private fun setContentProfileHeader(profile: ProfileInfo) = with(viewBinding) {
+    private fun setContentProfileHeader(profile: ProfileInfo?) = with(viewBinding) {
+        profile ?: return@with
+
         setBannerImage(profile.bannerImg)
         setAvatarImage(profile)
 
