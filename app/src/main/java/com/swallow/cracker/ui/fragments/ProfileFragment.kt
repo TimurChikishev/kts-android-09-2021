@@ -1,13 +1,19 @@
 package com.swallow.cracker.ui.fragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentProfileBinding
@@ -15,6 +21,7 @@ import com.swallow.cracker.ui.model.ProfileInfo
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -54,20 +61,52 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         launchWhenCreated { viewModel.remoteProfileInfoFlow.collect(::setContentProfileHeader) }
     }
 
-    private fun setContentProfileHeader(profile: ProfileInfo) = with(viewBinding.headerInclude) {
-        Glide.with(bannerImageView)
-            .load(profile.bannerImg)
-            .error(R.drawable.header_image)
-            .into(bannerImageView)
+    private fun setContentProfileHeader(profile: ProfileInfo) = with(viewBinding) {
+        setBannerImage(profile.bannerImg)
+        setAvatarImage(profile)
 
-        Glide.with(avatarImageView)
+        headerInclude.apply {
+            nameTextView.text = profile.name
+            displayNameTextView.text = profile.displayName
+            totalKarmaTextView.text = context?.getString(R.string.karma, profile.totalKarma)
+        }
+    }
+
+    private fun setBannerImage(bannerImg: String?) = with(viewBinding) {
+        Glide.with(this@ProfileFragment)
+            .load(bannerImg)
+            .error(R.drawable.header_image)
+            .into(headerInclude.bannerImageView)
+    }
+
+    private fun setAvatarImage(profile: ProfileInfo) = with(viewBinding){
+        Glide.with(this@ProfileFragment)
             .load(profile.avatarImg ?: profile.iconImage)
             .error(R.drawable.ic_account_circle_24)
-            .into(avatarImageView)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    progressBar.isVisible = false
+                    return false
+                }
 
-        nameTextView.text = profile.name
-        displayNameTextView.text = profile.displayName
-        totalKarmaTextView.text = context?.getString(R.string.karma, profile.totalKarma)
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    progressBar.isVisible = false
+                    containerCoordinatorLayout.isVisible = true
+                    return false
+                }
+            })
+            .into(headerInclude.avatarImageView)
     }
 
     private fun initTopAppBar() {
