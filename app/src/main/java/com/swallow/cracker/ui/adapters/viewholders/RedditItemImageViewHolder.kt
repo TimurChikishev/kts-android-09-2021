@@ -1,5 +1,6 @@
 package com.swallow.cracker.ui.adapters.viewholders
 
+import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -13,10 +14,10 @@ import com.swallow.cracker.ui.model.RedditListItemImage
 class RedditItemImageViewHolder(
     private val viewBinding: RedditListImageItemBinding,
     private val clickDelegate: ComplexDelegateAdapterClick?
-) :
-    RecyclerView.ViewHolder(viewBinding.root) {
+) : RecyclerView.ViewHolder(viewBinding.root) {
 
     private var item: RedditListItemImage? = null
+    private var context: Context = viewBinding.root.context
 
     init {
         viewBinding.likesImageView.setOnClickListener {
@@ -32,10 +33,12 @@ class RedditItemImageViewHolder(
         viewBinding.savedImageView.setOnClickListener {
             item?.let {
                 viewBinding.savedImageView.isClickable = false
-                when (!it.saved)  {
-                    true -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = true)
-                    false -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = false)
-                }
+                clickDelegate?.onSavedClick(
+                    category = null,
+                    id = it.t3_id,
+                    position = layoutPosition,
+                    saved = !it.saved
+                )
             }
         }
 
@@ -51,7 +54,7 @@ class RedditItemImageViewHolder(
         }
     }
 
-    fun bind(modal: RedditListItemImage) = with(modal){
+    fun bind(modal: RedditListItemImage) = with(modal) {
         item = this
 
         setClickable()
@@ -70,7 +73,7 @@ class RedditItemImageViewHolder(
 
     private fun setPublisher(author: String) {
         viewBinding.publisherTextView.text =
-            viewBinding.root.context.getString(R.string.posted_by, author)
+            context.getString(R.string.posted_by, author)
     }
 
     private fun setNumScore(score: String) {
@@ -103,19 +106,20 @@ class RedditItemImageViewHolder(
         savedImageView.isClickable = true
     }
 
-    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) = with(viewBinding){
-        try {
-            val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
-            Glide.with(thumbnailImageView)
-                .load(url)
-                .placeholder(R.drawable.ic_cookie_24)
-                .error(R.drawable.ic_error_24)
-                .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
-                .into(thumbnailImageView)
-        } catch (exception: Throwable) {
-            error(exception)
+    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) =
+        with(viewBinding) {
+            try {
+                val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
+                Glide.with(thumbnailImageView)
+                    .load(url)
+                    .placeholder(R.drawable.ic_cookie_24)
+                    .error(R.drawable.ic_error_24)
+                    .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+                    .into(thumbnailImageView)
+            } catch (exception: Throwable) {
+                error(exception)
+            }
         }
-    }
 
     // setting the style for save/unsave buttons
     private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
@@ -131,8 +135,6 @@ class RedditItemImageViewHolder(
     }
 
     private fun setScoreStyle(modal: RedditListItemImage) {
-        val context = viewBinding.root.context
-
         when (modal.likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(

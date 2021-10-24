@@ -20,7 +20,7 @@ object Networking {
 
                 if (AuthConfig.token != null) {
                     builder
-                        .addHeader(NetworkConfig.HEADER_NAME, "bearer " + AuthConfig.token)
+                        .addHeader(NetworkConfig.HEADER_AUTHORIZATION, "bearer " + AuthConfig.token)
                         .addHeader(NetworkConfig.HEADER_USER_AGENT, NetworkConfig.HEADER_USER_AGENT_VALUE)
                 }
 

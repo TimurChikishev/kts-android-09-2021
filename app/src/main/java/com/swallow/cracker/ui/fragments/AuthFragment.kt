@@ -7,12 +7,14 @@ import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentAuthBinding
 import com.swallow.cracker.ui.viewmodels.AuthViewModel
 import com.swallow.cracker.utils.toast
+import kotlinx.coroutines.flow.collect
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 
@@ -29,14 +31,31 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
     }
 
     private fun bindViewModel() {
-        viewBinding.loginButton.setOnClickListener { viewModel.openLoginPage() }
-        viewModel.loadingLiveData.observe(viewLifecycleOwner, ::updateIsLoading)
-        viewModel.openAuthPageLiveData.observe(viewLifecycleOwner, ::openAuthPage)
-        viewModel.toastLiveData.observe(viewLifecycleOwner, ::toast)
-        viewModel.authSuccessLiveData.observe(viewLifecycleOwner) {
-            findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToHomeFragment())
+        viewBinding.loginButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewModel.openLoginPage()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.loadingStateFlow.collect(::updateIsLoading)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.openAuthPageStateFlow.collect(::openAuthPage)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.toastStateFlow.collect(::toast)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.authSuccessStateFlow.collect {
+                findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToHomeFragment())
+            }
         }
     }
+
 
     private fun updateIsLoading(isLoading: Boolean) = with(viewBinding) {
         loginButton.isVisible = !isLoading
@@ -51,7 +70,10 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
             when {
                 tokenExchangeRequest != null && exception == null ->
                     viewModel.onAuthCodeReceived(tokenExchangeRequest)
-                exception != null -> viewModel.onAuthCodeFailed(exception)
+                exception != null ->
+                    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                        viewModel.onAuthCodeFailed()
+                    }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)

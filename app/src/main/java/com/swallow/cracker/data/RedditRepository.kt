@@ -2,39 +2,37 @@ package com.swallow.cracker.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.liveData
 import com.swallow.cracker.data.api.Networking
+import com.swallow.cracker.data.config.NetworkConfig
+import com.swallow.cracker.ui.model.QuerySubreddit
+import com.swallow.cracker.ui.model.RedditItems
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
 class RedditRepository {
 
-    fun getSubreddit(
-        subreddit: String,
-        category: String,
-        limit: String
-    ) = Pager(
-        config = PagingConfig(
-            pageSize = 20,
-            enablePlaceholders = false
-        ),
-        pagingSourceFactory = {
-            RedditPagingSource(
-                subreddit = subreddit,
-                category = category,
-                limit = limit
+    fun getPager(query: QuerySubreddit): Pager<String, RedditItems> {
+        return Pager(
+            PagingConfig(
+                pageSize = NetworkConfig.PAGE_SIZE,
+                initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE,
+                enablePlaceholders = false
             )
+        ) {
+            RedditPagingSource(query)
         }
-    ).liveData
-
-    suspend fun savePost(category: String?, id: String): Response<Unit> {
-        return Networking.redditApiOAuth.savedPost(category = category, id = id)
     }
 
-    suspend fun unSavePost(id: String): Response<Unit> {
-        return Networking.redditApiOAuth.unSavedPost(id = id)
+    fun savePost(category: String?, id: String): Flow<Response<Unit>> = flow {
+        emit(Networking.redditApiOAuth.savedPost(category = category, id = id))
     }
 
-    suspend fun votePost(dir: Int, id: String): Response<Unit> {
-        return Networking.redditApiOAuth.votePost(dir = dir, id = id)
+    suspend fun unSavePost(id: String): Flow<Response<Unit>> = flow {
+        emit(Networking.redditApiOAuth.unSavedPost(id = id))
+    }
+
+    suspend fun votePost(dir: Int, id: String): Flow<Response<Unit>> = flow {
+        emit(Networking.redditApiOAuth.votePost(dir = dir, id = id))
     }
 }

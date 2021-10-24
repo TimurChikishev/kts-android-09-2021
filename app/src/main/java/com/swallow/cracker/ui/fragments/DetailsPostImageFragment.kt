@@ -5,31 +5,44 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListItemImage
+import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostViewModel
+import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
 import com.swallow.cracker.utils.setSavedStatus
 import com.swallow.cracker.utils.showMessage
 import com.swallow.cracker.utils.updateScore
+import kotlinx.coroutines.flow.collect
 
 class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
 
     private val args by navArgs<DetailsPostImageFragmentArgs>()
+    private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
     private val viewModel: PostViewModel by viewModels()
     private lateinit var item: RedditListItemImage
+    private var noInternetSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         item = args.post
+        initNoInternetSnackBar()
         bindViewModel()
         initContent()
+    }
+
+    private fun initNoInternetSnackBar() {
+        noInternetSnackBar = getNoInternetConnectionSnackBar(viewBinding.root)
+        networkStatusViewModel.checkNetworkState()
     }
 
     private fun initContent() = with(item) {
@@ -47,26 +60,51 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun bindViewModel() {
-        viewModel.eventMessage.observe(viewLifecycleOwner, { it?.let { msg -> showMessage(msg) } })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            networkStatusViewModel.isNoNetwork.collect {
+                showNetworkState(it)
+            }
+        }
 
-        viewModel.savePost.observe(viewLifecycleOwner, {
-            setSavedStyle(it?.flag ?: item.saved)
-            it?.let { item.setSavedStatus(it.flag) }
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.eventMessage.collect {
+                it?.let { msg -> showMessage(msg) }
+            }
+        }
 
-        viewModel.savePostIsClickable.observe(viewLifecycleOwner, {
-            viewBinding.savedImageView.isClickable = it
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.savePost.collect {
+                setSavedStyle(it?.flag ?: item.saved)
+                it?.let { item.setSavedStatus(it.flag) }
+            }
+        }
 
-        viewModel.votePost.observe(viewLifecycleOwner, {
-            it?.let { item.updateScore(it.flag) }
-            setScore()
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.savePostIsClickable.collect {
+                viewBinding.savedImageView.isClickable = it
+            }
+        }
 
-        viewModel.votePostIsClickable.observe(viewLifecycleOwner, {
-            viewBinding.likesImageView.isClickable = it
-            viewBinding.dislikesImageView.isClickable = it
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.votePost.collect {
+                it?.let { item.updateScore(it.flag) }
+                setScore()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.votePostIsClickable.collect {
+                viewBinding.likesImageView.isClickable = it
+                viewBinding.dislikesImageView.isClickable = it
+            }
+        }
+    }
+
+    private fun showNetworkState(isNoInternet: Boolean) {
+        when(isNoInternet){
+            true -> noInternetSnackBar?.show()
+            false -> noInternetSnackBar?.dismiss()
+        }
     }
 
     private fun bindingOfClicks() = with(viewBinding) {
@@ -132,19 +170,20 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         viewBinding.avatarImageView.setImageResource(res)
     }
 
-    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) = with(viewBinding){
-        try {
-            val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
-            Glide.with(thumbnailImageView)
-                .load(url)
-                .placeholder(R.drawable.ic_cookie_24)
-                .error(R.drawable.ic_error_24)
-                .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
-                .into(thumbnailImageView)
-        } catch (exception: Throwable) {
-            error(exception)
+    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) =
+        with(viewBinding) {
+            try {
+                val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
+                Glide.with(thumbnailImageView)
+                    .load(url)
+                    .placeholder(R.drawable.ic_cookie_24)
+                    .error(R.drawable.ic_error_24)
+                    .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
+                    .into(thumbnailImageView)
+            } catch (exception: Throwable) {
+                error(exception)
+            }
         }
-    }
 
     // setting the style for save/unsave buttons
     private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
@@ -179,5 +218,10 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         }
 
         scoreTextView.text = item.score.toString()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        noInternetSnackBar = null
     }
 }

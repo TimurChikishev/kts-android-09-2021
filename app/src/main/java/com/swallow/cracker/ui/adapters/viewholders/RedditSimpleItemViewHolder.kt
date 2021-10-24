@@ -1,5 +1,6 @@
 package com.swallow.cracker.ui.adapters.viewholders
 
+import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.R
@@ -11,10 +12,10 @@ import com.swallow.cracker.ui.model.RedditListSimpleItem
 class RedditSimpleItemViewHolder(
     private val viewBinding: RedditListSimpleItemBinding,
     clickDelegate: ComplexDelegateAdapterClick?
-) :
-    RecyclerView.ViewHolder(viewBinding.root) {
+) : RecyclerView.ViewHolder(viewBinding.root) {
 
     private var item: RedditListSimpleItem? = null
+    private var context: Context = viewBinding.root.context
 
     init {
         viewBinding.likesImageView.setOnClickListener {
@@ -30,10 +31,12 @@ class RedditSimpleItemViewHolder(
         viewBinding.savedImageView.setOnClickListener {
             item?.let {
                 viewBinding.savedImageView.isClickable = false
-                when (!it.saved)  {
-                    true -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = true)
-                    false -> clickDelegate?.onSavedClick(category = null, id = it.t3_id, position = layoutPosition, saved = false)
-                }
+                clickDelegate?.onSavedClick(
+                    category = null,
+                    id = it.t3_id,
+                    position = layoutPosition,
+                    saved = !it.saved
+                )
             }
         }
 
@@ -67,7 +70,7 @@ class RedditSimpleItemViewHolder(
 
     private fun setPublisher(author: String) {
         viewBinding.publisherTextView.text =
-            viewBinding.root.context.getString(R.string.posted_by, author)
+            context.getString(R.string.posted_by, author)
     }
 
     private fun setNumScore(score: String) {
@@ -114,8 +117,6 @@ class RedditSimpleItemViewHolder(
     }
 
     private fun setScoreStyle(modal: RedditListSimpleItem) {
-        val context = viewBinding.root.context
-
         when (modal.likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(
