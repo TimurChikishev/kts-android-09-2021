@@ -71,7 +71,7 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
                     viewModel.onAuthCodeReceived(tokenExchangeRequest)
                 exception != null ->
                     viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                        viewModel.onAuthCodeFailed(exception)
+                        viewModel.onAuthCodeFailed()
                     }
             }
         } else {
