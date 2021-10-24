@@ -51,4 +51,6 @@
     <string name="about">About</string>
     <string name="karma">%1$x karma</string>
     <string name="separator">•</string>
+    <string name="try_again">Давай попробуем еще раз</string>
+    <string name="trouble_loading_data">У нас возникли проблемы с загрузкой данных. Пожалуйста, попробуйте снова.</string>
 </resources>

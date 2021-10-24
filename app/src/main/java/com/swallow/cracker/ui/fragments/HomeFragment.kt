@@ -73,7 +73,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindingOfClick() {
-        viewBinding.buttonRetry.setOnClickListener { redditAdapter.retry() }
+        viewBinding.includeRetry.buttonRetry.setOnClickListener { redditAdapter.retry() }
 
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
             override fun onVoteClick(item: RedditItem, likes: Boolean) {
@@ -148,7 +148,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun loadStateListener(loadState: CombinedLoadStates) = with(viewBinding) {
         val isEmptyList = loadState.refresh is LoadState.NotLoading
-                && loadState.append.endOfPaginationReached && redditAdapter.itemCount == 0
+                && loadState.append.endOfPaginationReached && redditAdapter.itemCount < 1
 
         val isEmptyCache =
             loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
@@ -168,7 +168,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
-        buttonRetry.isVisible = isRemoteRefreshFailed && isEmptyCache
+        includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
     }
 
     private fun navigateToDetailsImage(item: RedditListItemImage) {
