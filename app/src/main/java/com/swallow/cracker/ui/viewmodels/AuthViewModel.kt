@@ -49,7 +49,7 @@ class AuthViewModel(
     val authSuccessStateFlow: Flow<Unit>
         get() = authSuccessChannel.receiveAsFlow()
 
-    suspend fun onAuthCodeFailed(exception: AuthorizationException) {
+    suspend fun onAuthCodeFailed() {
         toastChannel.send(R.string.auth_canceled)
     }
 
