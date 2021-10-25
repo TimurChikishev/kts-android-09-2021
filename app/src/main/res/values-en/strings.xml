@@ -53,4 +53,5 @@
     <string name="separator">•</string>
     <string name="try_again">Let\'s try that again</string>
     <string name="trouble_loading_data">We had some trouble loading the data. Please try again.</string>
+    <string name="progress_indicator">progress indicator</string>
 </resources>

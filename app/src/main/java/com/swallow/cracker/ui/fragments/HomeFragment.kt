@@ -195,7 +195,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             dataFromCacheSnackBar?.show()
         }
 
-        progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
+        progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
         includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
     }
