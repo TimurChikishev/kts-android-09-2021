@@ -17,6 +17,7 @@
             style="@style/MaterialToolbarCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_cookie_24"
             app:menu="@menu/top_app_bar_home" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -46,14 +47,15 @@
         layout="@layout/retry_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        tools:visibility="gone"/>
 
     <TextView
         android:id="@+id/textViewError"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/data_could_not_be_loaded"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:text="@string/data_could_not_be_loaded"  />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

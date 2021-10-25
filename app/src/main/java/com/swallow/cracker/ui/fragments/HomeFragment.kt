@@ -1,7 +1,11 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -42,6 +46,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         initNoInternetSnackBar()
         initAdapter()
         bindingViewModel()
@@ -50,7 +55,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         initTopAppBar()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.top_app_bar_home, menu)
+
+        val searchItem = menu.findItem(R.id.actionSearch)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let{
+                    viewBinding.redditRecyclerView.scrollToPosition(0)
+                    redditViewModel.searchPosts(it)
+                    redditAdapter.refresh()
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+        })
+    }
+
     private fun initTopAppBar() {
+        (activity as AppCompatActivity).setSupportActionBar(viewBinding.topAppBar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
         viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.profile -> {
@@ -147,9 +178,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun loadStateListener(loadState: CombinedLoadStates) = with(viewBinding) {
-        val isEmptyList = loadState.refresh is LoadState.NotLoading
-                && loadState.append.endOfPaginationReached && redditAdapter.itemCount < 1
-
         val isEmptyCache =
             loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
 
@@ -158,7 +186,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val isRemoteRefreshFailed = loadState.mediator?.refresh is LoadState.Error
 
-        textViewError.isVisible = isEmptyList
+        textViewError.isVisible = loadState.refresh is LoadState.NotLoading
+                && loadState.append.endOfPaginationReached && redditAdapter.itemCount < 1
 
         redditRecyclerView.isVisible = isFullCache || loadState.refresh is LoadState.NotLoading
 

@@ -14,6 +14,7 @@ import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,17 +32,22 @@ class RedditListViewModel(
         limit = "10"
     )
 
-    private var querySavedState =
-        savedStateHandle.get<QuerySubreddit>(QUERY_SUBREDDIT) ?: defaultItems
+    private var querySavedState = savedStateHandle.get<QuerySubreddit>(QUERY_SUBREDDIT) ?: defaultItems
         set(value) {
             field = value
             savedStateHandle.set(QUERY_SUBREDDIT, value)
         }
 
+    @OptIn(FlowPreview::class)
     val items = redditRepository.getPostPager(querySavedState)
         .map { RedditMapper.replaceRedditPostToRedditItem(it) }
+        .catch { error(it) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    fun searchPosts(query: String) {
+        querySavedState.subreddit = query
+    }
 
     private var eventMessageMutableStateFlow = MutableStateFlow<Message<*>?>(null)
 

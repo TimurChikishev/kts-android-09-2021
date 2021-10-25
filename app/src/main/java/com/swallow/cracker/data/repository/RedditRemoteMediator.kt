@@ -43,12 +43,10 @@ class RedditRemoteMediator(
                 }
             }
 
-            val pageSize = state.config.pageSize.toString()
-
             val response = redditApi.getSubreddit(
                 subreddit = query.subreddit,
                 category = query.category,
-                limit = pageSize,
+                limit =  state.config.pageSize.toString(),
                 after = loadKey?.after,
                 before = loadKey?.before
             )
@@ -69,6 +67,7 @@ class RedditRemoteMediator(
                         database.redditKeysDao()
                             .saveRedditKeys(RedditKeys(it.t3_id, listing.after, listing.before))
                     }
+
                     database.redditPostsDao().savePosts(redditPosts)
                 }
             }
@@ -101,9 +100,7 @@ class RedditRemoteMediator(
         state: PagingState<Int, RedditPost>
     ): Any? {
         return when (loadType) {
-            LoadType.REFRESH -> {
-                getClosestRemoteKey(state)
-            }
+            LoadType.REFRESH -> null
             LoadType.PREPEND -> {
                 val remoteKeys = getFirstRemoteKey(state)
                 remoteKeys?.before
@@ -137,16 +134,5 @@ class RedditRemoteMediator(
             .lastOrNull { it.data.isNotEmpty() }
             ?.data?.lastOrNull()
             ?.let { database.redditKeysDao().getRedditKeys(it.t3_id).lastOrNull() }
-    }
-
-    /**
-     * get the closest remote key inserted which had the data
-     */
-    private suspend fun getClosestRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.t3_id?.let { repoId ->
-                database.redditKeysDao().getRedditKeys(repoId).firstOrNull()
-            }
-        }
     }
 }
