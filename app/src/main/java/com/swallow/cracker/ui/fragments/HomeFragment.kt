@@ -59,12 +59,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_app_bar_home, menu)
 
-        val searchItem = menu.findItem(R.id.actionSearch)
-        val searchView = searchItem.actionView as SearchView
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        viewBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let{
+                query?.let {
+                    viewBinding.searchView.clearFocus()
                     viewBinding.redditRecyclerView.scrollToPosition(0)
                     redditViewModel.searchPosts(it)
                     redditAdapter.refresh()

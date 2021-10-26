@@ -17,17 +17,29 @@
             style="@style/MaterialToolbarCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_cookie_24"
-            app:menu="@menu/top_app_bar_home" />
+            app:menu="@menu/top_app_bar_home"
+            app:navigationIcon="@drawable/ic_cookie_24">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/rounded_search_view"
+                android:textColor="@color/black"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search"
+                app:searchIcon="@null" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressIndicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            app:indicatorColor="@color/blue"
             android:contentDescription="@string/progress_indicator"
-            android:progress="@integer/material_motion_duration_medium_1"/>
+            android:indeterminate="true"
+            android:progress="@integer/material_motion_duration_medium_1"
+            app:indicatorColor="@color/blue" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,14 +63,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/textViewError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:text="@string/data_could_not_be_loaded"  />
+        android:text="@string/data_could_not_be_loaded"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
