@@ -4,10 +4,10 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.swallow.cracker.data.model.RemoteRedditPost
 import com.swallow.cracker.data.model.RemoteRedditProfile
-import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.utils.convertLongToTime
 import com.swallow.cracker.utils.fixImgUrl
 
@@ -71,6 +71,4 @@ object RedditMapper {
             url = subreddit.url,
         )
     }
-
-
 }

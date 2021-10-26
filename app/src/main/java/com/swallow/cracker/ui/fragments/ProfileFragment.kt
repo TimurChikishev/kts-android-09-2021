@@ -51,6 +51,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
+        viewModel.init()
+
         launchWhenStarted { viewModel.logoutFlow.collect(::logout) }
 
         launchWhenCreated { viewModel.toastFlow.collect(::toast) }

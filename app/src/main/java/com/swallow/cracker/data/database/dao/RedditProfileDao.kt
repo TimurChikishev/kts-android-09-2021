@@ -10,10 +10,10 @@ import com.swallow.cracker.data.model.RemoteRedditProfile
 interface RedditProfileDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveProfile(redditKey: RemoteRedditProfile)
+    suspend fun saveProfile(redditProfile: RemoteRedditProfile)
 
     @Query("SELECT * FROM redditProfile WHERE id=:id")
-    suspend fun getProfile(id: String): List<RemoteRedditProfile>
+    suspend fun getProfileById(id: String): RemoteRedditProfile?
 
     @Query("DELETE FROM redditProfile")
     suspend fun clearRedditProfile()

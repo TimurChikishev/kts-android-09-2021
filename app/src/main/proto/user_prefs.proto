@@ -8,4 +8,5 @@ message UserPreferences {
   bool on_boarding_shown = 1;
   string auth_token = 2;
   string auth_refresh_token = 3;
+  string current_account_id = 4;
 }

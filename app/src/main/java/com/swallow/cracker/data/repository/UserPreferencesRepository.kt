@@ -49,6 +49,12 @@ class UserPreferencesRepository (context: Context) {
         }
     }
 
+    suspend fun updateAccountId(id: String) {
+        userPreferencesStore.updateData { preferences ->
+            preferences.toBuilder().setCurrentAccountId(id).build()
+        }
+    }
+
     suspend fun clearAuthToken() {
         userPreferencesStore.updateData { preferences ->
             preferences.toBuilder().clearAuthToken().build()
@@ -58,6 +64,12 @@ class UserPreferencesRepository (context: Context) {
     suspend fun clearAuthRefreshToken() {
         userPreferencesStore.updateData { preferences ->
             preferences.toBuilder().clearAuthRefreshToken().build()
+        }
+    }
+
+    suspend fun clearCurrentAccountId() {
+        userPreferencesStore.updateData { preferences ->
+            preferences.toBuilder().clearCurrentAccountId().build()
         }
     }
 }

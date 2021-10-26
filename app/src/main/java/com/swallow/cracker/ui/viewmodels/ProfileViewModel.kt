@@ -14,6 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ProfileViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -25,12 +26,12 @@ class ProfileViewModel(
             savedStateHandle.set(KEY_PROFILE_INFO, value)
         }
 
-    private val userPreferences = Repository.userPreferencesRepository
+    private val userPreferencesRepo = Repository.userPreferencesRepository
     private val redditRepository = RedditRepository()
 
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
     private var logoutChannel = Channel<Boolean>(Channel.BUFFERED)
-    private var profileInfoChannel = MutableStateFlow(profileInfo)
+    private var profileInfoMutableStateFlow = MutableStateFlow(profileInfo)
 
     val toastFlow: Flow<Int>
         get() = toastChannel.receiveAsFlow()
@@ -39,18 +40,41 @@ class ProfileViewModel(
         get() = logoutChannel.receiveAsFlow()
 
     val profileInfoFlow: StateFlow<RedditProfile?>
-        get() = profileInfoChannel
+        get() = profileInfoMutableStateFlow
 
+    private var initJob: Job? = null
     private var logoutJob: Job? = null
     private var profileInfoJob: Job? = null
+
+    fun init() {
+        initJob?.cancel()
+        initJob = viewModelScope.launch {
+            userPreferencesRepo.userPreferencesFlow.take(1).collect { pref -> 
+                redditRepository.getProfileFromDB(pref.currentAccountId)
+                    .map {
+                        it ?: throw  NullPointerException(
+                            "There is no information about a user with an ID equal to ${pref.currentAccountId} in the database"
+                        )
+
+                        RedditMapper.remoteProfileToUi(it)
+                    }
+                    .catch { Timber.tag("ERROR").d(it) }
+                    .flowOn(Dispatchers.IO)
+                    .collect {
+                        it.let { profileInfoMutableStateFlow.set(it) }
+                    }
+            }
+        }
+    }
 
     fun logout() {
         logoutJob?.cancel()
         logoutJob = viewModelScope.launch {
             runCatching {
                 redditRepository.clearDataBase()
-                userPreferences.clearAuthToken()
-                userPreferences.clearAuthRefreshToken()
+                userPreferencesRepo.clearAuthToken()
+                userPreferencesRepo.clearAuthRefreshToken()
+                userPreferencesRepo.clearCurrentAccountId()
             }.onSuccess {
                 logoutChannel.send(true)
             }.onFailure {
@@ -63,13 +87,14 @@ class ProfileViewModel(
         profileInfoJob?.cancel()
         profileInfoJob = viewModelScope.launch {
             redditRepository.getProfileInfo()
-                .flowOn(Dispatchers.IO)
+                .map { RedditMapper.remoteProfileToUi(it) }
                 .catch {
                     toastChannel.send(R.string.data_acquisition_error)
                 }
-                .flowOn(Dispatchers.Main)
+                .flowOn(Dispatchers.IO)
                 .collect { me ->
-                    me?.let { profileInfoChannel.set(RedditMapper.remoteProfileToUi(me)) }
+                    profileInfoMutableStateFlow.set(me)
+                    userPreferencesRepo.updateAccountId(me.id)
                 }
         }
     }

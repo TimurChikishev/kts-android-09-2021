@@ -9,6 +9,8 @@ import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database
 import com.swallow.cracker.data.model.RemoteRedditPost
 import com.swallow.cracker.data.model.RemoteRedditProfile
+import com.swallow.cracker.data.model.Resources
+import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
@@ -79,8 +81,29 @@ class RedditRepository {
         emit(response)
     }
 
-    suspend fun getProfileInfo(): Flow<RemoteRedditProfile?> = flow {
-        emit(Networking.redditApiOAuth.getProfileInfo().body())
+    suspend fun getProfileInfo(): Flow<RemoteRedditProfile> = flow {
+        when(val profile = getProfile()){
+            is Resources.Success<RemoteRedditProfile> -> {
+                saveRedditProfile(profile.value)
+                emit(profile.value)
+            }
+            is Resources.Error ->{
+                throw IllegalArgumentException(profile.throwable)
+            }
+        }
+    }
+
+    private suspend fun getProfile(): Resources<RemoteRedditProfile> {
+        return NetworkHandler.call(
+            api = { getProfileInfo() },
+            mapper = { this } // this -> RemoteRedditProfile
+        )
+    }
+
+    private suspend fun saveRedditProfile(redditProfile: RemoteRedditProfile) {
+        redditDatabase.withTransaction {
+            redditDatabase.redditProfileDao().saveProfile(redditProfile)
+        }
     }
 
     private suspend fun updateSavedPost(saved: Boolean, id: String) {
@@ -93,6 +116,12 @@ class RedditRepository {
         redditDatabase.withTransaction {
             redditDatabase.redditPostsDao().clearPosts()
             redditDatabase.redditKeysDao().clearRedditKeys()
+            redditDatabase.redditProfileDao().clearRedditProfile()
         }
+    }
+
+    suspend fun getProfileFromDB(id: String): Flow<RemoteRedditProfile?> = flow {
+        val value = redditDatabase.redditProfileDao().getProfileById(id)
+        emit(value)
     }
 }

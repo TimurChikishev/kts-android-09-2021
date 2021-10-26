@@ -6,7 +6,6 @@ import com.swallow.cracker.data.model.RedditChildrenPreviewImage
 import com.swallow.cracker.data.model.RedditChildrenPreviewImageSource
 import com.swallow.cracker.data.model.RemoteProfileInfoSubreddit
 import com.swallow.cracker.utils.fixImgUrl
-import timber.log.Timber
 
 class TypeConverter {
     @TypeConverter
@@ -39,15 +38,11 @@ class TypeConverter {
     fun stringSubredditInfoToProfileInfoSubreddit(infoSubreddit: String?): RemoteProfileInfoSubreddit? {
         infoSubreddit ?: return null
 
-        val infoList = infoSubreddit.split("\\s*;;\\s*")
+        val infoList = infoSubreddit.split(";;")
 
-        val bannerImg = infoList[0]
-        val displayName = infoList[1]
-        val url = infoList[3]
-
-        Timber.tag("TAG").d("______________ bannerImg - $bannerImg ______________")
-        Timber.tag("TAG").d("______________ displayName - $displayName ______________")
-        Timber.tag("TAG").d("______________ url - $url ______________")
+        val bannerImg = infoList[0] // bannerImg
+        val displayName = infoList[1] // displayName
+        val url = infoList[2] // url
 
         return RemoteProfileInfoSubreddit(
             bannerImg = bannerImg,
