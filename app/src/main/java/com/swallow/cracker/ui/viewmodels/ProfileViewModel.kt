@@ -7,7 +7,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.data.repository.RedditRepository
 import com.swallow.cracker.data.repository.Repository
-import com.swallow.cracker.ui.model.ProfileInfo
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +19,7 @@ class ProfileViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private var profileInfo = savedStateHandle.get<ProfileInfo>(KEY_PROFILE_INFO)
+    private var profileInfo = savedStateHandle.get<RedditProfile>(KEY_PROFILE_INFO)
         set(value) {
             field = value
             savedStateHandle.set(KEY_PROFILE_INFO, value)
@@ -38,7 +38,7 @@ class ProfileViewModel(
     val logoutFlow: Flow<Boolean>
         get() = logoutChannel.receiveAsFlow()
 
-    val profileInfoFlow: StateFlow<ProfileInfo?>
+    val profileInfoFlow: StateFlow<RedditProfile?>
         get() = profileInfoChannel
 
     private var logoutJob: Job? = null

@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 
 @Entity(tableName = "redditPosts")
 @JsonClass(generateAdapter = true)
-data class RedditPost(
+data class RemoteRedditPost(
     @Json(name = "id")
     val id: String,
     @PrimaryKey

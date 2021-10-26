@@ -7,8 +7,8 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.database.RedditDatabase
-import com.swallow.cracker.data.model.RedditKeys
-import com.swallow.cracker.data.model.RedditPost
+import com.swallow.cracker.data.model.RemoteRedditKeys
+import com.swallow.cracker.data.model.RemoteRedditPost
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.utils.fixImgUrl
 import retrofit2.HttpException
@@ -19,7 +19,7 @@ class RedditRemoteMediator(
     private val query: QuerySubreddit,
     private val redditApi: RedditApi,
     private val database: RedditDatabase
-) : RemoteMediator<Int, RedditPost>() {
+) : RemoteMediator<Int, RemoteRedditPost>() {
 
     private var subredditHashMap: HashMap<String, String?> = hashMapOf()
 
@@ -31,7 +31,7 @@ class RedditRemoteMediator(
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, RedditPost>
+        state: PagingState<Int, RemoteRedditPost>
     ): MediatorResult {
         return try {
             val loadKey = when (val pageKeyData = getKeyPageData(loadType, state)) {
@@ -39,7 +39,7 @@ class RedditRemoteMediator(
                     return pageKeyData
                 }
                 else -> {
-                    pageKeyData as RedditKeys?
+                    pageKeyData as RemoteRedditKeys?
                 }
             }
 
@@ -65,7 +65,7 @@ class RedditRemoteMediator(
                         it.communityIcon = getSubredditIcon(it)
 
                         database.redditKeysDao()
-                            .saveRedditKeys(RedditKeys(it.t3_id, listing.after, listing.before))
+                            .saveRedditKeys(RemoteRedditKeys(it.t3_id, listing.after, listing.before))
                     }
 
                     database.redditPostsDao().savePosts(redditPosts)
@@ -80,7 +80,7 @@ class RedditRemoteMediator(
         }
     }
 
-    private suspend fun getSubredditIcon(post: RedditPost): String? {
+    private suspend fun getSubredditIcon(post: RemoteRedditPost): String? {
         val subredditId = post.subredditId
 
         return if (subredditHashMap.containsKey(subredditId)) {
@@ -97,7 +97,7 @@ class RedditRemoteMediator(
      */
     private suspend fun getKeyPageData(
         loadType: LoadType,
-        state: PagingState<Int, RedditPost>
+        state: PagingState<Int, RemoteRedditPost>
     ): Any? {
         return when (loadType) {
             LoadType.REFRESH -> null
@@ -119,7 +119,7 @@ class RedditRemoteMediator(
     /**
      * get the last remote key inserted which had the data
      */
-    private suspend fun getFirstRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
+    private suspend fun getFirstRemoteKey(state: PagingState<Int, RemoteRedditPost>): RemoteRedditKeys? {
         return state.pages
             .firstOrNull() { it.data.isNotEmpty() }
             ?.data?.firstOrNull()
@@ -129,7 +129,7 @@ class RedditRemoteMediator(
     /**
      * get the last remote key inserted which had the data
      */
-    private suspend fun getLastRemoteKey(state: PagingState<Int, RedditPost>): RedditKeys? {
+    private suspend fun getLastRemoteKey(state: PagingState<Int, RemoteRedditPost>): RemoteRedditKeys? {
         return state.pages
             .lastOrNull { it.data.isNotEmpty() }
             ?.data?.lastOrNull()

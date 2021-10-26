@@ -44,7 +44,7 @@ interface RedditApi {
     ): Response<AccessTokenResponse>
 
     @GET("api/v1/me")
-    suspend fun getProfileInfo(): Response<RemoteProfileInfo>
+    suspend fun getProfileInfo(): Response<RemoteRedditProfile>
 
     @GET("r/{subreddit}/about.json")
     suspend fun getSubredditInfo(

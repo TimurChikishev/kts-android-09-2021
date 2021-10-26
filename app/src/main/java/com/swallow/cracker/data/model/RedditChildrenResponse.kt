@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RedditChildrenResponse(
     @Json(name = "data")
-    val data: RedditPost
+    val data: RemoteRedditPost
 )

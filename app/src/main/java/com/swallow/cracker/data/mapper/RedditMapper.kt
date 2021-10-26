@@ -2,9 +2,9 @@ package com.swallow.cracker.data.mapper
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.swallow.cracker.data.model.RedditPost
-import com.swallow.cracker.data.model.RemoteProfileInfo
-import com.swallow.cracker.ui.model.ProfileInfo
+import com.swallow.cracker.data.model.RemoteRedditPost
+import com.swallow.cracker.data.model.RemoteRedditProfile
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
@@ -12,7 +12,7 @@ import com.swallow.cracker.utils.convertLongToTime
 import com.swallow.cracker.utils.fixImgUrl
 
 object RedditMapper {
-    fun mapApiToUi(item: RedditPost): RedditItem {
+    fun mapApiToUi(item: RemoteRedditPost): RedditItem {
         return when {
             item.preview?.enabled == true -> RedditListItemImage(
                 id = item.id,
@@ -51,15 +51,15 @@ object RedditMapper {
         }
     }
 
-    fun replaceRedditPostToRedditItem(pagingData: PagingData<RedditPost>): PagingData<RedditItem> {
+    fun replaceRedditPostToRedditItem(pagingData: PagingData<RemoteRedditPost>): PagingData<RedditItem> {
         return pagingData.map {
             mapApiToUi(it)
         }
     }
 
-    fun remoteProfileToUi(profile: RemoteProfileInfo): ProfileInfo {
+    fun remoteProfileToUi(profile: RemoteRedditProfile): RedditProfile {
         val subreddit = profile.subreddit
-        return ProfileInfo(
+        return RedditProfile(
             id = profile.id,
             name = profile.name,
             iconImage = profile.iconImage?.fixImgUrl(),

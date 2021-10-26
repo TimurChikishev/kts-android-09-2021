@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database
-import com.swallow.cracker.data.model.RedditPost
-import com.swallow.cracker.data.model.RemoteProfileInfo
+import com.swallow.cracker.data.model.RemoteRedditPost
+import com.swallow.cracker.data.model.RemoteRedditProfile
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
@@ -23,7 +23,7 @@ class RedditRepository {
     private val redditDatabase = Database.redditDatabase
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getPostPager(query: QuerySubreddit): Flow<PagingData<RedditPost>> {
+    fun getPostPager(query: QuerySubreddit): Flow<PagingData<RemoteRedditPost>> {
         return Pager(
             config = PagingConfig(
                 pageSize = NetworkConfig.PAGE_SIZE,
@@ -79,7 +79,7 @@ class RedditRepository {
         emit(response)
     }
 
-    suspend fun getProfileInfo(): Flow<RemoteProfileInfo?> = flow {
+    suspend fun getProfileInfo(): Flow<RemoteRedditProfile?> = flow {
         emit(Networking.redditApiOAuth.getProfileInfo().body())
     }
 

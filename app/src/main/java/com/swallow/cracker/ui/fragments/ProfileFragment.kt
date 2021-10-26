@@ -17,7 +17,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentProfileBinding
-import com.swallow.cracker.ui.model.ProfileInfo
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
@@ -60,7 +60,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         launchWhenCreated { viewModel.profileInfoFlow.collect(::setContentProfileHeader) }
     }
 
-    private fun setContentProfileHeader(profile: ProfileInfo?) = with(viewBinding) {
+    private fun setContentProfileHeader(profile: RedditProfile?) = with(viewBinding) {
         profile ?: return@with
 
         setBannerImage(profile.bannerImg)
@@ -80,7 +80,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .into(headerInclude.bannerImageView)
     }
 
-    private fun setAvatarImage(profile: ProfileInfo) = with(viewBinding){
+    private fun setAvatarImage(profile: RedditProfile) = with(viewBinding){
         Glide.with(this@ProfileFragment)
             .load(profile.avatarImg ?: profile.iconImage)
             .error(R.drawable.ic_account_circle_24)

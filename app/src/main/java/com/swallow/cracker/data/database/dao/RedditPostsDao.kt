@@ -5,19 +5,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
-import com.swallow.cracker.data.model.RedditPost
+import com.swallow.cracker.data.model.RemoteRedditPost
 
 @Dao
 interface RedditPostsDao {
 
     @Insert(onConflict = REPLACE)
-    suspend fun savePosts(redditPosts: List<RedditPost>)
+    suspend fun savePosts(redditPosts: List<RemoteRedditPost>)
 
     @Query("DELETE FROM redditPosts")
     suspend fun clearPosts()
 
     @Query("SELECT * FROM redditPosts")
-    fun getPosts(): PagingSource<Int, RedditPost>
+    fun getPosts(): PagingSource<Int, RemoteRedditPost>
 
     @Query("UPDATE redditPosts SET likes =:likes, score =:score WHERE t3_id =:id")
     fun updatePostLikes(likes: Boolean?, score: Int, id: String)

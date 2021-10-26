@@ -7,13 +7,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.swallow.cracker.data.database.dao.RedditKeysDao
 import com.swallow.cracker.data.database.dao.RedditPostsDao
-import com.swallow.cracker.data.model.RedditKeys
-import com.swallow.cracker.data.model.RedditPost
-
+import com.swallow.cracker.data.database.dao.RedditProfileDao
+import com.swallow.cracker.data.model.RemoteRedditKeys
+import com.swallow.cracker.data.model.RemoteRedditPost
+import com.swallow.cracker.data.model.RemoteRedditProfile
 
 
 @Database(
-    entities = [RedditPost::class, RedditKeys::class],
+    entities = [RemoteRedditPost::class, RemoteRedditKeys::class, RemoteRedditProfile::class],
     version = 1,
     exportSchema = false
 )
@@ -29,4 +30,5 @@ abstract class RedditDatabase : RoomDatabase() {
 
     abstract fun redditPostsDao(): RedditPostsDao
     abstract fun redditKeysDao(): RedditKeysDao
+    abstract fun redditProfileDao(): RedditProfileDao
 }

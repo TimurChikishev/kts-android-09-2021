@@ -1,6 +1,6 @@
 package com.swallow.cracker.ui.model
 
-data class ProfileInfo(
+data class RedditProfile(
     val id: String,
     val name: String,
     val iconImage: String?,
