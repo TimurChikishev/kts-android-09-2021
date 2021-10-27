@@ -8,7 +8,7 @@
     <string name="email">email</string>
     <string name="password">password</string>
     <string name="icon_log_in">Иконка авторизации</string>
-    <string name="home">HOME</string>
+    <string name="home">Home</string>
     <string name="log_in">Log In</string>
     <string name="error_email">некоректный e-mail</string>
     <string name="error_password">некоректный пароль</string>
@@ -54,4 +54,8 @@
     <string name="try_again">Давай попробуем еще раз</string>
     <string name="trouble_loading_data">У нас возникли проблемы с загрузкой данных. Пожалуйста, попробуйте снова.</string>
     <string name="progress_indicator">progress indicator</string>
+    <string name="popular">Popular</string>
+    <string name="profile">profile</string>
+    <string name="all">All</string>
+    <string name="saved">Saved</string>
 </resources>

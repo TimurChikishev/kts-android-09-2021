@@ -68,7 +68,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         setBannerImage(profile.bannerImg)
         setAvatarImage(profile)
 
-        headerInclude.apply {
+        includeAppBar.apply {
             nameTextView.text = profile.name
             displayNameTextView.text = profile.displayName
             totalKarmaTextView.text = context?.getString(R.string.karma, profile.totalKarma)
@@ -79,7 +79,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         Glide.with(this@ProfileFragment)
             .load(bannerImg)
             .error(R.drawable.header_image)
-            .into(headerInclude.bannerImageView)
+            .into(includeAppBar.bannerImageView)
     }
 
     private fun setAvatarImage(profile: RedditProfile) = with(viewBinding){
@@ -109,15 +109,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     return false
                 }
             })
-            .into(headerInclude.avatarImageView)
+            .into(includeAppBar.avatarImageView)
     }
 
-    private fun initTopAppBar() {
-        viewBinding.topAppBar.setNavigationOnClickListener {
+    private fun initTopAppBar() = with(viewBinding.includeAppBar){
+        topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
-        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+        topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.logout -> {
                     dialogLogout?.show()

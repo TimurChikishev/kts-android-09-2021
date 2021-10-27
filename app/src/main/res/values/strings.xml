@@ -8,7 +8,7 @@
     <string name="email">email</string>
     <string name="password">password</string>
     <string name="icon_log_in">icon log in</string>
-    <string name="home">HOME</string>
+    <string name="home">Home</string>
     <string name="log_in">Log In</string>
     <string name="error_email">invalid email address</string>
     <string name="error_password">invalid password</string>
@@ -54,4 +54,8 @@
     <string name="try_again">Let\'s try that again</string>
     <string name="trouble_loading_data">We had some trouble loading the data. Please try again.</string>
     <string name="progress_indicator">progress indicator</string>
+    <string name="popular">Popular</string>
+    <string name="profile">profile</string>
+    <string name="all">All</string>
+    <string name="saved">Saved</string>
 </resources>

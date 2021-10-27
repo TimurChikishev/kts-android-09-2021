@@ -12,18 +12,15 @@
     </style>
 
     <style name="DotsIndicator">
-        <item name="colorControlNormal">@color/gray</item>
         <item name="selectedDotColor">@color/teal_200</item>
     </style>
 
     <style name="MaterialToolbarCracker">
-        <item name="colorControlNormal">@color/white</item>
         <item name="navigationIconTint">@color/white</item>
         <item name="android:background">@color/blue</item>
     </style>
 
     <style name="MaterialToolbarProfileCracker">
-        <item name="colorControlNormal">?attr/colorControlNormal</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

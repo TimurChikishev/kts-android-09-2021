@@ -59,10 +59,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_app_bar_home, menu)
 
-        viewBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        viewBinding.includeAppBar.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    viewBinding.searchView.clearFocus()
+                    viewBinding.includeAppBar.searchView.clearFocus()
                     viewBinding.redditRecyclerView.scrollToPosition(0)
                     redditViewModel.searchPosts(it)
                     redditAdapter.refresh()
@@ -76,11 +77,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun initTopAppBar() {
-        (activity as AppCompatActivity).setSupportActionBar(viewBinding.topAppBar)
+    private fun initTopAppBar() = with(viewBinding) {
+        (activity as AppCompatActivity).setSupportActionBar(includeAppBar.topAppBar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+        includeAppBar.topAppBar.setNavigationOnClickListener {
+            drawerLayout.open()
+        }
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            // Handle menu item selected
+            menuItem.isChecked = true
+            drawerLayout.close()
+            true
+        }
+
+        includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.profile -> {
                     navigateToProfileFragment()
@@ -193,7 +205,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             dataFromCacheSnackBar?.show()
         }
 
-        progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
+        includeAppBar.progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
         includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
     }
