@@ -16,10 +16,7 @@ import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
-import com.swallow.cracker.utils.getColor
-import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
-import com.swallow.cracker.utils.sharedUrl
-import com.swallow.cracker.utils.showMessage
+import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
 
 class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
@@ -169,9 +166,9 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun setAvatar(communityIcon: String?) = with(viewBinding) {
-        if (communityIcon.isNullOrEmpty()){
+        if (communityIcon.isNullOrEmpty()) {
             avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
-        }else {
+        } else {
             Glide.with(avatarImageView)
                 .load(communityIcon)
                 .circleCrop()
@@ -182,14 +179,18 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
 
     // setting the style for save/unsave buttons
     private fun setSavedStyle(boolean: Boolean) = when (boolean) {
-        true -> savedItem?.icon?.setTint(getColor(R.color.red))
-        false -> savedItem?.icon?.setTint(getColor(R.color.white))
+        true -> savedItem?.icon?.setTint(getColor(requireContext(), R.color.red))
+        false -> savedItem?.icon?.setTint(
+            resolveColorAttr(
+                requireContext(),
+                R.attr.colorControlNormal
+            )
+        )
     }
-
 
     // setting the style for rating buttons
     private fun setScore() = with(viewBinding) {
-        val color = getColor(R.color.red)
+        val color = getColor(requireContext(), R.color.red)
 
         when (item.likes) {
             true -> {

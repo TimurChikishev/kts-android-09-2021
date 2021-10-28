@@ -55,7 +55,9 @@
     <string name="trouble_loading_data">We had some trouble loading the data. Please try again.</string>
     <string name="progress_indicator">progress indicator</string>
     <string name="popular">Popular</string>
-    <string name="profile">profile</string>
+    <string name="profile">Profile</string>
     <string name="all">All</string>
     <string name="saved">Saved</string>
+    <string name="sorted_by">sorted by</string>
+    <string name="settings">Settings</string>
 </resources>

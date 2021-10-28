@@ -8,6 +8,7 @@
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable/outline_logout_24.xml" value="0.565625" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable/rounded_search_view.xml" value="0.3072916666666667" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable/splash_screen.xml" value="0.3490740740740741" />
+        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout-land/activity_main.xml" value="0.291005291005291" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout-land/fragment_on_boarding.xml" value="0.2689594356261023" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/custom_toast.xml" value="0.36594202898550726" />
@@ -23,7 +24,7 @@
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/home_top_app_bar.xml" value="0.35190217391304346" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/onboarding_item.xml" value="0.2708333333333333" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/profile_app_bar.xml" value="0.5" />
-        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/profile_top_app_bar.xml" value="0.25" />
+        <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/layout/profile_top_app_bar.xml" value="0.5" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/menu/navigation_drawer_menu.xml" value="0.48541666666666666" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/menu/navigation_menu_heder_profile.xml" value="0.19166666666666668" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/menu/top_app_bar.xml" value="0.3890625" />

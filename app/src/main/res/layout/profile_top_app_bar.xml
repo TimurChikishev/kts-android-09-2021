@@ -92,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginTop="6dp"
+                android:theme="@style/TabsCracker"
                 app:labelVisibilityMode="labeled"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/displayNameTextView"
@@ -120,7 +121,8 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/MaterialToolbarProfileCracker"
+            android:layout_marginTop="30dp"
+            android:theme="@style/MaterialToolbarTransparentCracker"
             app:menu="@menu/top_app_bar_profile"
             app:navigationIcon="@drawable/ic_arrow_back_24" />
 

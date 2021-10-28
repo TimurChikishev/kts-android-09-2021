@@ -25,14 +25,19 @@ import kotlinx.coroutines.flow.collect
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val viewBinding by viewBinding(FragmentProfileBinding::bind)
-    private val viewModel: ProfileViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
     private var dialogLogout: MaterialAlertDialogBuilder? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewModels()
         bindViewModel()
         initTopAppBar()
         initLogoutDialog()
+    }
+
+    private fun initViewModels() {
+        profileViewModel.init()
     }
 
     private fun initLogoutDialog() {
@@ -46,20 +51,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 dialog.dismiss()
             }
             .setPositiveButton(resources.getString(R.string.yes)) { dialog, which ->
-                viewModel.logout()
+                profileViewModel.logout()
             }
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        viewModel.init()
+        launchWhenStarted { profileViewModel.logoutFlow.collect(::logout) }
 
-        launchWhenStarted { viewModel.logoutFlow.collect(::logout) }
+        launchWhenCreated { profileViewModel.toastFlow.collect(::toast) }
 
-        launchWhenCreated { viewModel.toastFlow.collect(::toast) }
+        launchWhenCreated { profileViewModel.getProfileInfo() }
 
-        launchWhenCreated { viewModel.getProfileInfo() }
-
-        launchWhenCreated { viewModel.profileInfoFlow.collect(::setContentProfileHeader) }
+        launchWhenCreated { profileViewModel.profileInfoFlow.collect(::setContentProfileHeader) }
     }
 
     private fun setContentProfileHeader(profile: RedditProfile?) = with(viewBinding) {
@@ -82,7 +85,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .into(includeAppBar.bannerImageView)
     }
 
-    private fun setAvatarImage(profile: RedditProfile) = with(viewBinding){
+    private fun setAvatarImage(profile: RedditProfile) = with(viewBinding) {
         Glide.with(this@ProfileFragment)
             .load(profile.avatarImg ?: profile.iconImage)
             .error(R.drawable.ic_account_circle_24)
@@ -112,7 +115,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .into(includeAppBar.avatarImageView)
     }
 
-    private fun initTopAppBar() = with(viewBinding.includeAppBar){
+    private fun initTopAppBar() = with(viewBinding.includeAppBar) {
         topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }

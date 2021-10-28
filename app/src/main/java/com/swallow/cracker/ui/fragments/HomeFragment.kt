@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
@@ -16,6 +18,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentHomeBinding
@@ -27,7 +30,9 @@ import com.swallow.cracker.ui.adapters.delegates.items.RedditListSimpleItemDeleg
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
+import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
 import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
@@ -38,6 +43,7 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
@@ -47,12 +53,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        initViewModels()
         initNoInternetSnackBar()
         initAdapter()
         bindingViewModel()
         bindingOfClick()
         initSwipeRefreshLayout()
         initTopAppBar()
+        initNavigationView()
+    }
+
+    private fun initViewModels() {
+        profileViewModel.init()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,23 +97,30 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             drawerLayout.open()
         }
 
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            // Handle menu item selected
-            menuItem.isChecked = true
-            drawerLayout.close()
-            true
-        }
-
         includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.profile -> {
-                    navigateToProfileFragment()
-                    true
-                }
+                R.id.sortedAction -> false // TODO: sorted dialog
                 else -> false
             }
         }
     }
+
+    private fun initNavigationView() = with(viewBinding) {
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.profileAction -> {
+                    navigateToProfileFragment()
+                    drawerLayout.close()
+                    true
+                }
+                else -> {
+                    drawerLayout.close()
+                    false
+                }
+            }
+        }
+    }
+
 
     private fun initSwipeRefreshLayout() = with(viewBinding) {
         swipeContainer.setOnRefreshListener(redditAdapter::refresh)
@@ -141,6 +160,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
 
         launchWhenStarted { redditViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
+
+        launchWhenCreated { profileViewModel.getProfileInfo() }
+
+        launchWhenCreated { profileViewModel.profileInfoFlow.collect(::setContentProfileHeader) }
+    }
+
+    private fun setContentProfileHeader(profile: RedditProfile?) = with(viewBinding) {
+        val header = navigationView.getHeaderView(0)
+        val avatarIcon = header.findViewById<ImageView>(R.id.profileIconImageView)
+        header.findViewById<TextView>(R.id.profileNameTextView).text = profile?.name
+        header.findViewById<TextView>(R.id.profileDisplayNameTextView).text = profile?.displayName
+
+        header.setOnClickListener {
+            navigateToProfileFragment()
+            drawerLayout.close()
+        }
+
+        Glide.with(this@HomeFragment)
+            .load(profile?.avatarImg ?: profile?.iconImage)
+            .error(R.drawable.ic_account_circle_24)
+            .into(avatarIcon)
     }
 
     private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
