@@ -21,7 +21,7 @@
                 android:layout_height="?attr/actionBarSize" />
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/bottomNavigationHeaderProfile"
+                android:id="@+id/headerTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:theme="@style/TabsCracker"
@@ -55,7 +55,6 @@
                 android:id="@+id/searchView"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/rounded_search_view"
                 android:textColor="@color/black"
                 app:iconifiedByDefault="false"
                 app:queryHint="Search"
@@ -64,15 +63,5 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/progress_indicator"
-        android:indeterminate="true"
-        android:progress="@integer/material_motion_duration_medium_1"
-        app:indicatorColor="@color/blue" />
 
 </com.google.android.material.appbar.AppBarLayout>

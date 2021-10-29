@@ -9,6 +9,7 @@ import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -16,23 +17,23 @@ class PostDetailViewModel : ViewModel() {
 
     private val repository = RedditRepository()
 
-    private var savePostMutableStateFlow = MutableStateFlow<Boolean?>(null)
+    private var savePostMutableStateFlow = Channel<Boolean>(Channel.BUFFERED)
     private var savePostIsClickableMutableStateFlow = MutableStateFlow(true)
-    private var votePostMutableStateFlow = MutableStateFlow<Boolean?>(null)
+    private var votePostMutableStateFlow = Channel<Boolean>(Channel.BUFFERED)
     private var voteIsClickableMutableStateFlow = MutableStateFlow(true)
-    private var eventMessageMutableStateFlow = MutableStateFlow<Message<*>?>(null)
+    private var eventMessageMutableStateFlow = Channel<Message<*>>(Channel.BUFFERED)
 
-    val savePost: StateFlow<Boolean?>
-        get() = savePostMutableStateFlow
+    val savePost: Flow<Boolean>
+        get() = savePostMutableStateFlow.receiveAsFlow()
 
     val savePostIsClickable: StateFlow<Boolean>
         get() = savePostIsClickableMutableStateFlow
 
-    val eventMessage: StateFlow<Message<*>?>
-        get() = eventMessageMutableStateFlow
+    val eventMessage: Flow<Message<*>>
+        get() = eventMessageMutableStateFlow.receiveAsFlow()
 
-    val votePost: StateFlow<Boolean?>
-        get() = votePostMutableStateFlow
+    val votePost: Flow<Boolean>
+        get() = votePostMutableStateFlow.receiveAsFlow()
 
     val votePostIsClickable: StateFlow<Boolean>
         get() = voteIsClickableMutableStateFlow
@@ -50,16 +51,13 @@ class PostDetailViewModel : ViewModel() {
                 .flowOn(Dispatchers.IO)
                 .catch {
                     savePostIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_saved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     savePostIsClickableMutableStateFlow.set(true)
-                    savePostMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.set(Message(R.string.post_saved))
-                    savePostMutableStateFlow.set(null)
-                    eventMessageMutableStateFlow.set(null)
+                    savePostMutableStateFlow.send(true)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_saved))
                 }
         }
     }
@@ -73,16 +71,13 @@ class PostDetailViewModel : ViewModel() {
                 .flowOn(Dispatchers.IO)
                 .catch {
                     savePostIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     savePostIsClickableMutableStateFlow.set(true)
-                    savePostMutableStateFlow.set(false)
-                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
-                    savePostMutableStateFlow.set(null)
-                    eventMessageMutableStateFlow.set(null)
+                    savePostMutableStateFlow.send(false)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved))
                 }
         }
     }
@@ -96,14 +91,12 @@ class PostDetailViewModel : ViewModel() {
                 .flowOn(Dispatchers.IO)
                 .catch {
                     voteIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.set(Message(R.string.vote_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.vote_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     voteIsClickableMutableStateFlow.set(true)
-                    votePostMutableStateFlow.set(likes)
-                    votePostMutableStateFlow.set(null)
+                    votePostMutableStateFlow.send(likes)
                 }
         }
     }

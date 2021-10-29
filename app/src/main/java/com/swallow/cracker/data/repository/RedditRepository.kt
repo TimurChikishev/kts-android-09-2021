@@ -3,16 +3,14 @@ package com.swallow.cracker.data.repository
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
-import com.swallow.cracker.data.database.Database
+import com.swallow.cracker.data.database.Database.redditDatabase
 import com.swallow.cracker.data.model.RemoteRedditPost
 import com.swallow.cracker.data.model.RemoteRedditProfile
 import com.swallow.cracker.data.model.Resources
 import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
-import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.getVoteDir
 import com.swallow.cracker.utils.updateScore
@@ -22,10 +20,8 @@ import retrofit2.Response
 
 class RedditRepository {
 
-    private val redditDatabase = Database.redditDatabase
-
     @OptIn(ExperimentalPagingApi::class)
-    fun getPostPager(query: QuerySubreddit): Flow<PagingData<RemoteRedditPost>> {
+    fun getNewPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
             config = PagingConfig(
                 pageSize = NetworkConfig.PAGE_SIZE,
@@ -33,10 +29,12 @@ class RedditRepository {
                 maxSize = NetworkConfig.MAX_SIZE,
                 initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE
             ),
-            remoteMediator = RedditRemoteMediator(query, Networking.redditApiOAuth, redditDatabase),
-            pagingSourceFactory = { redditDatabase.redditPostsDao().getPosts() }
-        ).flow
+            remoteMediator = RedditRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
+        ){
+            redditDatabase.redditPostsDao().getPosts()
+        }
     }
+
 
     suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
         val dir = item.getVoteDir(likes)

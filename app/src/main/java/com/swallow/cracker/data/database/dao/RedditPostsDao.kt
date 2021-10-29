@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.swallow.cracker.data.database.model.RedditPostContract
 import com.swallow.cracker.data.model.RemoteRedditPost
 
 @Dao
@@ -13,15 +14,18 @@ interface RedditPostsDao {
     @Insert(onConflict = REPLACE)
     suspend fun savePosts(redditPosts: List<RemoteRedditPost>)
 
-    @Query("DELETE FROM redditPosts")
+    @Query("DELETE FROM ${RedditPostContract.TABLE_NAME}")
     suspend fun clearPosts()
 
-    @Query("SELECT * FROM redditPosts")
+    @Query("DELETE FROM ${RedditPostContract.TABLE_NAME} WHERE ${RedditPostContract.Columns.QUERY} = :query")
+    suspend fun clearPostsByQuery(query: String)
+
+    @Query("SELECT * FROM ${RedditPostContract.TABLE_NAME}")
     fun getPosts(): PagingSource<Int, RemoteRedditPost>
 
-    @Query("UPDATE redditPosts SET likes =:likes, score =:score WHERE t3_id =:id")
-    fun updatePostLikes(likes: Boolean?, score: Int, id: String)
+    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.LIKES} =:likes, ${RedditPostContract.Columns.SCORE} =:score WHERE ${RedditPostContract.Columns.T3_ID} =:id")
+    suspend fun updatePostLikes(likes: Boolean?, score: Int, id: String)
 
-    @Query("UPDATE redditPosts SET saved =:saved WHERE t3_id =:id")
-    fun updatePostSaved(saved: Boolean, id: String)
+    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.SAVED} =:saved WHERE ${RedditPostContract.Columns.T3_ID} =:id")
+    suspend fun updatePostSaved(saved: Boolean, id: String)
 }

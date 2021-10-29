@@ -1,76 +1,60 @@
 package com.swallow.cracker.ui.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.swallow.cracker.R
 import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.data.repository.RedditRepository
 import com.swallow.cracker.ui.model.Message
-import com.swallow.cracker.ui.model.QuerySubreddit
 import com.swallow.cracker.ui.model.RedditItem
-import com.swallow.cracker.utils.set
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class RedditListViewModel(
-    application: Application,
-    private val savedStateHandle: SavedStateHandle
-) : AndroidViewModel(application) {
+class RedditListViewModel : ViewModel() {
 
-    private val redditRepository = RedditRepository()
+    private val repository = RedditRepository()
 
-    private val defaultItems = QuerySubreddit(
-        subreddit = "popular",
-        category = "top",
-        limit = "10"
-    )
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
-    private var querySavedState = savedStateHandle.get<QuerySubreddit>(QUERY_SUBREDDIT) ?: defaultItems
-        set(value) {
-            field = value
-            savedStateHandle.set(QUERY_SUBREDDIT, value)
-        }
+    private var eventMessageMutableStateFlow = Channel<Message<*>> (Channel.BUFFERED)
 
-    @OptIn(FlowPreview::class)
-    val items = redditRepository.getPostPager(querySavedState)
-        .map { RedditMapper.replaceRedditPostToRedditItem(it) }
-        .catch { error(it) }
-        .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
-
-    fun searchPosts(query: String) {
-        querySavedState.subreddit = query
-    }
-
-    private var eventMessageMutableStateFlow = MutableStateFlow<Message<*>?>(null)
-
-    val eventMessage: StateFlow<Message<*>?>
-        get() = eventMessageMutableStateFlow
+    val eventMessage: Flow<Message<*>>
+        get() = eventMessageMutableStateFlow.receiveAsFlow()
 
     private var currentSavePostJob: Job? = null
     private var currentVotePostJob: Job? = null
 
+    @ExperimentalCoroutinesApi
+    @OptIn(FlowPreview::class)
+    val items = query.map { q -> repository.getNewPager(q) }
+        .flatMapLatest { pager -> pager.flow }
+        .map {  RedditMapper.replaceRedditPostToRedditItem(it.filter { item -> item.query == query.value }) }
+        .catch { Timber.tag("TAG").d(it) }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    fun setQuery(query: String) {
+        _query.tryEmit(query)
+    }
+
     fun savePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            redditRepository.savePost(item)
+            repository.savePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
-                    eventMessageMutableStateFlow.set(Message(R.string.post_saved_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_saved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
-                    eventMessageMutableStateFlow.set(Message(R.string.post_saved))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_saved))
                 }
         }
     }
@@ -78,17 +62,15 @@ class RedditListViewModel(
     fun unSavePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            redditRepository.unSavePost(item)
+            repository.unSavePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
-                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
-                    eventMessageMutableStateFlow.set(Message(R.string.post_unsaved))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved))
                 }
         }
     }
@@ -96,20 +78,15 @@ class RedditListViewModel(
     fun votePost(item: RedditItem, likes: Boolean) {
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
-            redditRepository.votePost(item, likes)
+            repository.votePost(item, likes)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
-                    eventMessageMutableStateFlow.set(Message(R.string.vote_error))
-                    eventMessageMutableStateFlow.set(null)
+                    eventMessageMutableStateFlow.send(Message(R.string.vote_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect()
         }
-    }
-
-    companion object {
-        private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
     }
 }
 

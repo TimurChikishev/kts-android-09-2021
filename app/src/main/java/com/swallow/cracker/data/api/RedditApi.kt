@@ -6,11 +6,10 @@ import retrofit2.http.*
 
 interface RedditApi {
 
-    @GET("r/{subreddit}/{category}.json")
+    @GET("{query}.json")
     suspend fun getSubreddit(
-        @Path("subreddit") subreddit: String,
-        @Path("category") category: String,
-        @Query("limit") limit: String,
+        @Path("query") query: String,
+        @Query("limit") limit: Int,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>

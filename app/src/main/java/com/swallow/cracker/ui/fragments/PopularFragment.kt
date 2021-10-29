@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
-import com.swallow.cracker.databinding.FragmentHomeBinding
+import com.swallow.cracker.databinding.FragmentPopularBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
@@ -32,15 +32,15 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class PopularFragment : Fragment(R.layout.fragment_popular) {
     private val redditViewModel: RedditListViewModel by viewModels()
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
-    private val viewBinding by viewBinding(FragmentHomeBinding::bind)
+    private val viewBinding by viewBinding(FragmentPopularBinding::bind)
     private var dataFromCacheSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        redditViewModel.setQuery(QUERY_POPULAR)
         initAdapter()
         bindingViewModel()
         bindingOfClick()
@@ -130,7 +130,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 // Only react to cases where REFRESH completes
                 .filter {
                     it.refresh is LoadState.NotLoading
-                            || it.prepend == LoadState.NotLoading(endOfPaginationReached = true)
                 }
                 // Scroll to top is synchronous with UI updates, even if remote load was triggered.
                 .collect {
@@ -162,5 +161,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
         includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
+    }
+
+    companion object {
+        const val QUERY_POPULAR = "r/popular"
     }
 }

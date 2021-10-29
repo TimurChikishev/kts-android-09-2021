@@ -36,7 +36,7 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
     private fun navigateToStartFragment(pref: UserPreferences) {
         when {
-            pref.authToken.isNotEmpty() -> navigateToHomeFragment()
+            pref.authToken.isNotEmpty() -> navigateToMainFragment()
             !pref.onBoardingShown -> initOnBoardingFragment()
             pref.onBoardingShown -> navigateToAuthFragment()
             else -> initOnBoardingFragment()
@@ -76,8 +76,8 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
         findNavController().navigate(action)
     }
 
-    private fun navigateToHomeFragment() {
-        val action = OnBoardingFragmentDirections.actionOnBoardingFragmentToHomeFragment()
+    private fun navigateToMainFragment() {
+        val action = OnBoardingFragmentDirections.actionOnBoardingFragmentToMainFragment()
         findNavController().navigate(action)
     }
 }

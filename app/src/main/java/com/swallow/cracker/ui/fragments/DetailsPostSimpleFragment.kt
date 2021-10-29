@@ -85,15 +85,13 @@ class DetailsPostSimpleFragment : Fragment(R.layout.fragment_details) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.eventMessage.collect {
-                it?.let { msg -> showMessage(msg) }
-            }
+            viewModel.eventMessage.collect(::showMessage)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.savePost.collect { saved ->
-                setSavedStyle(saved ?: item.saved)
-                saved?.let { item.setItemSaved(saved) }
+                setSavedStyle(saved)
+                item.setItemSaved(saved)
             }
         }
 

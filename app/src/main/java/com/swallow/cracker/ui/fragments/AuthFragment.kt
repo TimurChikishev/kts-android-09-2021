@@ -51,7 +51,7 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.authSuccessStateFlow.collect {
-                findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToHomeFragment())
+                findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToMainFragment())
             }
         }
     }
