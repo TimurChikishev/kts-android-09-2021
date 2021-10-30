@@ -105,7 +105,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
 
     // Jetpack Paging 3
-    def paging_version = "3.1.0-beta01"
+//    def paging_version = "3.1.0-beta01"
+    def paging_version = "3.0.1"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     // Swipe refresh layout

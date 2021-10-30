@@ -30,6 +30,7 @@
         tools:ignore="SpeakableTextPresentCheck">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:theme="@style/Container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -101,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/arcDarkLink"
                 android:contentDescription="@string/favorite"
                 android:text="@string/join"
                 android:textColor="@color/white"

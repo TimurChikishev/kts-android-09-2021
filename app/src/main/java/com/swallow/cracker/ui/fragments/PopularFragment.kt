@@ -34,13 +34,24 @@ import kotlinx.coroutines.launch
 
 class PopularFragment : Fragment(R.layout.fragment_popular) {
     private val redditViewModel: RedditListViewModel by viewModels()
-    private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
+    private val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
+        ComplexDelegatesRedditListAdapter.Builder()
+            .add(RedditListSimpleItemDelegateAdapter())
+            .add(RedditListItemImageDelegateAdapter())
+            .build()
+    }
+
     private val viewBinding by viewBinding(FragmentPopularBinding::bind)
     private var dataFromCacheSnackBar: Snackbar? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        redditViewModel.setQuery(QUERY_POPULAR)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        redditViewModel.setQuery(QUERY_POPULAR)
+
         initAdapter()
         bindingViewModel()
         bindingOfClick()
@@ -58,7 +69,7 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenStarted { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
+        launchWhenCreated { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
 
         launchWhenStarted { redditViewModel.eventMessage.collect(::showMessage) }
     }
@@ -95,13 +106,7 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
         findNavController().navigate(action)
     }
 
-
     private fun initAdapter() {
-        redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
-            .add(RedditListSimpleItemDelegateAdapter())
-            .add(RedditListItemImageDelegateAdapter())
-            .build()
-
         with(viewBinding.redditRecyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -130,6 +135,7 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
                 // Only react to cases where REFRESH completes
                 .filter {
                     it.refresh is LoadState.NotLoading
+                            || it.prepend == LoadState.NotLoading(endOfPaginationReached = true)
                 }
                 // Scroll to top is synchronous with UI updates, even if remote load was triggered.
                 .collect {

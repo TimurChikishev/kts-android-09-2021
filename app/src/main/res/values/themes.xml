@@ -1,40 +1,50 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Cracker" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorOnSecondary">@color/white</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorControlNormal">@color/gray</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowBackground">@color/arcWindow</item>
+        <item name="android:textColor">@color/arcText</item>
+        <item name="colorPrimary">@color/arcButton</item>
+    </style>
+
+    <style name="ItemListCracker">
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="DotsIndicator">
-        <item name="dotsColor">@color/black</item>
-        <item name="selectedDotColor">@color/black</item>
+        <item name="dotsColor">@color/arcText</item>
+        <item name="selectedDotColor">@color/arcText</item>
     </style>
 
     <style name="MaterialToolbarCracker">
-        <item name="android:background">@color/white</item>
-        <item name="colorControlNormal">@color/black</item>
-    </style>
-
-    <style name="MaterialToolbarTransparentCracker">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="android:background">@color/arcWhite</item>
     </style>
 
     <style name="MaterialToolbarProfileCracker">
+        <item name="colorControlNormal">@color/arcLight</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="TabsCracker">
-        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimary">@color/arcDark</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Container">
+        <item name="android:background">@color/arcWhite</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:textColor">@color/arcTextDark</item>
+    </style>
+
+    <style name="ProgressIndicator">
+        <item name="indicatorColor">@color/arcHighlight</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:progress">@integer/material_motion_duration_medium_1</item>
+        <item name="trackColor">@android:color/transparent</item>
+        <item name="android:contentDescription">@string/progress_indicator</item>
     </style>
 </resources>

@@ -21,21 +21,18 @@ class RedditSimpleItemViewHolder(
     init {
         viewBinding.likesImageView.setOnClickListener {
             item?.let {
-                viewBinding.likesImageView.isClickable = false
                 clickDelegate?.onVoteClick(it, true)
             }
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
             item?.let {
-                viewBinding.dislikesImageView.isClickable = false
                 clickDelegate?.onVoteClick(it, false)
             }
         }
 
         viewBinding.savedImageView.setOnClickListener {
             item?.let {
-                viewBinding.savedImageView.isClickable = false
                 clickDelegate?.onSavedClick(it, !it.saved)
             }
         }
@@ -55,7 +52,6 @@ class RedditSimpleItemViewHolder(
     fun bind(modal: RedditListSimpleItem) = with(modal) {
         item = this
 
-        setClickable()
         setAvatar(communityIcon)
         setSubreddit(subreddit)
         setPublisher(author)
@@ -103,12 +99,6 @@ class RedditSimpleItemViewHolder(
                 .error(R.drawable.ic_account_circle_24)
                 .into(avatarImageView)
         }
-    }
-
-    private fun setClickable() = with(viewBinding) {
-        likesImageView.isClickable = true
-        dislikesImageView.isClickable = true
-        savedImageView.isClickable = true
     }
 
     // setting the style for save/unsave buttons

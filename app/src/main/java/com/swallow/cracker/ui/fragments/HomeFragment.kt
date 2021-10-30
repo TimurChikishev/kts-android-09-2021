@@ -34,7 +34,13 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
-    private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
+    private val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
+        ComplexDelegatesRedditListAdapter.Builder()
+        .add(RedditListSimpleItemDelegateAdapter())
+        .add(RedditListItemImageDelegateAdapter())
+        .build()
+    }
+
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var dataFromCacheSnackBar: Snackbar? = null
 
@@ -58,7 +64,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenStarted { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
+        launchWhenCreated { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
 
         launchWhenStarted { redditViewModel.eventMessage.collect(::showMessage) }
     }
@@ -97,11 +103,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
 
     private fun initAdapter() {
-        redditAdapter = ComplexDelegatesRedditListAdapter.Builder()
-            .add(RedditListSimpleItemDelegateAdapter())
-            .add(RedditListItemImageDelegateAdapter())
-            .build()
-
         with(viewBinding.redditRecyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

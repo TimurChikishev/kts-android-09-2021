@@ -13,7 +13,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent">
+            android:theme="@style/Container">
 
             <ImageView
                 android:id="@+id/bannerImageView"
@@ -32,6 +32,7 @@
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_gravity="center_horizontal|bottom"
+                android:background="@android:color/transparent"
                 android:contentDescription="@string/profile_icon"
                 android:src="@drawable/ic_account_circle_24"
                 app:layout_constraintBottom_toBottomOf="@+id/bannerImageView"
@@ -95,8 +96,7 @@
                 android:theme="@style/TabsCracker"
                 app:labelVisibilityMode="labeled"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/displayNameTextView"
-                app:tabIndicatorColor="@color/blue">
+                app:layout_constraintTop_toBottomOf="@+id/displayNameTextView">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -119,10 +119,10 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            android:theme="@style/MaterialToolbarProfileCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_marginTop="30dp"
-            android:theme="@style/MaterialToolbarTransparentCracker"
             app:menu="@menu/top_app_bar_profile"
             app:navigationIcon="@drawable/ic_arrow_back_24" />
 
