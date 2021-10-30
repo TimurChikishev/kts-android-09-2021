@@ -14,8 +14,8 @@
     </style>
 
     <style name="DotsIndicator">
-        <item name="dotsColor">@color/white</item>
-        <item name="selectedDotColor">@color/white</item>
+        <item name="dotsColor">@color/arcWhite</item>
+        <item name="selectedDotColor">@color/arcWhite</item>
     </style>
 
     <style name="MaterialToolbarCracker">
@@ -23,10 +23,6 @@
     </style>
 
     <style name="MaterialToolbarProfileCracker">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="MaterialToolbarTransparentCracker">
         <item name="android:background">@android:color/transparent</item>
     </style>
 
@@ -49,5 +45,10 @@
         <item name="android:progress">@integer/material_motion_duration_medium_1</item>
         <item name="trackColor">@android:color/transparent</item>
         <item name="android:contentDescription">@string/progress_indicator</item>
+    </style>
+
+    <style name="BottomNavigationView">
+        <item name="colorPrimary">@color/arcWhite</item>
+        <item name="backgroundTint">@color/arcDarkDark</item>
     </style>
 </resources>

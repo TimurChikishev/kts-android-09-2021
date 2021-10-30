@@ -6,7 +6,7 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowBackground">@color/arcWindow</item>
         <item name="android:textColor">@color/arcText</item>
-        <item name="colorPrimary">@color/arcButton</item>
+        <item name="colorPrimary">@color/arcHighlight</item>
     </style>
 
     <style name="ItemListCracker">
@@ -37,7 +37,7 @@
     </style>
 
     <style name="Button">
-        <item name="android:textColor">@color/arcTextDark</item>
+        <item name="android:textColor">@color/arcWhite</item>
     </style>
 
     <style name="ProgressIndicator">
@@ -46,5 +46,10 @@
         <item name="android:progress">@integer/material_motion_duration_medium_1</item>
         <item name="trackColor">@android:color/transparent</item>
         <item name="android:contentDescription">@string/progress_indicator</item>
+    </style>
+
+    <style name="BottomNavigationView">
+        <item name="colorPrimary">@color/arcText</item>
+        <item name="backgroundTint">@color/arcWhite</item>
     </style>
 </resources>

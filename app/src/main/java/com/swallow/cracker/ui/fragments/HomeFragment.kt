@@ -44,6 +44,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var dataFromCacheSnackBar: Snackbar? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        redditViewModel.setQuery("")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -91,17 +96,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun navigateToDetailsImage(item: RedditListItemImage) {
-        val action = MainFragmentDirections.actionMainFragmentToDetailsImageFragment(item)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToDetailSimple(item: RedditListSimpleItem) {
-        val action = MainFragmentDirections.actionMainFragmentToDetailsPostSimpleFragment(item)
-        findNavController().navigate(action)
-    }
-
-
     private fun initAdapter() {
         with(viewBinding.redditRecyclerView) {
             setHasFixedSize(true)
@@ -125,18 +119,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .asMergedLoadStates()
                 // Only emit when REFRESH changes, as we only want to react on loads replacing the
                 // list.
-                .distinctUntilChangedBy {
-                    it.refresh
-                }
+                .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where REFRESH completes
                 .filter {
                     it.refresh is LoadState.NotLoading
-                            || it.prepend == LoadState.NotLoading(endOfPaginationReached = true)
+                            && it.prepend == LoadState.NotLoading(endOfPaginationReached = true)
                 }
                 // Scroll to top is synchronous with UI updates, even if remote load was triggered.
                 .collect {
                     if(it.prepend == LoadState.NotLoading(endOfPaginationReached = true))
                         viewBinding.redditRecyclerView.scrollToPosition(0)
+
                     viewBinding.swipeContainer.isRefreshing = false
                 }
         }
@@ -163,5 +156,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
 
         includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
+    }
+
+    private fun navigateToDetailsImage(item: RedditListItemImage) {
+        val action = MainFragmentDirections.actionMainFragmentToDetailsImageFragment(item)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToDetailSimple(item: RedditListSimpleItem) {
+        val action = MainFragmentDirections.actionMainFragmentToDetailsPostSimpleFragment(item)
+        findNavController().navigate(action)
     }
 }

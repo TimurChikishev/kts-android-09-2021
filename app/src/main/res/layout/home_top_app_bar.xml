@@ -43,9 +43,9 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            style="@style/MaterialToolbarCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/MaterialToolbarCracker"
             app:layout_collapseMode="pin"
             app:menu="@menu/top_app_bar_home"
             app:navigationIcon="@drawable/ic_dehaze_24">
