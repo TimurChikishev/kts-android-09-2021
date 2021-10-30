@@ -24,7 +24,10 @@ import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
-import com.swallow.cracker.utils.*
+import com.swallow.cracker.utils.asMergedLoadStates
+import com.swallow.cracker.utils.getDataFormCacheSnackBar
+import com.swallow.cracker.utils.sharedUrl
+import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
