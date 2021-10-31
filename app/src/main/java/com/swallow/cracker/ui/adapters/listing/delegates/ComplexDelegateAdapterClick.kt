@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.adapters.delegates
+package com.swallow.cracker.ui.adapters.listing.delegates
 
 import com.swallow.cracker.ui.model.RedditItem
 

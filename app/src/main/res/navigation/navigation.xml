@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_mainFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsPostImageFragment"
@@ -72,4 +75,9 @@
             android:id="@+id/action_profileFragment_to_authFragment"
             app:destination="@id/authFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        tools:layout="@layout/fragment_search"
+        android:name="com.swallow.cracker.ui.fragments.SearchFragment"
+        android:label="SearchFragment" />
 </navigation>

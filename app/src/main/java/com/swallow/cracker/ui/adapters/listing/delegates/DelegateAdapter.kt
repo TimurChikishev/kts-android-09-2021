@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.adapters.delegates
+package com.swallow.cracker.ui.adapters.listing.delegates
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

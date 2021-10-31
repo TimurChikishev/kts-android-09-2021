@@ -41,7 +41,7 @@ class RedditRepository {
 
         val response = Networking.redditApiOAuth.votePost(
             dir = dir,
-            id = item.id()
+            id = item.t3_id
         )
 
         if (response.isSuccessful)
@@ -54,27 +54,27 @@ class RedditRepository {
         item.updateScore(likes)
         redditDatabase.withTransaction {
             redditDatabase.redditPostsDao().updatePostLikes(
-                likes = item.likes(),
-                score = item.score(),
-                id = item.id()
+                likes = item.likes,
+                score = item.score,
+                id = item.t3_id
             )
         }
     }
 
     suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.savedPost(id = item.id())
+        val response = Networking.redditApiOAuth.savedPost(id = item.t3_id)
 
         if (response.isSuccessful)
-            updateSavedPost(true, item.id())
+            updateSavedPost(true, item.t3_id)
 
         emit(response)
     }
 
     suspend fun unSavePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.unSavedPost(id = item.id())
+        val response = Networking.redditApiOAuth.unSavedPost(id = item.t3_id)
 
         if (response.isSuccessful)
-            updateSavedPost(false, item.id())
+            updateSavedPost(false, item.t3_id)
 
         emit(response)
     }

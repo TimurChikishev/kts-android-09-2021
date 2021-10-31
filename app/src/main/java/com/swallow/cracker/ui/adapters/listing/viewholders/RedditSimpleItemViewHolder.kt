@@ -1,22 +1,21 @@
-package com.swallow.cracker.ui.adapters.viewholders
+package com.swallow.cracker.ui.adapters.listing.viewholders
 
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
-import com.swallow.cracker.data.model.RedditChildrenPreview
-import com.swallow.cracker.databinding.RedditListImageItemBinding
-import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.databinding.RedditListSimpleItemBinding
+import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.model.RedditItem
-import com.swallow.cracker.ui.model.RedditListItemImage
+import com.swallow.cracker.ui.model.RedditListSimpleItem
 
-class RedditItemImageViewHolder(
-    private val viewBinding: RedditListImageItemBinding,
-    private val clickDelegate: ComplexDelegateAdapterClick?
+class RedditSimpleItemViewHolder(
+    private val viewBinding: RedditListSimpleItemBinding,
+    clickDelegate: ComplexDelegateAdapterClick?
 ) : RecyclerView.ViewHolder(viewBinding.root) {
 
-    private var item: RedditListItemImage? = null
+    private var item: RedditListSimpleItem? = null
     private var context: Context = viewBinding.root.context
 
     init {
@@ -50,7 +49,7 @@ class RedditItemImageViewHolder(
         }
     }
 
-    fun bind(modal: RedditListItemImage) = with(modal) {
+    fun bind(modal: RedditListSimpleItem) = with(modal) {
         item = this
 
         setAvatar(communityIcon)
@@ -60,7 +59,6 @@ class RedditItemImageViewHolder(
         setCreated(time)
         setNumScore(score.toString())
         setNumComments(numComments.toString())
-        setThumbnail(thumbnail = thumbnail, preview = preview)
 
         setScoreStyle(likes)
         setSavedStyle(saved)
@@ -102,21 +100,6 @@ class RedditItemImageViewHolder(
                 .into(avatarImageView)
         }
     }
-
-    private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) =
-        with(viewBinding) {
-            try {
-                val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail
-                Glide.with(thumbnailImageView)
-                    .load(url)
-                    .placeholder(R.drawable.ic_cookie_24)
-                    .error(R.drawable.ic_error_24)
-                    .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
-                    .into(thumbnailImageView)
-            } catch (exception: Throwable) {
-                error(exception)
-            }
-        }
 
     // setting the style for save/unsave buttons
     private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {

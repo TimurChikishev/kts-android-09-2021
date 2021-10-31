@@ -52,4 +52,9 @@
         <item name="colorPrimary">@color/arcText</item>
         <item name="backgroundTint">@color/arcWhite</item>
     </style>
+
+    <style name="IconMaterialButton">
+        <item name="iconTint">@color/arcDarkTextDark</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

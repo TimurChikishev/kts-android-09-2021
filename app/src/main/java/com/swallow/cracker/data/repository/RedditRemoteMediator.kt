@@ -43,7 +43,7 @@ class RedditRemoteMediator(
                 }
             }
 
-            val response = redditApi.getSubreddit(
+            val response = redditApi.getListing(
                 query = query,
                 after = loadKey?.after,
                 before = loadKey?.before,

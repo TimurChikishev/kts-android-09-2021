@@ -7,12 +7,28 @@ import retrofit2.http.*
 interface RedditApi {
 
     @GET("{query}.json")
-    suspend fun getSubreddit(
+    suspend fun getListing(
         @Path("query") query: String,
         @Query("limit") limit: Int,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
+
+    @GET("search")
+    suspend fun search(
+        @Field("q") query: String,
+        @Field("type") type: String,
+    )
+
+    @GET("api/search_subreddits")
+    suspend fun searchSubreddit(
+        @Field("query") query: String,
+        @Field("exact") exact: Boolean = false,
+        @Field("include_over_18") include_over_18: Boolean = false,
+        @Field("include_unadvertisable") include_unadvertisable: Boolean = false,
+        @Field("typeahead_active") typeahead_active: Boolean = false,
+        @Field("search_query_id") search_query_id: Boolean?
+    )
 
     @FormUrlEncoded
     @POST("api/save")

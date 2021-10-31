@@ -1,11 +1,11 @@
-package com.swallow.cracker.ui.adapters.delegates
+package com.swallow.cracker.ui.adapters.listing.delegates
 
 import androidx.recyclerview.widget.DiffUtil
 import com.swallow.cracker.ui.model.RedditItem
 
 internal class DelegateAdapterItemDiffCallback : DiffUtil.ItemCallback<RedditItem>() {
     override fun areItemsTheSame(oldItem: RedditItem, newItem: RedditItem): Boolean {
-        return oldItem::class == newItem::class && oldItem.id() == newItem.id()
+        return oldItem::class == newItem::class && oldItem.t3_id == newItem.t3_id
     }
 
     override fun areContentsTheSame(oldItem: RedditItem, newItem: RedditItem): Boolean {

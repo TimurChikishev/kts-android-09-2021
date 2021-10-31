@@ -1,12 +1,12 @@
-package com.swallow.cracker.ui.adapters.delegates.items
+package com.swallow.cracker.ui.adapters.listing.delegates.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.swallow.cracker.databinding.RedditListImageItemBinding
-import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.adapters.delegates.DelegateAdapter
-import com.swallow.cracker.ui.adapters.viewholders.RedditItemImageViewHolder
+import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick
+import com.swallow.cracker.ui.adapters.listing.delegates.DelegateAdapter
+import com.swallow.cracker.ui.adapters.listing.viewholders.RedditItemImageViewHolder
 import com.swallow.cracker.ui.model.ChangePayload
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage

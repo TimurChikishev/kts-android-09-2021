@@ -7,11 +7,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -40,7 +42,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         bindingViewModel()
         initTopAppBar()
         initTabBar()
+        initBottomNavigationView()
         initNavigationView()
+    }
+
+    private fun initBottomNavigationView() {
+        viewBinding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.subscribePageAction -> true
+                else -> true //  R.id.mainPageAction
+            }
+        }
     }
 
     private fun initTabBar() = with(viewBinding) {
@@ -59,20 +71,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_app_bar_home, menu)
-
-        viewBinding.includeAppBar.searchView.setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    viewBinding.includeAppBar.searchView.clearFocus()
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-        })
     }
 
     private fun initTopAppBar() = with(viewBinding) {
@@ -86,6 +84,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.sortedAction -> false // TODO: sorted dialog
+                R.id.searchAction -> {
+                    navigateToSearchFragment()
+                    true
+                }
                 else -> false
             }
         }
@@ -144,6 +146,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun navigateToProfileFragment() {
         val action = MainFragmentDirections.actionMainFragmentToProfileFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToSearchFragment() {
+        val action = MainFragmentDirections.actionMainFragmentToSearchFragment()
         findNavController().navigate(action)
     }
 

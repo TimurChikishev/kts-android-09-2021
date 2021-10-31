@@ -8,9 +8,9 @@
         android:title="@string/home"/>
 
     <item
-        android:id="@+id/searchPageAction"
+        android:id="@+id/subscribePageAction"
         android:enabled="true"
-        android:icon="@drawable/ic_search_24"
-        android:title="@string/search"/>
+        android:icon="@drawable/ic_format_list_bulleted_24"
+        android:title="@string/subscribers"/>
 
 </menu>
