@@ -1,8 +1,8 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +16,8 @@ import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
-import com.swallow.cracker.ui.viewmodels.PostViewModel
-import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
-import com.swallow.cracker.utils.setSavedStatus
-import com.swallow.cracker.utils.showMessage
-import com.swallow.cracker.utils.updateScore
+import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
+import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
 
 class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
@@ -28,13 +25,15 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     private val args by navArgs<DetailsPostImageFragmentArgs>()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
-    private val viewModel: PostViewModel by viewModels()
+    private val viewModel: PostDetailViewModel by viewModels()
     private lateinit var item: RedditListItemImage
     private var noInternetSnackBar: Snackbar? = null
+    private var savedItem: MenuItem? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         item = args.post
+        initTopAppBar()
         initNoInternetSnackBar()
         bindViewModel()
         initContent()
@@ -46,7 +45,7 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun initContent() = with(item) {
-        setAvatar(R.drawable.ic_face_24)
+        setAvatar(communityIcon)
         setSubreddit(subreddit)
         setPublisher(author)
         setNumComments(numComments.toString())
@@ -55,8 +54,30 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         setTitle(title)
         setThumbnail(thumbnail = thumbnail, preview = preview)
 
+
         bindingOfClicks()
         setScore()
+    }
+
+    private fun initTopAppBar() {
+        savedItem = viewBinding.topAppBar.menu.findItem(R.id.saved)
+
+        viewBinding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        viewBinding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.saved -> {
+                    when (!item.saved) {
+                        true -> viewModel.savePost(item)
+                        false -> viewModel.unSavePost(item)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun bindViewModel() {
@@ -73,23 +94,20 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.savePost.collect {
-                setSavedStyle(it?.flag ?: item.saved)
-                it?.let { item.setSavedStatus(it.flag) }
+            viewModel.savePost.collect { saved ->
+                setSavedStyle(saved ?: item.saved)
+                saved?.let { item.setItemSaved(saved) }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.savePostIsClickable.collect {
-                viewBinding.savedImageView.isClickable = it
+                savedItem?.isEnabled = it
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.votePost.collect {
-                it?.let { item.updateScore(it.flag) }
-                setScore()
-            }
+            viewModel.votePost.collect { setScore() }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -101,26 +119,13 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun showNetworkState(isNoInternet: Boolean) {
-        when(isNoInternet){
+        when (isNoInternet) {
             true -> noInternetSnackBar?.show()
             false -> noInternetSnackBar?.dismiss()
         }
     }
 
     private fun bindingOfClicks() = with(viewBinding) {
-        // button save/unsave
-        savedImageView.setOnClickListener {
-            when (!item.saved) {
-                true -> viewModel.savePost(category = null, id = item.t3_id)
-                false -> viewModel.unSavePost(id = item.t3_id)
-            }
-        }
-
-        // button back
-        backImageView.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         // button like
         likesImageView.setOnClickListener {
             viewModel.votePost(item, true)
@@ -132,10 +137,7 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         }
 
         // shared to internet
-        shareImageView.setOnClickListener {
-            val intent = viewModel.shared(item.url)
-            startActivity(intent)
-        }
+        shareImageView.setOnClickListener { startActivity(sharedUrl(item.url)) }
     }
 
     private fun setTitle(title: String) {
@@ -166,8 +168,16 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         viewBinding.publisherTextView.text = getString(R.string.posted_by, author)
     }
 
-    private fun setAvatar(res: Int) {
-        viewBinding.avatarImageView.setImageResource(res)
+    private fun setAvatar(communityIcon: String?) = with(viewBinding) {
+        if (communityIcon.isNullOrEmpty()) {
+            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+        } else {
+            Glide.with(avatarImageView)
+                .load(communityIcon)
+                .circleCrop()
+                .error(R.drawable.ic_account_circle_24)
+                .into(avatarImageView)
+        }
     }
 
     private fun setThumbnail(thumbnail: String, preview: RedditChildrenPreview?) =
@@ -186,21 +196,19 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
         }
 
     // setting the style for save/unsave buttons
-    private fun setSavedStyle(boolean: Boolean) = with(viewBinding) {
-        when (boolean) {
-            true -> {
-                val color = ContextCompat.getColor(requireContext(), R.color.red)
-                savedImageView.setColorFilter(color)
-            }
-            false -> {
-                savedImageView.colorFilter = null
-            }
-        }
+    private fun setSavedStyle(boolean: Boolean) = when (boolean) {
+        true -> savedItem?.icon?.setTint(getColor(requireContext(), R.color.red))
+        false -> savedItem?.icon?.setTint(
+            resolveColorAttr(
+                requireContext(),
+                R.attr.colorControlNormal
+            )
+        )
     }
 
     // setting the style for rating buttons
     private fun setScore() = with(viewBinding) {
-        val color = ContextCompat.getColor(requireContext(), R.color.red)
+        val color = getColor(requireContext(), R.color.red)
 
         when (item.likes) {
             true -> {
@@ -223,5 +231,6 @@ class DetailsPostImageFragment : Fragment(R.layout.fragment_details) {
     override fun onDestroyView() {
         super.onDestroyView()
         noInternetSnackBar = null
+        savedItem = null
     }
 }

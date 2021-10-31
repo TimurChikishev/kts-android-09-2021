@@ -1,15 +1,24 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentHomeBinding
@@ -18,126 +27,165 @@ import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegatesRedditListAdapter
 import com.swallow.cracker.ui.adapters.delegates.items.RedditListItemImageDelegateAdapter
 import com.swallow.cracker.ui.adapters.delegates.items.RedditListSimpleItemDelegateAdapter
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
-import com.swallow.cracker.ui.viewmodels.PostViewModel
+import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.ui.viewmodels.RedditListViewModel
-import com.swallow.cracker.utils.autoCleared
-import com.swallow.cracker.utils.getNoInternetConnectionSnackBar
-import com.swallow.cracker.utils.showMessage
+import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val redditViewModel: RedditListViewModel by viewModels()
-    private val postViewModel: PostViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentHomeBinding::bind)
     private var redditAdapter: ComplexDelegatesRedditListAdapter by autoCleared()
-
     private var noInternetSnackBar: Snackbar? = null
+    private var dataFromCacheSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        initViewModels()
         initNoInternetSnackBar()
         initAdapter()
         bindingViewModel()
         bindingOfClick()
+        initSwipeRefreshLayout()
+        initTopAppBar()
+        initNavigationView()
     }
 
-    private fun initNoInternetSnackBar() {
-        noInternetSnackBar = getNoInternetConnectionSnackBar(viewBinding.root)
-        networkStatusViewModel.checkNetworkState()
+    private fun initViewModels() {
+        profileViewModel.init()
     }
 
-    private fun bindingOfClick() {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.top_app_bar_home, menu)
 
-        redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
-
-            // TODO: Переделать когда появится ROOM
-            override fun onVoteClick(position: Int, likes: Boolean) {
-                val item = redditAdapter.snapshot()[position] ?: return
-                postViewModel.votePost(item = item, likes = likes, position = position)
-            }
-
-            // TODO: Переделать когда появится ROOM
-            override fun onSavedClick(
-                category: String?,
-                id: String,
-                position: Int?,
-                saved: Boolean
-            ) {
-                if (saved)
-                    postViewModel.savePost(category = category, id = id, position = position)
-                else
-                    postViewModel.unSavePost(id = id, position = position)
-            }
-
-            override fun navigateTo(item: RedditItems) {
-                when (item) {
-                    is RedditListSimpleItem -> {
-                        val action =
-                            HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
-                        findNavController().navigate(action)
-                    }
-                    is RedditListItemImage -> {
-                        val action =
-                            HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
-                        findNavController().navigate(action)
-                    }
+        viewBinding.includeAppBar.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    viewBinding.includeAppBar.searchView.clearFocus()
+                    viewBinding.redditRecyclerView.scrollToPosition(0)
+                    redditViewModel.searchPosts(it)
+                    redditAdapter.refresh()
                 }
+                return true
             }
 
-            override fun shared(url: String) {
-                val intent = postViewModel.shared(url)
-                startActivity(intent)
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
             }
         })
     }
 
-    private fun bindingViewModel() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            networkStatusViewModel.isNoNetwork.collect(::showNetworkState)
+    private fun initTopAppBar() = with(viewBinding) {
+        (activity as AppCompatActivity).setSupportActionBar(includeAppBar.topAppBar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        includeAppBar.topAppBar.setNavigationOnClickListener {
+            drawerLayout.open()
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            postViewModel.eventMessage.collect { it?.let { msg -> showMessage(msg) } }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            redditViewModel.posts.collect { redditAdapter.submitData(it) }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            postViewModel.votePost.collect {
-                it?.let {
-                    it.position?.let { position ->
-                        redditAdapter.onLikeClick(position = position, likes = it.flag)
-                    }
-                }
+        includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.sortedAction -> false // TODO: sorted dialog
+                else -> false
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            postViewModel.savePost.collect {
-                it?.let {
-                    it.position?.let { position ->
-                        redditAdapter.onSavedClick(
-                            position = position,
-                            it.flag
-                        )
-                    }
+    private fun initNavigationView() = with(viewBinding) {
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.profileAction -> {
+                    navigateToProfileFragment()
+                    drawerLayout.close()
+                    true
+                }
+                else -> {
+                    drawerLayout.close()
+                    false
                 }
             }
         }
     }
 
-    private fun showNetworkState(isNoInternet: Boolean) {
-        when (isNoInternet) {
-            true -> noInternetSnackBar?.show()
-            false -> noInternetSnackBar?.dismiss()
+
+    private fun initSwipeRefreshLayout() = with(viewBinding) {
+        swipeContainer.setOnRefreshListener(redditAdapter::refresh)
+    }
+
+    private fun initNoInternetSnackBar() = with(viewBinding) {
+        dataFromCacheSnackBar = getDataFormCacheSnackBar(root)
+        noInternetSnackBar = getNoInternetConnectionSnackBar(root)
+        networkStatusViewModel.checkNetworkState()
+    }
+
+    private fun bindingOfClick() {
+        viewBinding.includeRetry.buttonRetry.setOnClickListener { redditAdapter.retry() }
+
+        redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
+            override fun onVoteClick(item: RedditItem, likes: Boolean) {
+                redditViewModel.votePost(item, likes)
+            }
+
+            override fun onSavedClick(item: RedditItem, saved: Boolean) = when (saved) {
+                true -> redditViewModel.savePost(item)
+                false -> redditViewModel.unSavePost(item)
+            }
+
+            override fun navigateTo(item: RedditItem) = when (item) {
+                is RedditListSimpleItem -> navigateToDetailSimple(item)
+                is RedditListItemImage -> navigateToDetailsImage(item)
+            }
+
+            override fun shared(url: String): Unit = startActivity(sharedUrl(url))
+        })
+    }
+
+    private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
+        launchWhenStarted { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
+
+        launchWhenStarted { networkStatusViewModel.isNoNetwork.collect(::showNetworkState) }
+
+        launchWhenStarted { redditViewModel.eventMessage.collect { it?.let { showMessage(it) } } }
+
+        launchWhenCreated { profileViewModel.getProfileInfo() }
+
+        launchWhenCreated { profileViewModel.profileInfoFlow.collect(::setContentProfileHeader) }
+    }
+
+    private fun setContentProfileHeader(profile: RedditProfile?) = with(viewBinding) {
+        val header = navigationView.getHeaderView(0)
+        val avatarIcon = header.findViewById<ImageView>(R.id.profileIconImageView)
+        header.findViewById<TextView>(R.id.profileNameTextView).text = profile?.name
+        header.findViewById<TextView>(R.id.profileDisplayNameTextView).text = profile?.displayName
+
+        header.setOnClickListener {
+            navigateToProfileFragment()
+            drawerLayout.close()
         }
+
+        Glide.with(this@HomeFragment)
+            .load(profile?.avatarImg ?: profile?.iconImage)
+            .error(R.drawable.ic_account_circle_24)
+            .into(avatarIcon)
+    }
+
+    private fun showNetworkState(isNoInternet: Boolean) = when (isNoInternet) {
+        true -> noInternetSnackBar?.show()
+        false -> noInternetSnackBar?.dismiss()
     }
 
     private fun initAdapter() {
@@ -146,46 +194,80 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .add(RedditListItemImageDelegateAdapter())
             .build()
 
-        with(viewBinding) {
-            redditRecyclerView.setHasFixedSize(true)
-            redditRecyclerView.layoutManager = LinearLayoutManager(context)
-            redditRecyclerView.adapter = redditAdapter.withLoadStateHeaderAndFooter(
+        with(viewBinding.redditRecyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = redditAdapter
+            adapter = redditAdapter.withLoadStateHeaderAndFooter(
                 header = LoadStateAdapter { redditAdapter.retry() },
                 footer = LoadStateAdapter { redditAdapter.retry() }
             )
-
-            includedLoadState.buttonRetry.setOnClickListener {
-                redditAdapter.retry()
-            }
         }
+        redditAdapter.addLoadStateListener(::loadStateListener)
 
-        redditAdapter.addLoadStateListener { loadState ->
-            viewBinding.apply {
-                redditRecyclerView.isVisible =
-                    loadState.source.refresh is LoadState.NotLoading
-                includedLoadState.progressBar.isVisible =
-                    loadState.source.refresh is LoadState.Loading
-                includedLoadState.buttonRetry.isVisible =
-                    loadState.source.refresh is LoadState.Error
-                includedLoadState.textViewError.isVisible =
-                    loadState.source.refresh is LoadState.Error
+        initAdapterRefreshListener()
+    }
 
-                // for empty view
-                if (loadState.source.refresh is LoadState.NotLoading &&
-                    loadState.append.endOfPaginationReached &&
-                    redditAdapter.itemCount < 1
-                ) {
-                    viewBinding.redditRecyclerView.isVisible = false
-                    includedLoadState.textViewError.isVisible = true
-                } else {
-                    includedLoadState.textViewError.isVisible = false
+    private fun initAdapterRefreshListener() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            redditAdapter.loadStateFlow
+                // Use a state-machine to track LoadStates such that we only transition to
+                // NotLoading from a RemoteMediator load if it was also presented to UI.
+                .asMergedLoadStates()
+                // Only emit when REFRESH changes, as we only want to react on loads replacing the
+                // list.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                // Scroll to top is synchronous with UI updates, even if remote load was triggered.
+                .collect {
+                    viewBinding.redditRecyclerView.scrollToPosition(0)
+                    viewBinding.swipeContainer.isRefreshing = false
                 }
-            }
         }
+    }
+
+    private fun loadStateListener(loadState: CombinedLoadStates) = with(viewBinding) {
+        val isEmptyCache =
+            loadState.source.refresh is LoadState.NotLoading && redditAdapter.itemCount == 0
+
+        val isFullCache = loadState.source.refresh is LoadState.NotLoading
+                && redditAdapter.itemCount != 0
+
+        val isRemoteRefreshFailed = loadState.mediator?.refresh is LoadState.Error
+
+        textViewError.isVisible = loadState.refresh is LoadState.NotLoading
+                && loadState.append.endOfPaginationReached && redditAdapter.itemCount < 1
+
+        redditRecyclerView.isVisible = isFullCache || loadState.refresh is LoadState.NotLoading
+
+        if (isRemoteRefreshFailed && isFullCache && dataFromCacheSnackBar?.isShown == false) {
+            dataFromCacheSnackBar?.show()
+        }
+
+        includeAppBar.progressIndicator.isVisible = loadState.mediator?.refresh is LoadState.Loading
+
+        includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
+    }
+
+    private fun navigateToDetailsImage(item: RedditListItemImage) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailsImageFragment(item)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToDetailSimple(item: RedditListSimpleItem) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailsPostSimple(item)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToProfileFragment() {
+        val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment()
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         noInternetSnackBar = null
+        dataFromCacheSnackBar = null
     }
 }

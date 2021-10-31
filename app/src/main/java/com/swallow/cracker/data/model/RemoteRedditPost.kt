@@ -1,18 +1,24 @@
 package com.swallow.cracker.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Entity(tableName = "redditPosts")
 @JsonClass(generateAdapter = true)
-data class RedditNewsDataResponse(
+data class RemoteRedditPost(
     @Json(name = "id")
     val id: String,
+    @PrimaryKey
     @Json(name = "name")
     val t3_id: String,
     @Json(name = "author")
     val author: String,
     @Json(name = "subreddit")
     val subreddit: String,
+    @Json(name = "subreddit_id")
+    val subredditId: String,
     @Json(name = "title")
     val title: String,
     @Json(name = "selftext")
@@ -31,6 +37,7 @@ data class RedditNewsDataResponse(
     val thumbnail: String,
     @Json(name = "url")
     val url: String,
-    @Json(name="preview")
-    val preview: RedditChildrenPreview?
+    @Json(name = "preview")
+    val preview: RedditChildrenPreview?,
+    var communityIcon: String?
 )

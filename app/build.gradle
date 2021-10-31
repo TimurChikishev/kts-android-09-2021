@@ -4,6 +4,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
@@ -33,9 +34,29 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
     viewBinding {
         enabled = true
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.14.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
     }
 }
 
@@ -84,12 +105,25 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
 
     // Jetpack Paging 3
-    def paging_version = "3.0.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.0-beta01'
+
+    // Swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // AppAuth
     implementation 'net.openid:appauth:0.10.0'
 
     // pretty time
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+
+    // DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation  "androidx.datastore:datastore-core:1.0.0"
+    implementation  "com.google.protobuf:protobuf-javalite:3.18.0"
+
+    //RoomDao
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 }

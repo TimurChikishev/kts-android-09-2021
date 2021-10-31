@@ -11,8 +11,13 @@
         android:label="fragment_on_boarding"
         tools:layout="@layout/fragment_on_boarding">
         <action
-            android:id="@+id/action_onBoardingFragment_to_logInFragment"
+            android:id="@+id/action_onBoardingFragment_to_AuthFragment"
             app:destination="@id/authFragment"
+            app:popUpTo="@id/onBoardingFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_onBoardingFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/onBoardingFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -38,6 +43,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailsPostSimple"
             app:destination="@id/detailsPostSimpleFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsPostImageFragment"
@@ -54,5 +62,14 @@
         <argument
             android:name="post"
             app:argType="com.swallow.cracker.ui.model.RedditListSimpleItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.swallow.cracker.ui.fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_authFragment"
+            app:destination="@id/authFragment" />
     </fragment>
 </navigation>

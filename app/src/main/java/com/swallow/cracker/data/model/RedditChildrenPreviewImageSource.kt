@@ -3,6 +3,7 @@ package com.swallow.cracker.data.model
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.swallow.cracker.utils.fixImgUrl
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -14,5 +15,5 @@ data class RedditChildrenPreviewImageSource(
     val width: Int,
     @Json(name = "height")
     val height: Int,
-    val urlNew: String = url.replace("amp;s", "s")
+    val urlNew: String = url.fixImgUrl()
 ) : Parcelable

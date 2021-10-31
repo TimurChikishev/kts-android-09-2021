@@ -1,4 +1,4 @@
-package com.swallow.cracker.data
+package com.swallow.cracker.data.repository
 
 import android.net.Uri
 import com.swallow.cracker.data.config.AuthConfig
@@ -20,6 +20,7 @@ class AuthRepository {
             AuthConfig.RESPONSE_TYPE,
             redirectUri
         )
+            .setAdditionalParameters(AuthConfig.DURATION_PERMANENT)
             .setScope(AuthConfig.SCOPE)
             .build()
     }
@@ -27,14 +28,18 @@ class AuthRepository {
     fun performTokenRequest(
         authService: AuthorizationService,
         tokenRequest: TokenRequest,
-        onComplete: () -> Unit,
+        onComplete: (String, String) -> Unit,
         onError: () -> Unit
     ) {
-        authService.performTokenRequest(tokenRequest, ClientSecretBasic(AuthConfig.CLIENT_SECRET)) { response, ex ->
+        authService.performTokenRequest(
+            tokenRequest,
+            ClientSecretBasic(AuthConfig.CLIENT_SECRET)
+        ) { response, ex ->
             when {
                 response != null -> {
-                    AuthConfig.token = response.accessToken.orEmpty()
-                    onComplete()
+                    AuthConfig.AUTH_TOKEN  = response.accessToken.orEmpty()
+                    AuthConfig.REFRESH_TOKEN = response.refreshToken.orEmpty()
+                    onComplete(AuthConfig.AUTH_TOKEN ?: "", AuthConfig.REFRESH_TOKEN ?: "")
                 }
                 else -> onError()
             }

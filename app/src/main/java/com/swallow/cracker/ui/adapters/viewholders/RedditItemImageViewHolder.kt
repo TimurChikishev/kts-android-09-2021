@@ -8,7 +8,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.data.model.RedditChildrenPreview
 import com.swallow.cracker.databinding.RedditListImageItemBinding
 import com.swallow.cracker.ui.adapters.delegates.ComplexDelegateAdapterClick
-import com.swallow.cracker.ui.model.RedditItems
+import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 
 class RedditItemImageViewHolder(
@@ -21,31 +21,30 @@ class RedditItemImageViewHolder(
 
     init {
         viewBinding.likesImageView.setOnClickListener {
-            viewBinding.likesImageView.isClickable = false
-            clickDelegate?.onVoteClick(layoutPosition, true)
+            item?.let {
+                viewBinding.likesImageView.isClickable = false
+                clickDelegate?.onVoteClick(it, true)
+            }
         }
 
         viewBinding.dislikesImageView.setOnClickListener {
-            viewBinding.dislikesImageView.isClickable = false
-            clickDelegate?.onVoteClick(layoutPosition, false)
+            item?.let {
+                viewBinding.dislikesImageView.isClickable = false
+                clickDelegate?.onVoteClick(it, false)
+            }
         }
 
         viewBinding.savedImageView.setOnClickListener {
             item?.let {
                 viewBinding.savedImageView.isClickable = false
-                clickDelegate?.onSavedClick(
-                    category = null,
-                    id = it.t3_id,
-                    position = layoutPosition,
-                    saved = !it.saved
-                )
+                clickDelegate?.onSavedClick(it, !it.saved)
             }
         }
 
         viewBinding.itemContainer.setOnClickListener {
             item?.let {
                 viewBinding.itemContainer.isEnabled = false
-                clickDelegate?.navigateTo(it as RedditItems)
+                clickDelegate?.navigateTo(it as RedditItem)
             }
         }
 
@@ -58,7 +57,7 @@ class RedditItemImageViewHolder(
         item = this
 
         setClickable()
-        setAvatar(R.drawable.ic_face_24)
+        setAvatar(communityIcon)
         setSubreddit(subreddit)
         setPublisher(author)
         setTitle(title)
@@ -67,7 +66,7 @@ class RedditItemImageViewHolder(
         setNumComments(numComments.toString())
         setThumbnail(thumbnail = thumbnail, preview = preview)
 
-        setScoreStyle(this)
+        setScoreStyle(likes)
         setSavedStyle(saved)
     }
 
@@ -96,8 +95,16 @@ class RedditItemImageViewHolder(
         viewBinding.numCommentsTextView.text = num
     }
 
-    private fun setAvatar(res: Int) {
-        viewBinding.avatarImageView.setImageResource(res)
+    private fun setAvatar(communityIcon: String?) = with(viewBinding) {
+        if (communityIcon.isNullOrEmpty()) {
+            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+        } else {
+            Glide.with(context)
+                .load(communityIcon)
+                .circleCrop()
+                .error(R.drawable.ic_account_circle_24)
+                .into(avatarImageView)
+        }
     }
 
     private fun setClickable() = with(viewBinding) {
@@ -134,8 +141,8 @@ class RedditItemImageViewHolder(
         }
     }
 
-    private fun setScoreStyle(modal: RedditListItemImage) {
-        when (modal.likes) {
+    private fun setScoreStyle(likes: Boolean?) {
+        when (likes) {
             true -> {
                 viewBinding.likesImageView.setColorFilter(
                     ContextCompat.getColor(
@@ -159,5 +166,14 @@ class RedditItemImageViewHolder(
                 viewBinding.likesImageView.colorFilter = null
             }
         }
+    }
+
+    fun bindLikes(likes: Boolean?, score: Int) {
+        setScoreStyle(likes)
+        viewBinding.scoreTextView.text = score.toString()
+    }
+
+    fun bindSaved(saved: Boolean) {
+        setSavedStyle(saved)
     }
 }
