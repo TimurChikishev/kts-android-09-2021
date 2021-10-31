@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
-import com.swallow.cracker.databinding.FragmentHomeBinding
 import com.swallow.cracker.databinding.FragmentListBinding
 import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick

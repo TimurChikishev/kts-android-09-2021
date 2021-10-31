@@ -25,7 +25,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun bindSearchView() {
         viewBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // TODO("Not yet implemented")
+
                 return false
             }
 
