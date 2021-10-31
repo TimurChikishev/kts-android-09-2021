@@ -1,10 +1,10 @@
-package com.swallow.cracker.data.model
+package com.swallow.cracker.data.model.subreddit
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class RedditChildrenResponse(
+data class SubredditChildren (
     @Json(name = "data")
-    val data: RemoteRedditPost
+    val data: RemoteSubreddit,
 )

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.swallow.cracker.data.database.model.RedditProfileContract
-import com.swallow.cracker.data.model.RemoteRedditProfile
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 
 @Dao
 interface RedditProfileDao {

@@ -1,6 +1,11 @@
 package com.swallow.cracker.data.api
 
-import com.swallow.cracker.data.model.*
+import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.swallow.cracker.data.model.listing.RedditDataResponse
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubredditAbout
+import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
+import com.swallow.cracker.data.model.token.AccessTokenResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -14,21 +19,12 @@ interface RedditApi {
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
 
-    @GET("search")
-    suspend fun search(
-        @Field("q") query: String,
-        @Field("type") type: String,
-    )
-
-    @GET("api/search_subreddits")
-    suspend fun searchSubreddit(
-        @Field("query") query: String,
-        @Field("exact") exact: Boolean = false,
-        @Field("include_over_18") include_over_18: Boolean = false,
-        @Field("include_unadvertisable") include_unadvertisable: Boolean = false,
-        @Field("typeahead_active") typeahead_active: Boolean = false,
-        @Field("search_query_id") search_query_id: Boolean?
-    )
+    @GET("api/subreddit_autocomplete_v2.json")
+    suspend fun getSubreddit(
+        @Query("query") query: String,
+        @Query("raw_json") rawJson: Int = 1,
+        @Query("gilding_detail") gildingDetail: Int = 1
+    ): Response<RedditJsonWrapper<SubredditDataResponse>>
 
     @FormUrlEncoded
     @POST("api/save")

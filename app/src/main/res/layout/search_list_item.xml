@@ -7,7 +7,7 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/subredditImageView"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:contentDescription="@string/profile_icon"
@@ -17,14 +17,14 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/nameTextView"
+        android:id="@+id/nameSubredditTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="6dp"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/subredditImageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="r/Kotlin" />
 
@@ -35,8 +35,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="6dp"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+        app:layout_constraintStart_toEndOf="@+id/subredditImageView"
+        app:layout_constraintTop_toBottomOf="@+id/nameSubredditTextView"
         tools:text="400 members" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

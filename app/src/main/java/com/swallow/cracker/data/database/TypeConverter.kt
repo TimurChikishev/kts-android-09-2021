@@ -1,10 +1,10 @@
 package com.swallow.cracker.data.database
 
 import androidx.room.TypeConverter
-import com.swallow.cracker.data.model.RedditChildrenPreview
-import com.swallow.cracker.data.model.RedditChildrenPreviewImage
-import com.swallow.cracker.data.model.RedditChildrenPreviewImageSource
-import com.swallow.cracker.data.model.RemoteProfileInfoSubreddit
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreviewImage
+import com.swallow.cracker.data.model.listing.RedditChildrenPreviewImageSource
+import com.swallow.cracker.data.model.profile.RemoteProfileInfoSubreddit
 import com.swallow.cracker.utils.fixImgUrl
 
 class TypeConverter {

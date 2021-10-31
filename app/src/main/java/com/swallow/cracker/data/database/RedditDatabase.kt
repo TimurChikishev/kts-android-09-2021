@@ -9,8 +9,8 @@ import com.swallow.cracker.data.database.dao.RedditKeysDao
 import com.swallow.cracker.data.database.dao.RedditPostsDao
 import com.swallow.cracker.data.database.dao.RedditProfileDao
 import com.swallow.cracker.data.model.RemoteRedditKeys
-import com.swallow.cracker.data.model.RemoteRedditPost
-import com.swallow.cracker.data.model.RemoteRedditProfile
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 
 
 @Database(

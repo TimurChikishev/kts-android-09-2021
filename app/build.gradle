@@ -105,7 +105,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
 
     // Jetpack Paging 3
-//    def paging_version = "3.1.0-beta01"
+    // def paging_version = "3.1.0-beta01"
     def paging_version = "3.0.1"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
@@ -128,4 +128,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+    // Adapter delegates
+    implementation 'com.hannesdorfmann:adapterdelegates4:4.3.0'
 }

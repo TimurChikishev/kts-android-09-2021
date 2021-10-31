@@ -1,6 +1,6 @@
 package com.swallow.cracker.ui.model
 
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 
 sealed interface RedditItem {
     var id: String

@@ -11,7 +11,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel

@@ -2,17 +2,16 @@ package com.swallow.cracker.data.mapper
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.swallow.cracker.data.model.RemoteRedditPost
-import com.swallow.cracker.data.model.RemoteRedditProfile
-import com.swallow.cracker.ui.model.RedditItem
-import com.swallow.cracker.ui.model.RedditListItemImage
-import com.swallow.cracker.ui.model.RedditListSimpleItem
-import com.swallow.cracker.ui.model.RedditProfile
+import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
+import com.swallow.cracker.ui.model.*
 import com.swallow.cracker.utils.convertLongToTime
 import com.swallow.cracker.utils.fixImgUrl
 
 object RedditMapper {
-    fun mapApiToUi(item: RemoteRedditPost): RedditItem {
+    private fun mapRemoteRedditPostToUi(item: RemoteRedditPost): RedditItem {
         return when {
             item.preview?.enabled == true -> RedditListItemImage(
                 id = item.id,
@@ -51,13 +50,13 @@ object RedditMapper {
         }
     }
 
-    fun replaceRedditPostToRedditItem(pagingData: PagingData<RemoteRedditPost>): PagingData<RedditItem> {
+    fun mapPagingDataRemoteRedditPostToUi(pagingData: PagingData<RemoteRedditPost>): PagingData<RedditItem> {
         return pagingData.map {
-            mapApiToUi(it)
+            mapRemoteRedditPostToUi(it)
         }
     }
 
-    fun remoteProfileToUi(profile: RemoteRedditProfile): RedditProfile {
+    fun mapRemoteProfileToUi(profile: RemoteRedditProfile): RedditProfile {
         val subreddit = profile.subreddit
         return RedditProfile(
             id = profile.id,
@@ -70,5 +69,28 @@ object RedditMapper {
             displayName = subreddit.displayName,
             url = subreddit.url,
         )
+    }
+
+    fun RedditJsonWrapper<SubredditDataResponse>.mapRemoteSubredditToUi(): List<Subreddit> {
+         val subreddits = this.data.children.map {
+            val subreddit = it.data
+            Subreddit(
+                id = subreddit.id,
+                displayName = subreddit.displayName,
+                displayNamePrefixed = subreddit.displayNamePrefixed,
+                name = subreddit.name,
+                url = subreddit.url,
+                communityIcon = subreddit.communityIcon.fixImgUrl(),
+                iconImg = subreddit.iconImg?.fixImgUrl(),
+                bannerImg = subreddit.bannerImg?.fixImgUrl(),
+                subscribers = subreddit.subscribers,
+                title = subreddit.title,
+                publicDescription = subreddit.publicDescription,
+                description = subreddit.description,
+                created = subreddit.created,
+            )
+        }
+
+        return subreddits
     }
 }

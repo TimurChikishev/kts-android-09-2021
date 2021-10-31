@@ -1,7 +1,7 @@
 package com.swallow.cracker.ui.model
 
 import android.os.Parcelable
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 

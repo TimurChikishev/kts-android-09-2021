@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 import com.swallow.cracker.databinding.RedditListImageItemBinding
 import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.model.RedditItem

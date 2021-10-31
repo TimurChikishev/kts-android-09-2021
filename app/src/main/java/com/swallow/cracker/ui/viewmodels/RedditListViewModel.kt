@@ -34,7 +34,7 @@ class RedditListViewModel : ViewModel() {
     @OptIn(FlowPreview::class)
     val items = query.map { q -> repository.getNewPager(q) }
         .flatMapLatest { pager -> pager.flow }
-        .map {  RedditMapper.replaceRedditPostToRedditItem(it.filter { item -> item.query == query.value }) }
+        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
         .catch { Timber.tag("TAG").d(it) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())

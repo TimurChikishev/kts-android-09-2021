@@ -56,7 +56,7 @@ class ProfileViewModel(
                             "There is no information about a user with an ID equal to ${pref.currentAccountId} in the database"
                         )
 
-                        RedditMapper.remoteProfileToUi(it)
+                        RedditMapper.mapRemoteProfileToUi(it)
                     }
                     .catch { Timber.tag("ERROR").d(it) }
                     .flowOn(Dispatchers.IO)
@@ -87,7 +87,7 @@ class ProfileViewModel(
         profileInfoJob?.cancel()
         profileInfoJob = viewModelScope.launch {
             redditRepository.getProfileInfo()
-                .map { RedditMapper.remoteProfileToUi(it) }
+                .map { RedditMapper.mapRemoteProfileToUi(it) }
                 .catch {
                     toastChannel.send(R.string.data_acquisition_error)
                 }

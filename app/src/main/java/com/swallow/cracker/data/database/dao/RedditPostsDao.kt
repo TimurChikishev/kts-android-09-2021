@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.swallow.cracker.data.database.model.RedditPostContract
-import com.swallow.cracker.data.model.RemoteRedditPost
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
 
 @Dao
 interface RedditPostsDao {

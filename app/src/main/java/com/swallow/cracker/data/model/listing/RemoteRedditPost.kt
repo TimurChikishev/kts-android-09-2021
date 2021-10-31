@@ -1,4 +1,4 @@
-package com.swallow.cracker.data.model
+package com.swallow.cracker.data.model.listing
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

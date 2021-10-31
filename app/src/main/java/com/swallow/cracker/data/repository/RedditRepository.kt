@@ -6,12 +6,14 @@ import androidx.paging.PagingConfig
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database.redditDatabase
-import com.swallow.cracker.data.model.RemoteRedditPost
-import com.swallow.cracker.data.model.RemoteRedditProfile
+import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditToUi
 import com.swallow.cracker.data.model.Resources
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.RedditItem
+import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.utils.getVoteDir
 import com.swallow.cracker.utils.updateScore
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +32,7 @@ class RedditRepository {
                 initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE
             ),
             remoteMediator = RedditRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
-        ){
+        ) {
             redditDatabase.redditPostsDao().getPosts()
         }
     }
@@ -80,12 +82,12 @@ class RedditRepository {
     }
 
     suspend fun getProfileInfo(): Flow<RemoteRedditProfile> = flow {
-        when(val profile = getProfile()){
+        when (val profile = getProfile()) {
             is Resources.Success<RemoteRedditProfile> -> {
                 saveRedditProfile(profile.value)
                 emit(profile.value)
             }
-            is Resources.Error ->{
+            is Resources.Error -> {
                 throw IllegalArgumentException(profile.throwable)
             }
         }
@@ -121,5 +123,29 @@ class RedditRepository {
     suspend fun getProfileFromDB(id: String): Flow<RemoteRedditProfile?> = flow {
         val value = redditDatabase.redditProfileDao().getProfileById(id)
         emit(value)
+    }
+
+    suspend fun searchSubreddit(query: String): Flow<List<Subreddit>> = flow {
+        when (val subreddits = getSubreddit(query)) {
+            is Resources.Success<List<Subreddit>> -> {
+                emit(subreddits.value)
+            }
+            is Resources.Error -> {
+                throw IllegalArgumentException(subreddits.throwable)
+            }
+        }
+    }
+
+    private suspend fun getSubreddit(query: String): Resources<List<Subreddit>> {
+        return NetworkHandler.call(
+            api = {
+                getSubreddit(
+                    query = query,
+                    rawJson = 1,
+                    gildingDetail = 1
+                )
+            },
+            mapper = { this.mapRemoteSubredditToUi() }
+        )
     }
 }

@@ -8,7 +8,7 @@ import androidx.room.withTransaction
 import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.model.RemoteRedditKeys
-import com.swallow.cracker.data.model.RemoteRedditPost
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.utils.fixImgUrl
 import timber.log.Timber
 
