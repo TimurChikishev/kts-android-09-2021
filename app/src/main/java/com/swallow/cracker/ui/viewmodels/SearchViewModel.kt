@@ -38,8 +38,8 @@ class SearchViewModel : ViewModel() {
 
     @OptIn(FlowPreview::class)
     fun searchSubreddit(query: String) {
-        viewModelScope.launch {
-            repository.searchSubreddit(query)
+        searchQueryJob = viewModelScope.launch {
+            repository.searchSubreddits(query)
                 .debounce(500)
                 .distinctUntilChanged()
                 .catch { Timber.tag("ERROR").d(it) }

@@ -123,8 +123,8 @@ class RedditRepository {
         emit(value)
     }
 
-    suspend fun searchSubreddit(query: String): Flow<List<Subreddit>> = flow {
-        when (val subreddits = getSubreddit(query)) {
+    suspend fun searchSubreddits(query: String): Flow<List<Subreddit>> = flow {
+        when (val subreddits = getSubreddits(query)) {
             is Resources.Success<List<Subreddit>> -> {
                 emit(subreddits.value)
             }
@@ -134,13 +134,9 @@ class RedditRepository {
         }
     }
 
-    private suspend fun getSubreddit(query: String): Resources<List<Subreddit>> {
+    private suspend fun getSubreddits(query: String): Resources<List<Subreddit>> {
         return NetworkHandler.call(
-            api = {
-                getSubreddit(
-                    query = query
-                )
-            },
+            api = { getSubreddits(query = query) },
             mapper = { this.mapRemoteSubredditToUi() }
         )
     }

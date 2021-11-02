@@ -20,7 +20,7 @@ interface RedditApi {
     ): Response<RedditJsonWrapper<RedditDataResponse>>
 
     @GET("api/subreddit_autocomplete_v2.json")
-    suspend fun getSubreddit(
+    suspend fun getSubreddits(
         @Query("query") query: String,
         @Query("limit") limit: Int = 5,
         @Query("raw_json") rawJson: Int = 1,
