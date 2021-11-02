@@ -46,8 +46,9 @@
         android:id="@+id/searchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/flowSearchAppBar"
-        tools:listitem="@layout/search_list_item" />
+        tools:listitem="@layout/search_subreddit_list_item" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

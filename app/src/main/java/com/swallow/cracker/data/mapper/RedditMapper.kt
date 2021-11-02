@@ -3,6 +3,7 @@ package com.swallow.cracker.data.mapper
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.swallow.cracker.data.model.RemoteSearchQuery
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
@@ -92,5 +93,13 @@ object RedditMapper {
         }
 
         return subreddits
+    }
+
+    fun mapRemoteSearchQueryToUi(querySearch: RemoteSearchQuery): SearchQuery {
+        return SearchQuery(query = querySearch.query)
+    }
+
+    fun mapUiSearchQueryToRemote(searchQuery: SearchQuery): RemoteSearchQuery {
+        return RemoteSearchQuery(query = searchQuery.query)
     }
 }

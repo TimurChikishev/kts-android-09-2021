@@ -2,7 +2,6 @@ package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
-import timber.log.Timber
 
 class DetailsPostImageFragment : DetailsPostFragment() {
 
@@ -10,7 +9,6 @@ class DetailsPostImageFragment : DetailsPostFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.tag("TAG").d("thumbnail = ${args.post.thumbnail}, preview = ${args.post.preview}")
         setItem(args.post)
     }
 }

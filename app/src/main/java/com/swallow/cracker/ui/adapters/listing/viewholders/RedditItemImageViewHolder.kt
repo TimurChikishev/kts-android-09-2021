@@ -10,6 +10,7 @@ import com.swallow.cracker.databinding.RedditListImageItemBinding
 import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
+import timber.log.Timber
 
 class RedditItemImageViewHolder(
     private val viewBinding: RedditListImageItemBinding,
@@ -93,12 +94,12 @@ class RedditItemImageViewHolder(
 
     private fun setAvatar(communityIcon: String?) = with(viewBinding) {
         if (communityIcon.isNullOrEmpty()) {
-            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+            avatarImageView.setImageResource(R.drawable.ic_subreddit_256dp)
         } else {
             Glide.with(context)
                 .load(communityIcon)
                 .circleCrop()
-                .error(R.drawable.ic_account_circle_24)
+                .error(R.drawable.ic_subreddit_256dp)
                 .into(avatarImageView)
         }
     }
@@ -114,7 +115,7 @@ class RedditItemImageViewHolder(
                     .thumbnail(Glide.with(thumbnailImageView).load(thumbnail))
                     .into(thumbnailImageView)
             } catch (exception: Throwable) {
-                error(exception)
+                Timber.tag("ERROR").d(exception)
             }
         }
 

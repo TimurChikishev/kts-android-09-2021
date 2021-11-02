@@ -3,11 +3,11 @@ package com.swallow.cracker.ui.adapters.search.viewholders
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
-import com.swallow.cracker.databinding.SearchListItemBinding
+import com.swallow.cracker.databinding.SearchSubredditListItemBinding
 import com.swallow.cracker.ui.model.Subreddit
 
 class SearchViewHolder(
-    private val viewBinding: SearchListItemBinding
+    private val viewBinding: SearchSubredditListItemBinding
 ) : RecyclerView.ViewHolder(viewBinding.root) {
 
     fun bind(subreddit: Subreddit) = with(subreddit) {
@@ -20,7 +20,7 @@ class SearchViewHolder(
         Glide.with(viewBinding.subredditImageView)
             .load(communityIcon)
             .circleCrop()
-            .error(R.drawable.ic_subreddit_512dp)
+            .error(R.drawable.ic_subreddit_256dp)
             .into(viewBinding.subredditImageView)
     }
 

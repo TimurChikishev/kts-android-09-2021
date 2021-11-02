@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database.redditDatabase
+import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditToUi
 import com.swallow.cracker.data.model.Resources
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
@@ -13,6 +14,7 @@ import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.ui.model.RedditItem
+import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.utils.getVoteDir
 import com.swallow.cracker.utils.updateScore
@@ -113,11 +115,7 @@ class RedditRepository {
     }
 
     suspend fun clearDataBase() {
-        redditDatabase.withTransaction {
-            redditDatabase.redditPostsDao().clearPosts()
-            redditDatabase.redditKeysDao().clearRedditKeys()
-            redditDatabase.redditProfileDao().clearRedditProfile()
-        }
+        redditDatabase.withTransaction { redditDatabase.clearAllTables() }
     }
 
     suspend fun getProfileFromDB(id: String): Flow<RemoteRedditProfile?> = flow {
@@ -140,12 +138,31 @@ class RedditRepository {
         return NetworkHandler.call(
             api = {
                 getSubreddit(
-                    query = query,
-                    rawJson = 1,
-                    gildingDetail = 1
+                    query = query
                 )
             },
             mapper = { this.mapRemoteSubredditToUi() }
         )
+    }
+
+    suspend fun getSearchQuery(): Flow<List<SearchQuery>?> = flow {
+        emit(
+            redditDatabase.redditSearchQueryDao().getSearchQuery()?.map {
+                RedditMapper.mapRemoteSearchQueryToUi(it)
+            }
+        )
+    }
+
+    suspend fun savedSearchQuery(searchQuery: SearchQuery) {
+        redditDatabase.withTransaction {
+            val result = RedditMapper.mapUiSearchQueryToRemote(searchQuery)
+            redditDatabase.redditSearchQueryDao().saveSearchQuery(result)
+        }
+    }
+
+    suspend fun removeSearchQuery(query: String) {
+        redditDatabase.withTransaction {
+            redditDatabase.redditSearchQueryDao().removeSearchQueryByQuery(query)
+        }
     }
 }

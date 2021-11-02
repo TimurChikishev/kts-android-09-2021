@@ -91,12 +91,12 @@ class RedditSimpleItemViewHolder(
 
     private fun setAvatar(communityIcon: String?) = with(viewBinding) {
         if (communityIcon.isNullOrEmpty()) {
-            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+            avatarImageView.setImageResource(R.drawable.ic_subreddit_256dp)
         } else {
             Glide.with(context)
                 .load(communityIcon)
                 .circleCrop()
-                .error(R.drawable.ic_account_circle_24)
+                .error(R.drawable.ic_subreddit_256dp)
                 .into(avatarImageView)
         }
     }

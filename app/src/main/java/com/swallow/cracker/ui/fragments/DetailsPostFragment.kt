@@ -170,19 +170,18 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
 
     private fun setAvatar(communityIcon: String?) = with(viewBinding) {
         if (communityIcon.isNullOrEmpty()) {
-            avatarImageView.setImageResource(R.drawable.ic_account_circle_24)
+            avatarImageView.setImageResource(R.drawable.ic_subreddit_256dp)
         } else {
             Glide.with(avatarImageView)
                 .load(communityIcon)
                 .circleCrop()
-                .error(R.drawable.ic_account_circle_24)
+                .error(R.drawable.ic_subreddit_256dp)
                 .into(avatarImageView)
         }
     }
 
     private fun setThumbnail(thumbnail: String?, preview: RedditChildrenPreview?) =
         with(viewBinding) {
-            Timber.tag("TAG").d("thumbnail = $thumbnail, preview = $preview")
             if (!thumbnail.isNullOrEmpty()) {
                 try {
                     val url = preview?.let { preview.images[0].source.urlNew } ?: thumbnail

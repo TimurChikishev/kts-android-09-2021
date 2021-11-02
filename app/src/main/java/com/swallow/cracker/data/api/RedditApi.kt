@@ -22,6 +22,7 @@ interface RedditApi {
     @GET("api/subreddit_autocomplete_v2.json")
     suspend fun getSubreddit(
         @Query("query") query: String,
+        @Query("limit") limit: Int = 5,
         @Query("raw_json") rawJson: Int = 1,
         @Query("gilding_detail") gildingDetail: Int = 1
     ): Response<RedditJsonWrapper<SubredditDataResponse>>
