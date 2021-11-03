@@ -1,9 +1,7 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,22 +32,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
+        bottomNavigationVisible()
         initViewModels()
         initSnackBar()
         bindingViewModel()
         initTopAppBar()
         initTabBar()
-        initBottomNavigationView()
         initNavigationView()
-    }
-
-    private fun initBottomNavigationView() {
-        viewBinding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.subscribePageAction -> true
-                else -> true //  R.id.mainPageAction
-            }
-        }
     }
 
     private fun initTabBar() = with(viewBinding) {
@@ -142,13 +131,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun navigateToProfileFragment() {
-        val action = MainFragmentDirections.actionMainFragmentToProfileFragment()
-        findNavController().navigate(action)
+        findNavController().navigate(MainFragmentDirections.actionMainFragmentToProfileFragment())
     }
 
     private fun navigateToSearchFragment() {
-        val action = MainFragmentDirections.actionMainFragmentToSearchFragment()
-        findNavController().navigate(action)
+        findNavController().navigate(MainFragmentDirections.actionMainFragmentToSearchFragment())
     }
 
     override fun onDestroyView() {

@@ -14,6 +14,7 @@ import com.swallow.cracker.databinding.FragmentOnBoardingBinding
 import com.swallow.cracker.ui.adapters.OnBoardingAdapter
 import com.swallow.cracker.ui.viewmodels.OnBoardingViewModel
 import com.swallow.cracker.utils.autoCleared
+import com.swallow.cracker.utils.bottomNavigationGone
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 
@@ -25,6 +26,7 @@ class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomNavigationGone()
         bindingViewModel()
     }
 

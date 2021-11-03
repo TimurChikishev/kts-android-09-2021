@@ -19,6 +19,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentProfileBinding
 import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
+import com.swallow.cracker.utils.bottomNavigationVisible
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
 
@@ -30,6 +31,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomNavigationVisible()
         initViewModels()
         bindViewModel()
         initTopAppBar()

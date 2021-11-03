@@ -17,6 +17,7 @@ import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListA
 import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.viewmodels.SearchViewModel
 import com.swallow.cracker.utils.autoCleared
+import com.swallow.cracker.utils.bottomNavigationVisible
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -27,7 +28,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        bottomNavigationVisible()
         initAdapter()
         bindingOfClick()
         bindSearchView()

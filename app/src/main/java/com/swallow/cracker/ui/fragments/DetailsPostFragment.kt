@@ -35,7 +35,7 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        bottomNavigationGone()
         initTopAppBar()
         initNoInternetSnackBar()
         bindViewModel()

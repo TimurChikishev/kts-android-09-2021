@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/mainPageAction"
-        android:enabled="true"
+        android:id="@+id/navigation"
         android:icon="@drawable/ic_home_24"
-        android:title="@string/home"/>
+        android:menuCategory="secondary"
+        android:title="@string/home" />
 
     <item
-        android:id="@+id/subscribePageAction"
-        android:enabled="true"
+        android:id="@+id/nav_tab_subscriptions"
         android:icon="@drawable/ic_format_list_bulleted_24"
-        android:title="@string/subscribers"/>
+        android:menuCategory="secondary"
+        android:title="@string/subscribers" />
 
 </menu>

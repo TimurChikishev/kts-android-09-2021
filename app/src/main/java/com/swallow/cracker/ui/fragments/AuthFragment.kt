@@ -13,6 +13,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentAuthBinding
 import com.swallow.cracker.ui.viewmodels.AuthViewModel
+import com.swallow.cracker.utils.bottomNavigationGone
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
 import net.openid.appauth.AuthorizationException
@@ -27,6 +28,7 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomNavigationGone()
         bindViewModel()
     }
 
