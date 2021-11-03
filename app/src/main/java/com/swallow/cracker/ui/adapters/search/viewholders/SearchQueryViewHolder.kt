@@ -16,6 +16,10 @@ class SearchQueryViewHolder(
         viewBinding.buttonRemove.setOnClickListener {
             item?.let { eventDelegate?.removeItem(it) }
         }
+
+        viewBinding.container.setOnClickListener {
+            item?.let { eventDelegate?.onItemClick(it) }
+        }
     }
 
     fun bind(subreddit: SearchQuery) = with(subreddit) {

@@ -35,7 +35,7 @@
         <item name="android:background">@color/arcDarkDark</item>
     </style>
 
-    <style name="Button">
+    <style name="SimpleButton">
         <item name="android:textColor">@color/arcDarkText</item>
     </style>
 

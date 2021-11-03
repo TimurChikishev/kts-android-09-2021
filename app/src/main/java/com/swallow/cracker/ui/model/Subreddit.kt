@@ -1,5 +1,9 @@
 package com.swallow.cracker.ui.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Subreddit(
     var id: String,
     var displayName: String,
@@ -13,5 +17,7 @@ data class Subreddit(
     var title: String,
     var publicDescription: String,
     var description: String?,
-    var created: Long
-)
+    var created: Long,
+    var userIsSubscriber: Boolean?,
+    var activeUserCount: Int?
+) : Parcelable

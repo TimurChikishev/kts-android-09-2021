@@ -15,9 +15,10 @@ import com.swallow.cracker.databinding.FragmentSearchBinding
 import com.swallow.cracker.ui.adapters.search.delegates.ComplexSearchDelegatesListAdapter
 import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
 import com.swallow.cracker.ui.model.SearchQuery
+import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SearchViewModel
 import com.swallow.cracker.utils.autoCleared
-import com.swallow.cracker.utils.bottomNavigationVisible
+import com.swallow.cracker.utils.bottomNavigationGone
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -28,7 +29,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomNavigationVisible()
+        bottomNavigationGone()
         initAdapter()
         bindingOfClick()
         bindSearchView()
@@ -57,8 +58,20 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         override fun onItemClick(item: Any) {
-            // TODO: navigation to subreddit page
+            when (item){
+                is Subreddit -> navigateToSubredditFragment(item)
+                is SearchFragment -> navigateToSearchFragment(item)
+            }
         }
+    }
+
+    private fun navigateToSearchFragment(item: SearchFragment) {
+        // TODO
+    }
+
+    private fun navigateToSubredditFragment(item: Subreddit) {
+        val action = SearchFragmentDirections.actionSearchFragmentToSubredditFragment(item)
+        findNavController().navigate(action)
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {

@@ -14,7 +14,7 @@ class ComplexSearchDelegatesListAdapter() : AsyncListDifferDelegationAdapter<Any
 
     fun init(){
         delegatesManager
-            .addDelegate(SubredditItemDelegate())
+            .addDelegate(SubredditItemDelegate(eventDelegate))
             .addDelegate(SearchQueryItemDelegate(eventDelegate))
     }
 

@@ -6,6 +6,7 @@ import com.swallow.cracker.data.model.RedditJsonWrapper
 import com.swallow.cracker.data.model.RemoteSearchQuery
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubredditAbout
 import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
 import com.swallow.cracker.ui.model.*
 import com.swallow.cracker.utils.convertLongToTime
@@ -73,7 +74,7 @@ object RedditMapper {
     }
 
     fun RedditJsonWrapper<SubredditDataResponse>.mapRemoteSubredditToUi(): List<Subreddit> {
-         val subreddits = this.data.children.map {
+        val subreddits = this.data.children.map {
             val subreddit = it.data
             Subreddit(
                 id = subreddit.id,
@@ -89,10 +90,33 @@ object RedditMapper {
                 publicDescription = subreddit.publicDescription,
                 description = subreddit.description,
                 created = subreddit.created,
+                userIsSubscriber = subreddit.userIsSubscriber,
+                activeUserCount = subreddit.activeUserCount
             )
         }
 
         return subreddits
+    }
+
+    fun RedditJsonWrapper<RemoteSubredditAbout>.mapRemoteSubredditAboutToUi(): Subreddit {
+        val subreddit = this.data
+        return Subreddit(
+            id = subreddit.id,
+            displayName = subreddit.displayName ?: "",
+            displayNamePrefixed = subreddit.displayNamePrefixed ?: "",
+            name = subreddit.name ?: "",
+            url = subreddit.url,
+            communityIcon = subreddit.communityIcon?.fixImgUrl() ?: "",
+            iconImg = subreddit.iconImg?.fixImgUrl(),
+            bannerImg = subreddit.headerImg?.fixImgUrl(),
+            subscribers = subreddit.subscribers,
+            title = subreddit.title ?: "",
+            publicDescription = subreddit.publicDescription ?: "",
+            description = subreddit.description,
+            created = subreddit.created,
+            userIsSubscriber = subreddit.userIsSubscriber,
+            activeUserCount = subreddit.activeUserCount
+        )
     }
 
     fun mapRemoteSearchQueryToUi(querySearch: RemoteSearchQuery): SearchQuery {

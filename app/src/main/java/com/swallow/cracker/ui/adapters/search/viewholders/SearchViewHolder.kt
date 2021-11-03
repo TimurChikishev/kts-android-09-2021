@@ -1,16 +1,30 @@
 package com.swallow.cracker.ui.adapters.search.viewholders
 
+import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.SearchSubredditListItemBinding
+import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
 import com.swallow.cracker.ui.model.Subreddit
 
 class SearchViewHolder(
-    private val viewBinding: SearchSubredditListItemBinding
+    private val viewBinding: SearchSubredditListItemBinding,
+    private val eventDelegate: EventSearchDelegateListAdapter?
 ) : RecyclerView.ViewHolder(viewBinding.root) {
 
+    private var item: Subreddit? = null
+    private var context: Context? = null
+
+    init {
+        viewBinding.container.setOnClickListener {
+            item?.let { eventDelegate?.onItemClick(it) }
+        }
+    }
+
     fun bind(subreddit: Subreddit) = with(subreddit) {
+        context = viewBinding.root.context
+        item = subreddit
         setSubredditName(displayName)
         setMembers(subscribers ?: 0)
         setSubredditIcon(communityIcon)
@@ -25,7 +39,7 @@ class SearchViewHolder(
     }
 
     private fun setMembers(subscriberCount: Int) {
-        viewBinding.membersTextView.text = subscriberCount.toString()
+        viewBinding.membersTextView.text = context?.getString(R.string.members, subscriberCount)
     }
 
     private fun setSubredditName(name: String) {

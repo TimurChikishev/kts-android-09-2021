@@ -81,6 +81,19 @@
         android:id="@+id/searchFragment"
         android:name="com.swallow.cracker.ui.fragments.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/subredditFragment"
+        android:name="com.swallow.cracker.ui.fragments.SubredditFragment"
+        android:label="fragment_subreddit"
+        tools:layout="@layout/fragment_subreddit" >
+        <argument
+            android:name="subreddit"
+            app:argType="com.swallow.cracker.ui.model.Subreddit" />
+    </fragment>
 
 </navigation>

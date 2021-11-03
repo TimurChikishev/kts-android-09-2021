@@ -36,7 +36,7 @@
         <item name="android:background">@color/arcWhite</item>
     </style>
 
-    <style name="Button">
+    <style name="SimpleButton">
         <item name="android:textColor">@color/arcWhite</item>
     </style>
 
@@ -57,4 +57,5 @@
         <item name="iconTint">@color/arcDarkTextDark</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
+
 </resources>

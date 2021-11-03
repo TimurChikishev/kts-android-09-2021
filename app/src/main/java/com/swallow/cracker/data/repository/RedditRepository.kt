@@ -7,6 +7,7 @@ import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.Database.redditDatabase
 import com.swallow.cracker.data.mapper.RedditMapper
+import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditAboutToUi
 import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditToUi
 import com.swallow.cracker.data.model.Resources
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
@@ -38,7 +39,6 @@ class RedditRepository {
             redditDatabase.redditPostsDao().getPosts()
         }
     }
-
 
     suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
         val dir = item.getVoteDir(likes)
@@ -160,5 +160,23 @@ class RedditRepository {
         redditDatabase.withTransaction {
             redditDatabase.redditSearchQueryDao().removeSearchQueryByQuery(query)
         }
+    }
+
+    fun getSubredditInfo(subreddit: String): Flow<Subreddit> = flow {
+        when (val result = getSubredditAbout(subreddit)) {
+            is Resources.Success<Subreddit> -> {
+                emit(result.value)
+            }
+            is Resources.Error -> {
+                throw IllegalArgumentException(result.throwable)
+            }
+        }
+    }
+
+    private suspend fun getSubredditAbout(subreddit: String): Resources<Subreddit> {
+        return NetworkHandler.call(
+            api = { getSubredditInfo(subreddit = subreddit) },
+            mapper = { this.mapRemoteSubredditAboutToUi()  }
+        )
     }
 }

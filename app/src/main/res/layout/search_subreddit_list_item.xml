@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:id="@+id/container"
     android:theme="@style/Container">
 
     <ImageView

@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates4.AbsListItemAdapterDelegate
 import com.swallow.cracker.databinding.SearchSubredditListItemBinding
+import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
 import com.swallow.cracker.ui.adapters.search.viewholders.SearchViewHolder
 import com.swallow.cracker.ui.model.Subreddit
 
-class SubredditItemDelegate : AbsListItemAdapterDelegate<Any, Any, SearchViewHolder>() {
+class SubredditItemDelegate(
+    private val eventDelegate: EventSearchDelegateListAdapter?
+) : AbsListItemAdapterDelegate<Any, Any, SearchViewHolder>() {
 
     override fun isForViewType(item: Any, items: MutableList<Any>, position: Int): Boolean {
         return item is Subreddit
@@ -18,7 +21,8 @@ class SubredditItemDelegate : AbsListItemAdapterDelegate<Any, Any, SearchViewHol
             LayoutInflater.from(parent.context),
             parent,
             false
-        )
+        ),
+        eventDelegate
     )
 
     override fun onBindViewHolder(item: Any, holder: SearchViewHolder, payloads: MutableList<Any>) {

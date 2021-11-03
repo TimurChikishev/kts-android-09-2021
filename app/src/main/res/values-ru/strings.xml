@@ -49,7 +49,7 @@
     <string name="posts">Posts</string>
     <string name="comments">Comments</string>
     <string name="about">About</string>
-    <string name="karma">%1$x karma</string>
+    <string name="karma">%1$d karma</string>
     <string name="separator">•</string>
     <string name="try_again">Давай попробуем еще раз</string>
     <string name="trouble_loading_data">У нас возникли проблемы с загрузкой данных. Пожалуйста, попробуйте снова.</string>
@@ -63,4 +63,7 @@
     <string name="subscribers">Subscribers</string>
     <string name="button_back">button back</string>
     <string name="delete_button">delete button</string>
+    <string name="joined">joined</string>
+    <string name="members">%1$d members</string>
+    <string name="online">%1$d online</string>
 </resources>
