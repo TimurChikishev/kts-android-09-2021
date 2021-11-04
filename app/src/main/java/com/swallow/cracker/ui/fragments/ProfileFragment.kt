@@ -19,7 +19,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentProfileBinding
 import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
-import com.swallow.cracker.utils.bottomNavigationVisible
+import com.swallow.cracker.utils.bottomNavigationGone
 import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
 
@@ -31,7 +31,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomNavigationVisible()
+        bottomNavigationGone()
         initViewModels()
         bindViewModel()
         initTopAppBar()
@@ -90,7 +90,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun setAvatarImage(profile: RedditProfile) = with(viewBinding) {
         Glide.with(this@ProfileFragment)
             .load(profile.avatarImg ?: profile.iconImage)
-            .error(R.drawable.ic_account_circle_24)
+            .error(R.drawable.ic_user_24)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,

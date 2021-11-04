@@ -34,7 +34,7 @@ class SearchViewHolder(
         Glide.with(viewBinding.subredditImageView)
             .load(communityIcon)
             .circleCrop()
-            .error(R.drawable.ic_subreddit_256dp)
+            .error(R.drawable.ic_subreddit_24)
             .into(viewBinding.subredditImageView)
     }
 

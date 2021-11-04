@@ -15,13 +15,13 @@ data class RemoteSubreddit(
     val displayNamePrefixed: String,
 
     @Json(name = "name")
-    val name: String,
+    val name: String?,
 
     @Json(name = "url")
-    val url: String,
+    val url: String?,
 
     @Json(name = "community_icon")
-    val communityIcon: String,
+    val communityIcon: String?,
 
     @Json(name = "icon_img")
     val iconImg: String?,
@@ -33,19 +33,19 @@ data class RemoteSubreddit(
     val subscribers: Int?,
 
     @Json(name = "title")
-    val title: String,
+    val title: String?,
 
     @Json(name = "public_description")
-    val publicDescription: String,
+    val publicDescription: String?,
 
     @Json(name = "description")
     val description: String?,
 
     @Json(name = "created")
-    val created: Long,
+    val created: Long?,
 
     @Json(name = "user_is_subscriber")
-    val userIsSubscriber: Boolean,
+    val userIsSubscriber: Boolean?,
 
     @Json(name = "active_user_count")
     val activeUserCount: Int?

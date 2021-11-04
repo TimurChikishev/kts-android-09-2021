@@ -15,6 +15,7 @@ import com.swallow.cracker.databinding.FragmentSearchBinding
 import com.swallow.cracker.ui.adapters.search.delegates.ComplexSearchDelegatesListAdapter
 import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
 import com.swallow.cracker.ui.model.SearchQuery
+import com.swallow.cracker.ui.model.SearchQueryTransaction
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SearchViewModel
 import com.swallow.cracker.utils.autoCleared
@@ -58,15 +59,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         override fun onItemClick(item: Any) {
-            when (item){
-                is Subreddit -> navigateToSubredditFragment(item)
-                is SearchFragment -> navigateToSearchFragment(item)
+            when (item) {
+                is Subreddit -> searchViewModel.savedSearchQuery(item.displayName, item)
+                is SearchQuery ->searchViewModel.savedSearchQuery(item.query)
             }
         }
     }
 
-    private fun navigateToSearchFragment(item: SearchFragment) {
-        // TODO
+    private fun navigateToSearchResultFragment(query: String) {
+        val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(query)
+        findNavController().navigate(action)
     }
 
     private fun navigateToSubredditFragment(item: Subreddit) {
@@ -90,8 +92,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         searchAdapter.removeItem(item)
     }
 
-    private fun searchQueryIsSaved(isSaved: Boolean) {
-        // TODO: navigation
+    private fun searchQueryIsSaved(transaction: SearchQueryTransaction) {
+        if (transaction.subreddit == null) {
+            navigateToSearchResultFragment(transaction.query)
+        } else {
+            navigateToSubredditFragment(transaction.subreddit)
+        }
     }
 
     private fun updateItems(items: List<Any>) {

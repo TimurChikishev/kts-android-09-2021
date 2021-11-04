@@ -121,7 +121,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         Glide.with(this@MainFragment)
             .load(profile?.avatarImg ?: profile?.iconImage)
-            .error(R.drawable.ic_account_circle_24)
+            .error(R.drawable.ic_user_24)
             .into(avatarIcon)
     }
 

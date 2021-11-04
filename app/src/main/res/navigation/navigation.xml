@@ -85,6 +85,9 @@
         <action
             android:id="@+id/action_searchFragment_to_subredditFragment"
             app:destination="@id/subredditFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/subredditFragment"
@@ -93,7 +96,17 @@
         tools:layout="@layout/fragment_subreddit" >
         <argument
             android:name="subreddit"
-            app:argType="com.swallow.cracker.ui.model.Subreddit" />
+            app:argType="com.swallow.cracker.ui.model.Subreddit"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.swallow.cracker.ui.fragments.SearchResultFragment"
+        android:label="fragment_search_result"
+        tools:layout="@layout/fragment_search_result" >
+        <argument
+            android:name="query"
+            app:argType="string" />
     </fragment>
 
 </navigation>

@@ -12,9 +12,9 @@ data class RemoteSubredditAbout(
     @Json(name = "title")
     val title: String?,
     @Json(name = "display_name")
-    val displayName: String?,
+    val displayName: String,
     @Json(name = "display_name_prefixed")
-    val displayNamePrefixed: String?,
+    val displayNamePrefixed: String,
     @Json(name = "community_icon")
     val communityIcon: String?,
     @Json(name = "icon_img")
@@ -30,7 +30,7 @@ data class RemoteSubredditAbout(
     @Json(name = "active_user_count")
     val activeUserCount: Int?,
     @Json(name = "user_is_subscriber")
-    val userIsSubscriber: Boolean,
+    val userIsSubscriber: Boolean?,
     @Json(name = "created")
     val created: Long,
     @Json(name = "url")

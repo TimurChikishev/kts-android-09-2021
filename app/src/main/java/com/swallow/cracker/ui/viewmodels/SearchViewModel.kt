@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.data.repository.RedditRepository
 import com.swallow.cracker.ui.model.SearchQuery
+import com.swallow.cracker.ui.model.SearchQueryTransaction
 import com.swallow.cracker.ui.model.Subreddit
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,7 @@ class SearchViewModel : ViewModel() {
 
     private val searchSubredditMutableSharedFlow = MutableSharedFlow<List<Subreddit>>()
     private val searchQueryMutableSharedFlow = MutableSharedFlow<List<SearchQuery>>()
-    private val searchQueryIsSavedChannel = Channel<Boolean>(Channel.BUFFERED)
+    private val searchQueryIsSavedChannel = Channel<SearchQueryTransaction>(Channel.BUFFERED)
     private val searchQueryIsRemovedChannel = Channel<SearchQuery>(Channel.BUFFERED)
 
     val searchSubreddit: SharedFlow<List<Subreddit>>
@@ -24,7 +25,7 @@ class SearchViewModel : ViewModel() {
     val searchQuery: SharedFlow<List<SearchQuery>>
         get() = searchQueryMutableSharedFlow
 
-    val searchQueryIsSaved: Flow<Boolean>
+    val searchQueryIsSaved: Flow<SearchQueryTransaction>
         get() = searchQueryIsSavedChannel.receiveAsFlow()
 
     val searchQueryIsRemoved: Flow<SearchQuery>
@@ -67,15 +68,15 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    fun savedSearchQuery(query: String) {
+    fun savedSearchQuery(query: String, subreddit: Subreddit? = null) {
         searchQuerySavedJob?.cancel()
         searchQuerySavedJob = viewModelScope.launch {
             runCatching{
                 repository.savedSearchQuery(SearchQuery(query))
             }.onSuccess {
-                searchQueryIsSavedChannel.send(true)
+                searchQueryIsSavedChannel.send(SearchQueryTransaction(query, subreddit, true))
             }.onFailure {
-                searchQueryIsSavedChannel.send(false)
+                searchQueryIsSavedChannel.send(SearchQueryTransaction(query, subreddit, false))
             }
         }
     }

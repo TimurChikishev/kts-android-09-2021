@@ -9,7 +9,7 @@ data class Subreddit(
     var displayName: String,
     var displayNamePrefixed: String,
     var name: String,
-    var url: String,
+    var url: String?,
     var communityIcon: String,
     var iconImg: String?,
     var bannerImg: String?,
@@ -17,7 +17,7 @@ data class Subreddit(
     var title: String,
     var publicDescription: String,
     var description: String?,
-    var created: Long,
+    var created: Long?,
     var userIsSubscriber: Boolean?,
     var activeUserCount: Int?
 ) : Parcelable
