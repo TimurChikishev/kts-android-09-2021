@@ -49,22 +49,33 @@
         <action
             android:id="@+id/action_mainFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsPostImageFragment"
         android:name="com.swallow.cracker.ui.fragments.DetailsPostImageFragment"
         tools:layout="@layout/fragment_details">
+        <deepLink app:uri="android-app://com.swallow.cracker/detailsPostImage?post={post}" />
         <argument
             android:name="post"
             app:argType="com.swallow.cracker.ui.model.RedditListItemImage" />
+        <action
+            android:id="@+id/action_detailsPostImageFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsPostSimpleFragment"
         android:name="com.swallow.cracker.ui.fragments.DetailsPostSimpleFragment"
         tools:layout="@layout/fragment_details">
+        <deepLink app:uri="android-app://com.swallow.cracker/detailsPostSimple?post={post}" />
         <argument
             android:name="post"
             app:argType="com.swallow.cracker.ui.model.RedditListSimpleItem" />
+        <action
+            android:id="@+id/action_detailsPostSimpleFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -96,17 +107,32 @@
         tools:layout="@layout/fragment_subreddit" >
         <argument
             android:name="subreddit"
-            app:argType="com.swallow.cracker.ui.model.Subreddit"
+            app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_subredditFragment_to_detailsPostImageFragment"
+            app:destination="@id/detailsPostImageFragment" />
+        <action
+            android:id="@+id/action_subredditFragment_to_detailsPostSimpleFragment"
+            app:destination="@id/detailsPostSimpleFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
-        android:name="com.swallow.cracker.ui.fragments.SearchResultFragment"
+        android:name="com.swallow.cracker.ui.fragments.SearchResultsFragment"
         android:label="fragment_search_result"
         tools:layout="@layout/fragment_search_result" >
         <argument
             android:name="query"
             app:argType="string" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_detailsPostSimpleFragment"
+            app:destination="@id/detailsPostSimpleFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_detailsPostImageFragment"
+            app:destination="@id/detailsPostImageFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
     </fragment>
 
 </navigation>

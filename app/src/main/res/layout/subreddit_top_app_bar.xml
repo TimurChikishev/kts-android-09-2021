@@ -18,7 +18,7 @@
             <ImageView
                 android:id="@+id/bannerImageView"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="152dp"
                 android:contentDescription="@string/header_image"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
@@ -106,7 +106,7 @@
                 tools:text="69 online" />
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/bottomNavigationHeaderProfile"
+                android:id="@+id/headerTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginTop="6dp"
@@ -131,6 +131,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            android:layout_marginTop="30dp"
             android:theme="@style/MaterialToolbarProfileCracker"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

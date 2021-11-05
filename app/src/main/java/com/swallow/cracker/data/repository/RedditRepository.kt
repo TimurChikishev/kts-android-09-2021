@@ -25,16 +25,28 @@ import retrofit2.Response
 
 class RedditRepository {
 
+    private val defaultPagerConfig = PagingConfig(
+        pageSize = NetworkConfig.PAGE_SIZE,
+        enablePlaceholders = true,
+        maxSize = NetworkConfig.MAX_SIZE,
+        initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE
+    )
+
     @OptIn(ExperimentalPagingApi::class)
-    fun getNewPager(query: String): Pager<Int, RemoteRedditPost> {
+    fun getNewListingPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
-            config = PagingConfig(
-                pageSize = NetworkConfig.PAGE_SIZE,
-                enablePlaceholders = true,
-                maxSize = NetworkConfig.MAX_SIZE,
-                initialLoadSize = NetworkConfig.INITIAL_LOAD_SIZE
-            ),
-            remoteMediator = RedditRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
+            config = defaultPagerConfig,
+            remoteMediator = RedditListingRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
+        ) {
+            redditDatabase.redditPostsDao().getPosts()
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getNewSearchPager(query: String): Pager<Int, RemoteRedditPost> {
+        return Pager(
+            config = defaultPagerConfig,
+            remoteMediator = RedditSearchRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
         ) {
             redditDatabase.redditPostsDao().getPosts()
         }

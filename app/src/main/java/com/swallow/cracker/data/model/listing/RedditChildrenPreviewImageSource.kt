@@ -10,10 +10,10 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 data class RedditChildrenPreviewImageSource(
     @Json(name = "url")
-    val url: String,
+    var url: String,
     @Json(name = "width")
     val width: Int,
     @Json(name = "height")
     val height: Int,
-    val urlNew: String = url.fixImgUrl()
+    var urlNew: String = url.fixImgUrl()
 ) : Parcelable

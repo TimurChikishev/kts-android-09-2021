@@ -23,7 +23,7 @@ import com.swallow.cracker.ui.adapters.listing.delegates.items.RedditListSimpleI
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
-import com.swallow.cracker.ui.viewmodels.RedditListViewModel
+import com.swallow.cracker.ui.viewmodels.RedditListViewModelImpl
 import com.swallow.cracker.utils.asMergedLoadStates
 import com.swallow.cracker.utils.getDataFormCacheSnackBar
 import com.swallow.cracker.utils.sharedUrl
@@ -36,8 +36,8 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 open class ListFragment : Fragment(R.layout.fragment_list) {
-    private val redditViewModel: RedditListViewModel by viewModels()
-    private val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
+    protected val redditViewModel: RedditListViewModelImpl by viewModels()
+    protected val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
         ComplexDelegatesRedditListAdapter.Builder()
             .add(RedditListSimpleItemDelegateAdapter())
             .add(RedditListItemImageDelegateAdapter())
@@ -70,8 +70,8 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenCreated { redditViewModel.items.collectLatest { redditAdapter.submitData(it) } }
+    protected open fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
+        launchWhenCreated { redditViewModel.listingItems.collectLatest { redditAdapter.submitData(it) } }
 
         launchWhenStarted { redditViewModel.eventMessage.collect(::showMessage) }
     }
@@ -92,6 +92,10 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
             override fun navigateTo(item: RedditItem) = when (item) {
                 is RedditListSimpleItem -> navigateToDetailSimple(item)
                 is RedditListItemImage -> navigateToDetailsImage(item)
+            }
+
+            override fun onSubredditIconClick(item: RedditItem) {
+                navigateToSubredditFragment(item.subreddit)
             }
 
             override fun shared(url: String): Unit = startActivity(sharedUrl(url))
@@ -160,13 +164,18 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
         includeRetry.retryLinearLayout.isVisible = isRemoteRefreshFailed && isEmptyCache
     }
 
-    private fun navigateToDetailsImage(item: RedditListItemImage) {
+    protected open fun navigateToDetailsImage(item: RedditListItemImage) {
         val action = MainFragmentDirections.actionMainFragmentToDetailsImageFragment(item)
         findNavController().navigate(action)
     }
 
-    private fun navigateToDetailSimple(item: RedditListSimpleItem) {
+    protected open fun navigateToDetailSimple(item: RedditListSimpleItem) {
         val action = MainFragmentDirections.actionMainFragmentToDetailsPostSimpleFragment(item)
+        findNavController().navigate(action)
+    }
+
+    protected open  fun navigateToSubredditFragment(subreddit: String) {
+        val action = MainFragmentDirections.actionMainFragmentToSubredditFragment(subreddit)
         findNavController().navigate(action)
     }
 }

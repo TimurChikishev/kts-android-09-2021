@@ -66,16 +66,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
-    private fun navigateToSearchResultFragment(query: String) {
-        val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(query)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToSubredditFragment(item: Subreddit) {
-        val action = SearchFragmentDirections.actionSearchFragmentToSubredditFragment(item)
-        findNavController().navigate(action)
-    }
-
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
         searchViewModel.init()
 
@@ -94,7 +84,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun searchQueryIsSaved(transaction: SearchQueryTransaction) {
         if (transaction.subreddit == null) {
-            navigateToSearchResultFragment(transaction.query)
+            navigateToSearchResultsFragment(transaction.query)
         } else {
             navigateToSubredditFragment(transaction.subreddit)
         }
@@ -124,5 +114,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun bindingOfClick() = with(viewBinding) {
         backMaterialButton.setOnClickListener { findNavController().popBackStack() }
+    }
+
+    private fun navigateToSearchResultsFragment(query: String) {
+        val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(query)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToSubredditFragment(item: Subreddit) {
+        val action = SearchFragmentDirections.actionSearchFragmentToSubredditFragment(item.displayName)
+        findNavController().navigate(action)
     }
 }

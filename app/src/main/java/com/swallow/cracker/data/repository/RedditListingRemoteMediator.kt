@@ -7,13 +7,16 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.database.RedditDatabase
+import com.swallow.cracker.data.model.RedditJsonWrapper
 import com.swallow.cracker.data.model.RemoteRedditKeys
+import com.swallow.cracker.data.model.listing.RedditDataResponse
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.utils.fixImgUrl
+import retrofit2.Response
 import timber.log.Timber
 
 @OptIn(ExperimentalPagingApi::class)
-class RedditRemoteMediator(
+open class RedditListingRemoteMediator(
     private val query: String,
     private val redditApi: RedditApi,
     private val database: RedditDatabase
@@ -43,15 +46,7 @@ class RedditRemoteMediator(
                 }
             }
 
-            val response = redditApi.getListing(
-                query = query,
-                after = loadKey?.after,
-                before = loadKey?.before,
-                limit = when (loadType) {
-                    LoadType.REFRESH -> state.config.initialLoadSize
-                    else -> state.config.pageSize
-                }
-            )
+            val response = getPosts(loadKey, loadType, state)
 
             Timber.tag("TAG").d("_______ query: $query _______")
             Timber.tag("TAG").d("_______ state: $loadType _______")
@@ -83,6 +78,22 @@ class RedditRemoteMediator(
         } catch (exception: Throwable) {
             MediatorResult.Error(exception)
         }
+    }
+
+    protected open suspend fun getPosts(
+        loadKey: RemoteRedditKeys?,
+        loadType: LoadType,
+        state: PagingState<Int, RemoteRedditPost>
+    ): Response<RedditJsonWrapper<RedditDataResponse>> {
+        return redditApi.getListing(
+            query = query,
+            after = loadKey?.after,
+            before = loadKey?.before,
+            limit = when (loadType) {
+                LoadType.REFRESH -> state.config.initialLoadSize
+                else -> state.config.pageSize
+            }
+        )
     }
 
     private suspend fun getSubredditIcon(post: RemoteRedditPost): String? {

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.SearchResultFragment">
+    android:fitsSystemWindows="true"
+    android:id="@+id/containerCoordinatorLayout"
+    tools:context=".ui.fragments.SearchResultsFragment">
 
-    <TextView
+    <include
+        android:id="@+id/includeAppBar"
+        layout="@layout/search_result_top_app_bar" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/search_result" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

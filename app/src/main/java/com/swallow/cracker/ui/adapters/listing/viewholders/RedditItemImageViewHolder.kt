@@ -49,6 +49,10 @@ class RedditItemImageViewHolder(
         viewBinding.shareImageView.setOnClickListener {
             item?.let { clickDelegate?.shared(it.url) }
         }
+
+        viewBinding.avatarImageView.setOnClickListener {
+            item?.let { clickDelegate?.onSubredditIconClick(it) }
+        }
     }
 
     fun bind(modal: RedditListItemImage) = with(modal) {

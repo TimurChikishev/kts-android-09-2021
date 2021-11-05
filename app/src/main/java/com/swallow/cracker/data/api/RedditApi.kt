@@ -19,6 +19,14 @@ interface RedditApi {
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
 
+    @GET("search.json")
+    suspend fun search(
+        @Query("q") query: String,
+        @Query("limit") limit: Int,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null
+    ): Response<RedditJsonWrapper<RedditDataResponse>>
+
     @GET("api/subreddit_autocomplete_v2.json")
     suspend fun getSubreddits(
         @Query("query") query: String,

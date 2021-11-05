@@ -6,5 +6,6 @@ interface ComplexDelegateAdapterClick {
     fun onVoteClick(item: RedditItem, likes: Boolean)
     fun onSavedClick(item: RedditItem, saved: Boolean)
     fun navigateTo(item: RedditItem)
+    fun onSubredditIconClick(item: RedditItem)
     fun shared(url: String)
 }

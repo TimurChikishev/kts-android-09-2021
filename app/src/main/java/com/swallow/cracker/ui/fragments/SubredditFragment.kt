@@ -1,6 +1,5 @@
 package com.swallow.cracker.ui.fragments
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -12,12 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.google.android.material.tabs.TabLayoutMediator
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentSubredditBinding
+import com.swallow.cracker.ui.adapters.SubredditFragmentAdapter
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SubredditViewModel
 import com.swallow.cracker.utils.bottomNavigationGone
@@ -25,8 +22,13 @@ import kotlinx.coroutines.flow.collect
 
 class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
+    companion object {
+        private val tabTitles = listOf("Posts")
+    }
+
     private val args by navArgs<SubredditFragmentArgs>()
-    private val currentSubreddit by lazy { args.subreddit }
+    private val subredditName by lazy { args.subreddit }
+    private val subredditPrefixName by lazy { "r/${subredditName}" }
     private val subredditViewModel: SubredditViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentSubredditBinding::bind)
 
@@ -34,8 +36,17 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
         super.onViewCreated(view, savedInstanceState)
         bottomNavigationGone()
         bindOfClick()
-        setAppBarContent(currentSubreddit)
         bindViewModel()
+        initTabBar()
+    }
+
+    private fun initTabBar() = with(viewBinding) {
+        viewPager.adapter = SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
+
+        TabLayoutMediator(includeAppBar.headerTabLayout, viewPager) { tab, position ->
+            tab.text = tabTitles[position]
+            viewPager.setCurrentItem(tab.position, false)
+        }.attach()
     }
 
     private fun bindOfClick() = with(viewBinding) {
@@ -46,13 +57,22 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
         launchWhenStarted {
-            currentSubreddit?.displayName?.let {
+            subredditName?.let {
                 subredditViewModel.getSubredditInfo(it)
             }
         }
 
         launchWhenStarted {
             subredditViewModel.subredditInfo.collect(::setAppBarContent)
+        }
+
+        launchWhenStarted {
+            subredditViewModel.isLoading.collect {
+                it?.let {
+                    viewBinding.containerCoordinatorLayout.isVisible = true
+                    viewBinding.progressBar.isVisible = false
+                }
+            }
         }
     }
 
@@ -68,34 +88,11 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
             bottomJoin.text = resources.getString(R.string.joined)
     }
 
-    private fun setSubredditAvatar(communityIcon: String, imageView: ImageView) = with(viewBinding) {
+    private fun setSubredditAvatar(communityIcon: String, imageView: ImageView) {
         Glide.with(this@SubredditFragment)
             .load(communityIcon)
             .circleCrop()
             .error(R.drawable.ic_subreddit_24)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    progressBar.isVisible = false
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    progressBar.isVisible = false
-                    containerCoordinatorLayout.isVisible = true
-                    return false
-                }
-            })
             .into(imageView)
     }
 }

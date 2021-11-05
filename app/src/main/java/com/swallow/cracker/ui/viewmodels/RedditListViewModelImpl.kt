@@ -15,7 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
-class RedditListViewModel : ViewModel() {
+open class RedditListViewModelImpl : ViewModel() {
 
     private val repository = RedditRepository()
 
@@ -32,12 +32,22 @@ class RedditListViewModel : ViewModel() {
 
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
-    val items = query.map { q -> repository.getNewPager(q) }
+    val listingItems = query.map { q -> repository.getNewListingPager(q) }
         .flatMapLatest { pager -> pager.flow }
         .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
         .catch { Timber.tag("ERROR").d(it) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    @ExperimentalCoroutinesApi
+    @OptIn(FlowPreview::class)
+    val searchItems = query.map { q -> repository.getNewSearchPager(q) }
+        .flatMapLatest { pager -> pager.flow }
+        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
+        .catch { Timber.tag("ERROR").d(it) }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
 
     fun setQuery(query: String) {
         _query.tryEmit(query)
