@@ -5,12 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.model.RedditJsonWrapper
 import com.swallow.cracker.data.model.RemoteRedditKeys
 import com.swallow.cracker.data.model.listing.RedditDataResponse
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
+import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.utils.fixImgUrl
 import retrofit2.Response
 import timber.log.Timber
@@ -18,7 +18,6 @@ import timber.log.Timber
 @OptIn(ExperimentalPagingApi::class)
 open class RedditListingRemoteMediator(
     private val query: String,
-    private val redditApi: RedditApi,
     private val database: RedditDatabase
 ) : RemoteMediator<Int, RemoteRedditPost>() {
 
@@ -85,7 +84,7 @@ open class RedditListingRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, RemoteRedditPost>
     ): Response<RedditJsonWrapper<RedditDataResponse>> {
-        return redditApi.getListing(
+        return Networking.redditApiOAuth.getListing(
             query = query,
             after = loadKey?.after,
             before = loadKey?.before,
@@ -102,7 +101,7 @@ open class RedditListingRemoteMediator(
         return if (subredditHashMap.containsKey(subredditId)) {
             subredditHashMap[subredditId]
         } else {
-            val info = redditApi.getSubredditInfo(post.subreddit).body()
+            val info = Networking.redditApiOAuth.getSubredditInfo(post.subreddit).body()
             subredditHashMap[subredditId] = info?.data?.communityIcon?.fixImgUrl()
             subredditHashMap[subredditId]
         }

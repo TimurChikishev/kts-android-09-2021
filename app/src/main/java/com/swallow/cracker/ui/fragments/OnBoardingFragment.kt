@@ -3,7 +3,6 @@ package com.swallow.cracker.ui.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -17,11 +16,12 @@ import com.swallow.cracker.utils.autoCleared
 import com.swallow.cracker.utils.bottomNavigationGone
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OnBoardingFragment : Fragment(R.layout.fragment_on_boarding) {
 
     private val viewBinding by viewBinding(FragmentOnBoardingBinding::bind)
-    private val viewModel by viewModels<OnBoardingViewModel>()
+    private val viewModel: OnBoardingViewModel by viewModel()
     private var adapter: OnBoardingAdapter by autoCleared()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

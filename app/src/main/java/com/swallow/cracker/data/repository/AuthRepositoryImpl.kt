@@ -2,11 +2,12 @@ package com.swallow.cracker.data.repository
 
 import android.net.Uri
 import com.swallow.cracker.data.config.AuthConfig
+import com.swallow.cracker.domain.repository.AuthRepository
 import net.openid.appauth.*
 
-class AuthRepository {
+class AuthRepositoryImpl : AuthRepository {
 
-    fun getAuthRequest(): AuthorizationRequest {
+    override fun getAuthRequest(): AuthorizationRequest {
         val serviceConfiguration = AuthorizationServiceConfiguration(
             Uri.parse(AuthConfig.AUTH_URI),
             Uri.parse(AuthConfig.TOKEN_URI)
@@ -25,7 +26,7 @@ class AuthRepository {
             .build()
     }
 
-    fun performTokenRequest(
+    override fun performTokenRequest(
         authService: AuthorizationService,
         tokenRequest: TokenRequest,
         onComplete: (String, String) -> Unit,

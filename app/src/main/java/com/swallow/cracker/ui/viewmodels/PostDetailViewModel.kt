@@ -2,8 +2,8 @@ package com.swallow.cracker.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.swallow.cracker.R
-import com.swallow.cracker.data.repository.RedditRepository
+import com.swallow.cracker.R 
+import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.utils.set
@@ -13,9 +13,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class PostDetailViewModel : ViewModel() {
-
-    private val repository = RedditRepository()
+class PostDetailViewModel constructor(
+    private val getPostsUseCase: GetPostsUseCase
+) : ViewModel() {
 
     private var savePostMutableStateFlow = Channel<Boolean>(Channel.BUFFERED)
     private var savePostIsClickableMutableStateFlow = MutableStateFlow(true)
@@ -46,7 +46,7 @@ class PostDetailViewModel : ViewModel() {
         savePostIsClickableMutableStateFlow.set(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            repository.savePost(item)
+            getPostsUseCase.savePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
@@ -66,7 +66,7 @@ class PostDetailViewModel : ViewModel() {
         savePostIsClickableMutableStateFlow.set(false)
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            repository.unSavePost(item)
+            getPostsUseCase.unSavePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
@@ -86,7 +86,7 @@ class PostDetailViewModel : ViewModel() {
         voteIsClickableMutableStateFlow.set(false)
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
-            repository.votePost(item, likes)
+            getPostsUseCase.votePost(item, likes)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {

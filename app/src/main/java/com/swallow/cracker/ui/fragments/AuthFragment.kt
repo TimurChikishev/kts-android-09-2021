@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -18,10 +17,11 @@ import com.swallow.cracker.utils.toast
 import kotlinx.coroutines.flow.collect
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthFragment : Fragment(R.layout.fragment_auth) {
 
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: AuthViewModel by viewModel()
     private val viewBinding by viewBinding(FragmentAuthBinding::bind)
 
     private var buttonAuthByReddit: Button? = null

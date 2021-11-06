@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,6 +18,7 @@ import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SubredditViewModel
 import com.swallow.cracker.utils.bottomNavigationGone
 import kotlinx.coroutines.flow.collect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
@@ -29,7 +29,7 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
     private val args by navArgs<SubredditFragmentArgs>()
     private val subredditName by lazy { args.subreddit }
     private val subredditPrefixName by lazy { "r/${subredditName}" }
-    private val subredditViewModel: SubredditViewModel by viewModels()
+    private val subredditViewModel: SubredditViewModel by viewModel()
     private val viewBinding by viewBinding(FragmentSubredditBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

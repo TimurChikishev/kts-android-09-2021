@@ -18,13 +18,14 @@ import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
 import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
 
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private val viewBinding by viewBinding(FragmentDetailsBinding::bind)
-    private val viewModel: PostDetailViewModel by viewModels()
+    private val viewModel: PostDetailViewModel by viewModel()
     private lateinit var item: RedditItem
     private var noInternetSnackBar: Snackbar? = null
     private var savedItem: MenuItem? = null

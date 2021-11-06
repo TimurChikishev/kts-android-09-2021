@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,10 +20,11 @@ import com.swallow.cracker.ui.viewmodels.SearchViewModel
 import com.swallow.cracker.utils.autoCleared
 import com.swallow.cracker.utils.bottomNavigationGone
 import kotlinx.coroutines.flow.collect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
-    private val searchViewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModel()
     private val viewBinding by viewBinding(FragmentSearchBinding::bind)
     private var searchAdapter: ComplexSearchDelegatesListAdapter by autoCleared()
 

@@ -5,7 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
-import com.swallow.cracker.data.database.Database.redditDatabase
+import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditAboutToUi
 import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditToUi
@@ -14,6 +14,7 @@ import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
+import com.swallow.cracker.domain.repository.RedditRepository
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.model.Subreddit
@@ -23,7 +24,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-class RedditRepository {
+class RedditRepositoryImpl constructor(
+    private val redditDatabase: RedditDatabase
+) : RedditRepository {
 
     private val defaultPagerConfig = PagingConfig(
         pageSize = NetworkConfig.PAGE_SIZE,
@@ -33,26 +36,26 @@ class RedditRepository {
     )
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getNewListingPager(query: String): Pager<Int, RemoteRedditPost> {
+    override fun getNewListingPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
             config = defaultPagerConfig,
-            remoteMediator = RedditListingRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
+            remoteMediator = RedditListingRemoteMediator(query, redditDatabase)
         ) {
             redditDatabase.redditPostsDao().getPosts()
         }
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getNewSearchPager(query: String): Pager<Int, RemoteRedditPost> {
+    override fun getNewSearchPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
             config = defaultPagerConfig,
-            remoteMediator = RedditSearchRemoteMediator(query, Networking.redditApiOAuth, redditDatabase)
+            remoteMediator = RedditSearchRemoteMediator(query, redditDatabase)
         ) {
             redditDatabase.redditPostsDao().getPosts()
         }
     }
 
-    suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
+    override suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
         val dir = item.getVoteDir(likes)
 
         val response = Networking.redditApiOAuth.votePost(
@@ -66,7 +69,7 @@ class RedditRepository {
         emit(response)
     }
 
-    private suspend fun updatePostLikes(item: RedditItem, likes: Boolean) {
+    override suspend fun updatePostLikes(item: RedditItem, likes: Boolean) {
         item.updateScore(likes)
         redditDatabase.withTransaction {
             redditDatabase.redditPostsDao().updatePostLikes(
@@ -77,7 +80,7 @@ class RedditRepository {
         }
     }
 
-    suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
+    override suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
         val response = Networking.redditApiOAuth.savedPost(id = item.t3_id)
 
         if (response.isSuccessful)
@@ -86,7 +89,7 @@ class RedditRepository {
         emit(response)
     }
 
-    suspend fun unSavePost(item: RedditItem): Flow<Response<Unit>> = flow {
+    override suspend fun unSavePost(item: RedditItem): Flow<Response<Unit>> = flow {
         val response = Networking.redditApiOAuth.unSavedPost(id = item.t3_id)
 
         if (response.isSuccessful)
@@ -95,7 +98,7 @@ class RedditRepository {
         emit(response)
     }
 
-    suspend fun getProfileInfo(): Flow<RemoteRedditProfile> = flow {
+    override suspend fun getProfileInfo(): Flow<RemoteRedditProfile> = flow {
         when (val profile = getProfile()) {
             is Resources.Success<RemoteRedditProfile> -> {
                 saveRedditProfile(profile.value)
@@ -126,16 +129,16 @@ class RedditRepository {
         }
     }
 
-    suspend fun clearDataBase() {
+    override suspend fun clearDataBase() {
         redditDatabase.withTransaction { redditDatabase.clearAllTables() }
     }
 
-    suspend fun getProfileFromDB(id: String): Flow<RemoteRedditProfile?> = flow {
+    override suspend fun getProfileFromDB(id: String): Flow<RemoteRedditProfile?> = flow {
         val value = redditDatabase.redditProfileDao().getProfileById(id)
         emit(value)
     }
 
-    suspend fun searchSubreddits(query: String): Flow<List<Subreddit>> = flow {
+    override suspend fun searchSubreddits(query: String): Flow<List<Subreddit>> = flow {
         when (val subreddits = getSubreddits(query)) {
             is Resources.Success<List<Subreddit>> -> {
                 emit(subreddits.value)
@@ -153,7 +156,7 @@ class RedditRepository {
         )
     }
 
-    suspend fun getSearchQuery(): Flow<List<SearchQuery>?> = flow {
+    override suspend fun getSearchQuery(): Flow<List<SearchQuery>?> = flow {
         emit(
             redditDatabase.redditSearchQueryDao().getSearchQuery()?.map {
                 RedditMapper.mapRemoteSearchQueryToUi(it)
@@ -161,20 +164,20 @@ class RedditRepository {
         )
     }
 
-    suspend fun savedSearchQuery(searchQuery: SearchQuery) {
+    override suspend fun savedSearchQuery(searchQuery: SearchQuery) {
         redditDatabase.withTransaction {
             val result = RedditMapper.mapUiSearchQueryToRemote(searchQuery)
             redditDatabase.redditSearchQueryDao().saveSearchQuery(result)
         }
     }
 
-    suspend fun removeSearchQuery(query: String) {
+    override suspend fun removeSearchQuery(query: String) {
         redditDatabase.withTransaction {
             redditDatabase.redditSearchQueryDao().removeSearchQueryByQuery(query)
         }
     }
 
-    fun getSubredditInfo(subreddit: String): Flow<Subreddit> = flow {
+    override fun getSubredditInfo(subreddit: String): Flow<Subreddit> = flow {
         when (val result = getSubredditAbout(subreddit)) {
             is Resources.Success<Subreddit> -> {
                 emit(result.value)

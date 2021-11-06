@@ -2,7 +2,7 @@ package com.swallow.cracker.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.swallow.cracker.data.repository.RedditRepository
+import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.model.SearchQueryTransaction
 import com.swallow.cracker.ui.model.Subreddit
@@ -11,9 +11,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
-class SearchViewModel : ViewModel() {
-    private val repository = RedditRepository()
-
+class SearchViewModel constructor(
+    private val getPostsUseCase: GetPostsUseCase
+) : ViewModel() {
     private val searchSubredditMutableSharedFlow = MutableSharedFlow<List<Subreddit>>()
     private val searchQueryMutableSharedFlow = MutableSharedFlow<List<SearchQuery>>()
     private val searchQueryIsSavedChannel = Channel<SearchQueryTransaction>(Channel.BUFFERED)
@@ -40,7 +40,7 @@ class SearchViewModel : ViewModel() {
     @OptIn(FlowPreview::class)
     fun searchSubreddit(query: String) {
         searchQueryJob = viewModelScope.launch {
-            repository.searchSubreddits(query)
+            getPostsUseCase.searchSubreddits(query)
                 .debounce(500)
                 .distinctUntilChanged()
                 .catch { Timber.tag("ERROR").d(it) }
@@ -54,7 +54,7 @@ class SearchViewModel : ViewModel() {
     fun getSavedSearchQuery(timeMillis: Long = 0) {
         searchQueryJob?.cancel()
         searchQueryJob = viewModelScope.launch {
-            repository.getSearchQuery()
+            getPostsUseCase.getSearchQuery()
                 // if you quickly clear the line, then the data about the
                 // subreddits will block the saved search queries, so you
                 // need to postpone the call
@@ -72,7 +72,7 @@ class SearchViewModel : ViewModel() {
         searchQuerySavedJob?.cancel()
         searchQuerySavedJob = viewModelScope.launch {
             runCatching{
-                repository.savedSearchQuery(SearchQuery(query))
+                getPostsUseCase.savedSearchQuery(SearchQuery(query))
             }.onSuccess {
                 searchQueryIsSavedChannel.send(SearchQueryTransaction(query, subreddit, true))
             }.onFailure {
@@ -85,7 +85,7 @@ class SearchViewModel : ViewModel() {
         searchQueryRemovedJob?.cancel()
         searchQueryRemovedJob = viewModelScope.launch {
             runCatching{
-                repository.removeSearchQuery(item.query)
+                getPostsUseCase.removeSearchQuery(item.query)
             }.onSuccess {
                 searchQueryIsRemovedChannel.send(item)
             }.onFailure {

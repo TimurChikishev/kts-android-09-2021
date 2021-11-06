@@ -1,11 +1,12 @@
 package com.swallow.cracker.data.repository
 
 import com.swallow.cracker.R
+import com.swallow.cracker.domain.repository.OnBoardingRepository
 import com.swallow.cracker.ui.model.OnBoardingUI
 
-class OnBoardingRepository {
+class OnBoardingRepositoryImpl : OnBoardingRepository {
 
-    fun getOnBoardingData() = listOf(
+    override fun getOnBoardingData() = listOf(
         OnBoardingUI(
             image = R.drawable.ic_launcher_background,
             title = "First Title",

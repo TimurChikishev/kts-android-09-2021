@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
-import com.swallow.cracker.data.repository.AuthRepository
-import com.swallow.cracker.data.repository.Repository
+import com.swallow.cracker.domain.usecase.AuthUseCase
+import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,9 @@ import net.openid.appauth.TokenRequest
 
 class AuthViewModel(
     application: Application,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val userPreferencesUseCase: UserPreferencesUseCase,
+    private val authUseCase: AuthUseCase
 ) : AndroidViewModel(application) {
 
     private var loadingSavedState = savedStateHandle.get<Boolean>(LOADING_KEY) ?: false
@@ -29,13 +31,9 @@ class AuthViewModel(
         }
 
     private val loadingMutableStateFlow = MutableStateFlow(loadingSavedState)
-
-    private val authRepository = AuthRepository()
-    private val userPreferencesRepository = Repository.userPreferencesRepository
-    private val authService: AuthorizationService = AuthorizationService(getApplication())
+    private val authService: AuthorizationService = AuthorizationService(getApplication()) // TODO DI
     private val openAuthPageChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
-
     private val authSuccessChannel = Channel<Unit>(Channel.BUFFERED)
 
     val openAuthPageStateFlow: Flow<Intent>
@@ -56,7 +54,7 @@ class AuthViewModel(
 
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
         loadingMutableStateFlow.value = true
-        authRepository.performTokenRequest(
+        authUseCase.performTokenRequest(
             authService = authService,
             tokenRequest = tokenRequest,
             onComplete = { token, refreshToken ->
@@ -77,16 +75,16 @@ class AuthViewModel(
     }
 
     private suspend fun saveAuthToken(token: String) {
-        userPreferencesRepository.updateAuthToken(token)
+        userPreferencesUseCase.updateAuthToken(token)
     }
 
     private suspend fun saveAuthRefreshToken(refreshToken: String) {
-        userPreferencesRepository.updateAuthRefreshToken(refreshToken)
+        userPreferencesUseCase.updateAuthRefreshToken(refreshToken)
     }
 
     suspend fun openLoginPage() {
         val openAuthPageIntent = authService.getAuthorizationRequestIntent(
-            authRepository.getAuthRequest()
+            authUseCase.getAuthRequest()
         )
 
         openAuthPageChannel.send(openAuthPageIntent)

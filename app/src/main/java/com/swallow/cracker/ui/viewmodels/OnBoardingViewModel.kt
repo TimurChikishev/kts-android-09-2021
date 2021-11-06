@@ -1,28 +1,25 @@
 package com.swallow.cracker.ui.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.swallow.cracker.data.repository.OnBoardingRepository
-import com.swallow.cracker.data.repository.Repository
+import com.swallow.cracker.domain.usecase.OnBoardingUseCase
+import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
 import com.swallow.cracker.ui.model.OnBoardingUI
 import kotlinx.coroutines.launch
 
-class OnBoardingViewModel(
-    application: Application
-) : AndroidViewModel(application) {
-
-    private val onBoardingRepository = OnBoardingRepository()
-    private val userPreferencesRepository = Repository.userPreferencesRepository
+class OnBoardingViewModel constructor(
+    private val userPreferencesUseCase: UserPreferencesUseCase,
+    private val onBoardingUseCase: OnBoardingUseCase
+) : ViewModel() {
 
     fun getOnBoardingData(): List<OnBoardingUI> =
-        onBoardingRepository.getOnBoardingData()
+        onBoardingUseCase.getOnBoardingData()
 
-    val userPreferencesFlow = userPreferencesRepository.userPreferencesFlow
+    val userPreferencesFlow = userPreferencesUseCase.userPreferencesFlow
 
     fun updateOnboardShown(onBoardingShown: Boolean) {
         viewModelScope.launch {
-            userPreferencesRepository.updateOnBoardingShown(onBoardingShown)
+            userPreferencesUseCase.updateOnBoardingShown(onBoardingShown)
         }
     }
 }

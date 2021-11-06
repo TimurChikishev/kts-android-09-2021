@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentSearchResultBinding
 import com.swallow.cracker.ui.adapters.SearchResultsFragmentAdapter
+import com.swallow.cracker.utils.bottomNavigationGone
 
 class SearchResultsFragment : Fragment(R.layout.fragment_search_result) {
     private val args: SearchResultsFragmentArgs by navArgs()
@@ -18,6 +19,7 @@ class SearchResultsFragment : Fragment(R.layout.fragment_search_result) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomNavigationGone()
         initAppBarContent()
         initTabBar()
     }

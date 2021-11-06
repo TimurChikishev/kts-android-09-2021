@@ -21,10 +21,11 @@ import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.ProfileViewModel
 import com.swallow.cracker.utils.*
 import kotlinx.coroutines.flow.collect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val viewBinding by viewBinding(FragmentMainBinding::bind)
-    private val profileViewModel: ProfileViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModel()
     private val networkStatusViewModel: NetworkStatusViewModel by viewModels()
     private var noInternetSnackBar: Snackbar? = null
 

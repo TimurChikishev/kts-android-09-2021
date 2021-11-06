@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.swallow.cracker.R
 import com.swallow.cracker.data.mapper.RedditMapper
-import com.swallow.cracker.data.repository.RedditRepository
+import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.RedditItem
 import kotlinx.coroutines.*
@@ -15,9 +15,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
-open class RedditListViewModelImpl : ViewModel() {
-
-    private val repository = RedditRepository()
+open class RedditListViewModel constructor(
+    private val getPostsUseCase: GetPostsUseCase
+) : ViewModel() {
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -32,7 +32,7 @@ open class RedditListViewModelImpl : ViewModel() {
 
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
-    val listingItems = query.map { q -> repository.getNewListingPager(q) }
+    val listingItems = query.map { q -> getPostsUseCase.getNewListingPager(q) }
         .flatMapLatest { pager -> pager.flow }
         .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
         .catch { Timber.tag("ERROR").d(it) }
@@ -41,7 +41,7 @@ open class RedditListViewModelImpl : ViewModel() {
 
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
-    val searchItems = query.map { q -> repository.getNewSearchPager(q) }
+    val searchItems = query.map { q -> getPostsUseCase.getNewSearchPager(q) }
         .flatMapLatest { pager -> pager.flow }
         .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
         .catch { Timber.tag("ERROR").d(it) }
@@ -56,7 +56,7 @@ open class RedditListViewModelImpl : ViewModel() {
     fun savePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            repository.savePost(item)
+            getPostsUseCase.savePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
@@ -72,7 +72,7 @@ open class RedditListViewModelImpl : ViewModel() {
     fun unSavePost(item: RedditItem) {
         currentSavePostJob?.cancel()
         currentSavePostJob = viewModelScope.launch {
-            repository.unSavePost(item)
+            getPostsUseCase.unSavePost(item)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
@@ -88,7 +88,7 @@ open class RedditListViewModelImpl : ViewModel() {
     fun votePost(item: RedditItem, likes: Boolean) {
         currentVotePostJob?.cancel()
         currentVotePostJob = viewModelScope.launch {
-            repository.votePost(item, likes)
+            getPostsUseCase.votePost(item, likes)
                 .map { it }
                 .flowOn(Dispatchers.IO)
                 .catch {
