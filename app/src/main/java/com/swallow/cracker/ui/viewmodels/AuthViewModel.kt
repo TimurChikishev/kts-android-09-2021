@@ -21,7 +21,8 @@ class AuthViewModel(
     application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val userPreferencesUseCase: UserPreferencesUseCase,
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val authService: AuthorizationService
 ) : AndroidViewModel(application) {
 
     private var loadingSavedState = savedStateHandle.get<Boolean>(LOADING_KEY) ?: false
@@ -31,7 +32,6 @@ class AuthViewModel(
         }
 
     private val loadingMutableStateFlow = MutableStateFlow(loadingSavedState)
-    private val authService: AuthorizationService = AuthorizationService(getApplication()) // TODO DI
     private val openAuthPageChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
     private val authSuccessChannel = Channel<Unit>(Channel.BUFFERED)

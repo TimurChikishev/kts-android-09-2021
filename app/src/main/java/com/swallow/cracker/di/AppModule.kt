@@ -1,5 +1,6 @@
 package com.swallow.cracker.di
 
+import android.app.Application
 import android.content.Context
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.network.AuthInterceptor
@@ -16,6 +17,7 @@ import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.domain.usecase.OnBoardingUseCase
 import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
 import com.swallow.cracker.ui.viewmodels.*
+import net.openid.appauth.AuthorizationService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -31,7 +33,7 @@ val AppModule = module {
 
     viewModel { OnBoardingViewModel(get(), get()) }
 
-    viewModel { AuthViewModel(androidApplication(), get(), get(), get()) }
+    viewModel { AuthViewModel(androidApplication(), get(), get(), get(), get()) }
 
     viewModel { SearchViewModel(get()) }
 
@@ -56,6 +58,8 @@ val AppModule = module {
     single { providesAuthUseCase(get()) }
 
     single { providesAuthRepository() }
+
+    single { providesAuthorizationService(androidApplication()) }
 }
 
 
@@ -93,4 +97,8 @@ fun providesAuthUseCase(authRepository: AuthRepository): AuthUseCase {
 
 fun providesAuthRepository(): AuthRepository {
     return AuthRepositoryImpl()
+}
+
+fun providesAuthorizationService(application: Application): AuthorizationService {
+    return AuthorizationService(application)
 }
