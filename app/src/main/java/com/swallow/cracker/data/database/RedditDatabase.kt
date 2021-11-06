@@ -29,7 +29,7 @@ abstract class RedditDatabase : RoomDatabase() {
     companion object {
         fun create(context: Context): RedditDatabase {
             val databaseBuilder =
-                Room.databaseBuilder(context, RedditDatabase::class.java, "redditclone.db")
+                Room.databaseBuilder(context, RedditDatabase::class.java, "reddit.db")
             return databaseBuilder.build()
         }
     }

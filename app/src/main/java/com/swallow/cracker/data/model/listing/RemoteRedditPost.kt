@@ -17,8 +17,8 @@ data class RemoteRedditPost(
 
     @PrimaryKey
     @Json(name = "name")
-    @ColumnInfo(name = RedditPostContract.Columns.T3_ID)
-    val t3_id: String,
+    @ColumnInfo(name = RedditPostContract.Columns.PREFIX_ID)
+    val prefixId: String,
 
     @Json(name = "author")
     @ColumnInfo(name = RedditPostContract.Columns.AUTHOR)

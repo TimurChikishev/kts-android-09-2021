@@ -2,7 +2,7 @@ package com.swallow.cracker.data.database.model
 
 object RedditKeysContract {
 
-    const val TABLE_NAME = "redditKeys"
+    const val TABLE_NAME = "reddit_keys"
 
     object Columns {
         const val ID = "id"

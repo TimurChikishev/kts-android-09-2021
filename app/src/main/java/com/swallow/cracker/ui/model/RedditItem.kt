@@ -4,7 +4,7 @@ import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 
 sealed interface RedditItem {
     var id: String
-    var t3_id: String
+    var prefixId: String
     var likes: Boolean?
     var subredditId: String
     var saved: Boolean

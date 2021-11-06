@@ -17,7 +17,7 @@ object RedditMapper {
         return when {
             item.preview?.enabled == true -> RedditListItemImage(
                 id = item.id,
-                t3_id = item.t3_id,
+                prefixId = item.prefixId,
                 author = item.author,
                 subreddit = item.subreddit,
                 subredditId = item.subredditId,
@@ -35,7 +35,7 @@ object RedditMapper {
             )
             else -> RedditListSimpleItem(
                 id = item.id,
-                t3_id = item.t3_id,
+                prefixId = item.prefixId,
                 author = item.author,
                 subreddit = item.subreddit,
                 subredditId = item.subredditId,

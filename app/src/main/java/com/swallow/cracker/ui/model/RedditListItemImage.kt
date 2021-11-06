@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class RedditListItemImage(
     override var id: String,
-    override var t3_id: String,
+    override var prefixId: String,
     override var author: String,
     override var subreddit: String,
     override var subredditId: String,

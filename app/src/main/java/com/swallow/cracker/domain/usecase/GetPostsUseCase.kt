@@ -3,6 +3,7 @@ package com.swallow.cracker.domain.usecase
 import com.swallow.cracker.domain.repository.RedditRepository
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.SearchQuery
+import com.swallow.cracker.ui.model.Subreddit
 
 class GetPostsUseCase constructor(private val redditRepository: RedditRepository) {
 
@@ -33,4 +34,5 @@ class GetPostsUseCase constructor(private val redditRepository: RedditRepository
 
     fun getSubredditInfo(subredditName: String) = redditRepository.getSubredditInfo(subredditName)
 
+    fun subscribeSubreddit(action: String, subreddit: Subreddit) = redditRepository.subscribeSubreddit(action, subreddit)
 }

@@ -23,9 +23,9 @@ interface RedditPostsDao {
     @Query("SELECT * FROM ${RedditPostContract.TABLE_NAME}")
     fun getPosts(): PagingSource<Int, RemoteRedditPost>
 
-    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.LIKES} =:likes, ${RedditPostContract.Columns.SCORE} =:score WHERE ${RedditPostContract.Columns.T3_ID} =:id")
+    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.LIKES} =:likes, ${RedditPostContract.Columns.SCORE} =:score WHERE ${RedditPostContract.Columns.PREFIX_ID} =:id")
     suspend fun updatePostLikes(likes: Boolean?, score: Int, id: String)
 
-    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.SAVED} =:saved WHERE ${RedditPostContract.Columns.T3_ID} =:id")
+    @Query("UPDATE ${RedditPostContract.TABLE_NAME} SET ${RedditPostContract.Columns.SAVED} =:saved WHERE ${RedditPostContract.Columns.PREFIX_ID} =:id")
     suspend fun updatePostSaved(saved: Boolean, id: String)
 }

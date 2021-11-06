@@ -6,41 +6,52 @@ import com.swallow.cracker.R
 import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.RedditItem
+import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PostDetailViewModel constructor(
     private val getPostsUseCase: GetPostsUseCase
 ) : ViewModel() {
 
-    private var savePostMutableStateFlow = Channel<Boolean>(Channel.BUFFERED)
+    private var savePostChannel = Channel<Boolean>(Channel.BUFFERED)
     private var savePostIsClickableMutableStateFlow = MutableStateFlow(true)
-    private var votePostMutableStateFlow = Channel<Boolean>(Channel.BUFFERED)
+    private var votePostChannel = Channel<Boolean>(Channel.BUFFERED)
     private var voteIsClickableMutableStateFlow = MutableStateFlow(true)
-    private var eventMessageMutableStateFlow = Channel<Message<*>>(Channel.BUFFERED)
+    private var eventMessageChannel = Channel<Message<*>>(Channel.BUFFERED)
+    private var subredditInfoChannel = Channel<Subreddit>(Channel.BUFFERED)
+    private var subscribeChannel = Channel<Boolean>(Channel.BUFFERED)
 
     val savePost: Flow<Boolean>
-        get() = savePostMutableStateFlow.receiveAsFlow()
+        get() = savePostChannel.receiveAsFlow()
 
     val savePostIsClickable: StateFlow<Boolean>
         get() = savePostIsClickableMutableStateFlow
 
     val eventMessage: Flow<Message<*>>
-        get() = eventMessageMutableStateFlow.receiveAsFlow()
+        get() = eventMessageChannel.receiveAsFlow()
 
     val votePost: Flow<Boolean>
-        get() = votePostMutableStateFlow.receiveAsFlow()
+        get() = votePostChannel.receiveAsFlow()
 
     val votePostIsClickable: StateFlow<Boolean>
         get() = voteIsClickableMutableStateFlow
 
+    val subredditInfo: Flow<Subreddit>
+        get() = subredditInfoChannel.receiveAsFlow()
+
+    val subscribe: Flow<Boolean>
+        get() = subscribeChannel.receiveAsFlow()
+
     private var currentSavePostJob: Job? = null
     private var currentVotePostJob: Job? = null
-
+    private var subscribeJob: Job? = null
+    private var subredditInfoJob: Job? = null
 
     fun savePost(item: RedditItem) {
         savePostIsClickableMutableStateFlow.set(false)
@@ -51,13 +62,13 @@ class PostDetailViewModel constructor(
                 .flowOn(Dispatchers.IO)
                 .catch {
                     savePostIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.send(Message(R.string.post_saved_error))
+                    eventMessageChannel.send(Message(R.string.post_saved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     savePostIsClickableMutableStateFlow.set(true)
-                    savePostMutableStateFlow.send(true)
-                    eventMessageMutableStateFlow.send(Message(R.string.post_saved))
+                    savePostChannel.send(true)
+                    eventMessageChannel.send(Message(R.string.post_saved))
                 }
         }
     }
@@ -71,13 +82,13 @@ class PostDetailViewModel constructor(
                 .flowOn(Dispatchers.IO)
                 .catch {
                     savePostIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved_error))
+                    eventMessageChannel.send(Message(R.string.post_unsaved_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     savePostIsClickableMutableStateFlow.set(true)
-                    savePostMutableStateFlow.send(false)
-                    eventMessageMutableStateFlow.send(Message(R.string.post_unsaved))
+                    savePostChannel.send(false)
+                    eventMessageChannel.send(Message(R.string.post_unsaved))
                 }
         }
     }
@@ -91,14 +102,56 @@ class PostDetailViewModel constructor(
                 .flowOn(Dispatchers.IO)
                 .catch {
                     voteIsClickableMutableStateFlow.set(true)
-                    eventMessageMutableStateFlow.send(Message(R.string.vote_error))
+                    eventMessageChannel.send(Message(R.string.vote_error))
                 }
                 .flowOn(Dispatchers.Main)
                 .collect {
                     voteIsClickableMutableStateFlow.set(true)
-                    votePostMutableStateFlow.send(likes)
+                    votePostChannel.send(likes)
                 }
         }
     }
+
+    fun subscribeToSubreddit(subreddit: Subreddit){
+        subscribe(subreddit,"sub")
+    }
+
+    fun unsubscribeFromSubreddit(subreddit: Subreddit){
+        subscribe(subreddit,"unsub")
+    }
+
+    private fun subscribe(subreddit: Subreddit, action: String) {
+        subscribeJob?.cancel()
+        subscribeJob = viewModelScope.launch {
+            getPostsUseCase.subscribeSubreddit(action, subreddit)
+                .map { it }
+                .flowOn(Dispatchers.IO)
+                .catch {
+                    eventMessageChannel.send(Message(R.string.error_subscribing_to_a_subreddit))
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    when(action){
+                        "sub" -> subscribeChannel.send(true)
+                        "unsub" -> subscribeChannel.send(false)
+                    }
+                }
+        }
+    }
+
+    fun getSubredditInfo(subredditName: String){
+        subredditInfoJob?.cancel()
+        subredditInfoJob = viewModelScope.launch {
+            getPostsUseCase.getSubredditInfo(subredditName)
+                .map { it }
+                .catch { Timber.tag("ERROR").d(it) }
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    subredditInfoChannel.send(it)
+                }
+
+        }
+    }
+
 }
 

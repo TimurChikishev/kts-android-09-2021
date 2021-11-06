@@ -18,6 +18,6 @@ data class Subreddit(
     var publicDescription: String,
     var description: String?,
     var created: Long?,
-    var userIsSubscriber: Boolean?,
+    var userIsSubscriber: Boolean,
     var activeUserCount: Int?
 ) : Parcelable

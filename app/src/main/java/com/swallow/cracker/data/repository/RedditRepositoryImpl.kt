@@ -60,7 +60,7 @@ class RedditRepositoryImpl constructor(
 
         val response = Networking.redditApiOAuth.votePost(
             dir = dir,
-            id = item.t3_id
+            id = item.prefixId
         )
 
         if (response.isSuccessful)
@@ -75,25 +75,36 @@ class RedditRepositoryImpl constructor(
             redditDatabase.redditPostsDao().updatePostLikes(
                 likes = item.likes,
                 score = item.score,
-                id = item.t3_id
+                id = item.prefixId
             )
         }
     }
 
+    override fun subscribeSubreddit(action: String, subreddit: Subreddit) : Flow<Response<Unit>> = flow {
+        val response = Networking.redditApiOAuth.subscribeSubreddit(
+            action = action,
+            subredditId = subreddit.name
+        )
+
+        if (!response.isSuccessful) throw Exception("Subscription response failed")
+
+        emit(response)
+    }
+
     override suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.savedPost(id = item.t3_id)
+        val response = Networking.redditApiOAuth.savedPost(id = item.prefixId)
 
         if (response.isSuccessful)
-            updateSavedPost(true, item.t3_id)
+            updateSavedPost(true, item.prefixId)
 
         emit(response)
     }
 
     override suspend fun unSavePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.unSavedPost(id = item.t3_id)
+        val response = Networking.redditApiOAuth.unSavedPost(id = item.prefixId)
 
         if (response.isSuccessful)
-            updateSavedPost(false, item.t3_id)
+            updateSavedPost(false, item.prefixId)
 
         emit(response)
     }

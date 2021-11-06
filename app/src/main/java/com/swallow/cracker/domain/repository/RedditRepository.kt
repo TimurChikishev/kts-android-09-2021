@@ -37,4 +37,6 @@ interface RedditRepository {
     suspend fun savedSearchQuery(searchQuery: SearchQuery)
 
     suspend fun removeSearchQuery(query: String)
+
+    fun subscribeSubreddit(action: String, subreddit: Subreddit) : Flow<Response<Unit>>
 }

@@ -70,4 +70,12 @@ interface RedditApi {
     suspend fun getSubredditInfo(
         @Path("subreddit") subreddit: String
     ): Response<RedditJsonWrapper<RemoteSubredditAbout>>
+
+    @FormUrlEncoded
+    @POST("/api/subscribe")
+    suspend fun subscribeSubreddit(
+        @Field("action") action: String,
+        @Field("skip_initial_defaults") skipInitialDefaults: Boolean = false,
+        @Field("sr") subredditId: String, // prefixId = @Json(name = "name")
+    ): Response<Unit>
 }

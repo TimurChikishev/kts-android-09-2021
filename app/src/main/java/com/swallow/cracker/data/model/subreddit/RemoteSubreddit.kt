@@ -45,7 +45,7 @@ data class RemoteSubreddit(
     val created: Long?,
 
     @Json(name = "user_is_subscriber")
-    val userIsSubscriber: Boolean?,
+    val userIsSubscriber: Boolean,
 
     @Json(name = "active_user_count")
     val activeUserCount: Int?

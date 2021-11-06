@@ -1,5 +1,6 @@
 package com.swallow.cracker.ui.fragments
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -14,6 +15,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 import com.swallow.cracker.databinding.FragmentDetailsBinding
 import com.swallow.cracker.ui.model.RedditItem
+import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.NetworkStatusViewModel
 import com.swallow.cracker.ui.viewmodels.PostDetailViewModel
 import com.swallow.cracker.utils.*
@@ -29,6 +31,7 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
     private lateinit var item: RedditItem
     private var noInternetSnackBar: Snackbar? = null
     private var savedItem: MenuItem? = null
+    private var currentSubreddit: Subreddit? = null
 
     protected fun setItem(item: RedditItem) {
         this.item = item
@@ -85,6 +88,18 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
 
     private fun bindViewModel() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.getSubredditInfo(item.subreddit)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.subredditInfo.collect(::setSubredditInfo)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.subscribe.collect(::setSubscriberButtonStyle)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             networkStatusViewModel.isNoNetwork.collect {
                 showNetworkState(it)
             }
@@ -119,6 +134,24 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
+    private fun setSubredditInfo(currentSubreddit: Subreddit) {
+        this.currentSubreddit = currentSubreddit
+        setSubscriberButtonStyle(currentSubreddit.userIsSubscriber)
+        finishLoading()
+    }
+
+    private fun finishLoading() = with(viewBinding) {
+        progressBar.visibility = View.GONE
+        containerCoordinatorLayout.visibility = View.VISIBLE
+    }
+
+    private fun setSubscriberButtonStyle(action: Boolean) = with(viewBinding) {
+        when(action){
+            true -> subscribeButton.text = resources.getString(R.string.joined)
+            false -> subscribeButton.text = resources.getString(R.string.join)
+        }
+    }
+
     private fun showNetworkState(isNoInternet: Boolean) {
         when (isNoInternet) {
             true -> noInternetSnackBar?.show()
@@ -135,6 +168,16 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
         // button dislike
         dislikesImageView.setOnClickListener {
             viewModel.votePost(item, false)
+        }
+
+        subscribeButton.setOnClickListener {
+            currentSubreddit?.let { subreddit ->
+                when (subscribeButton.text) {
+                    resources.getString(R.string.join) -> viewModel.subscribeToSubreddit(subreddit)
+                    resources.getString(R.string.joined) -> viewModel.unsubscribeFromSubreddit(subreddit)
+                    else -> Timber.tag("ERROR").d("There is no such action for subscribe")
+                }
+            }
         }
 
         // shared to internet
@@ -237,5 +280,10 @@ open class DetailsPostFragment : Fragment(R.layout.fragment_details) {
         super.onDestroyView()
         noInternetSnackBar = null
         savedItem = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        currentSubreddit = null
     }
 }

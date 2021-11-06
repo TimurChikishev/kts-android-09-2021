@@ -17,8 +17,10 @@ import com.swallow.cracker.ui.adapters.SubredditFragmentAdapter
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SubredditViewModel
 import com.swallow.cracker.utils.bottomNavigationGone
+import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
@@ -29,8 +31,9 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
     private val args by navArgs<SubredditFragmentArgs>()
     private val subredditName by lazy { args.subreddit }
     private val subredditPrefixName by lazy { "r/${subredditName}" }
-    private val subredditViewModel: SubredditViewModel by viewModel()
+    private val viewModel: SubredditViewModel by viewModel()
     private val viewBinding by viewBinding(FragmentSubredditBinding::bind)
+    private var currentSubreddit: Subreddit? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,25 +52,43 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
         }.attach()
     }
 
-    private fun bindOfClick() = with(viewBinding) {
-        includeAppBar.topAppBar.setNavigationOnClickListener {
+    private fun bindOfClick() = with(viewBinding.includeAppBar) {
+        topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
+        }
+
+        subscribeButton.setOnClickListener {
+            currentSubreddit?.let { subreddit ->
+                when (subscribeButton.text) {
+                    resources.getString(R.string.join) -> viewModel.subscribeToSubreddit(subreddit)
+                    resources.getString(R.string.joined) -> viewModel.unsubscribeFromSubreddit(subreddit)
+                    else -> Timber.tag("ERROR").d("There is no such action for subscribe")
+                }
+            }
         }
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
         launchWhenStarted {
             subredditName?.let {
-                subredditViewModel.getSubredditInfo(it)
+                viewModel.getSubredditInfo(it)
             }
         }
 
         launchWhenStarted {
-            subredditViewModel.subredditInfo.collect(::setAppBarContent)
+            viewModel.eventMessage.collect(::showMessage)
         }
 
         launchWhenStarted {
-            subredditViewModel.isLoading.collect {
+            viewModel.subscribe.collect(::setSubscriberButtonStyle)
+        }
+
+        launchWhenStarted {
+            viewModel.subredditInfo.collect(::setAppBarContent)
+        }
+
+        launchWhenStarted {
+            viewModel.isLoading.collect {
                 it?.let {
                     viewBinding.containerCoordinatorLayout.isVisible = true
                     viewBinding.progressBar.isVisible = false
@@ -76,16 +97,24 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
         }
     }
 
+    private fun setSubscriberButtonStyle(action: Boolean) = with(viewBinding) {
+        when(action){
+            true -> includeAppBar.subscribeButton.text = resources.getString(R.string.joined)
+            false -> includeAppBar.subscribeButton.text = resources.getString(R.string.join)
+        }
+    }
+
+
     private fun setAppBarContent(subreddit: Subreddit?) = with(viewBinding.includeAppBar) {
-        subreddit ?: return@with
+        subreddit?.let {
+            currentSubreddit = it
+            setSubredditAvatar(it.communityIcon, avatarImageView)
+            nameTextView.text = it.displayNamePrefixed
+            membersTextView.text = context?.getString(R.string.members, it.subscribers)
+            onlineCountTextView.text = context?.getString(R.string.online, it.activeUserCount)
 
-        setSubredditAvatar(subreddit.communityIcon, avatarImageView)
-        nameTextView.text = subreddit.displayNamePrefixed
-        membersTextView.text = context?.getString(R.string.members, subreddit.subscribers)
-        onlineCountTextView.text = context?.getString(R.string.online, subreddit.activeUserCount)
-
-        if (subreddit.userIsSubscriber == true)
-            bottomJoin.text = resources.getString(R.string.joined)
+            setSubscriberButtonStyle(it.userIsSubscriber)
+        }
     }
 
     private fun setSubredditAvatar(communityIcon: String, imageView: ImageView) {
