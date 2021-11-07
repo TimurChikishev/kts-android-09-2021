@@ -1,9 +1,8 @@
 package com.swallow.cracker.ui.viewmodels
 
-import android.app.Application
 import android.content.Intent
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.domain.usecase.AuthUseCase
@@ -18,12 +17,11 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 
 class AuthViewModel(
-    application: Application,
     private val savedStateHandle: SavedStateHandle,
     private val userPreferencesUseCase: UserPreferencesUseCase,
     private val authUseCase: AuthUseCase,
     private val authService: AuthorizationService
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private var loadingSavedState = savedStateHandle.get<Boolean>(LOADING_KEY) ?: false
         set(value) {

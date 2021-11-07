@@ -33,7 +33,7 @@ val AppModule = module {
 
     viewModel { OnBoardingViewModel(get(), get()) }
 
-    viewModel { AuthViewModel(androidApplication(), get(), get(), get(), get()) }
+    viewModel { AuthViewModel(get(), get(), get(), get()) }
 
     viewModel { SearchViewModel(get()) }
 

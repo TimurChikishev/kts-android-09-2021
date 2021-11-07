@@ -4,10 +4,7 @@ import androidx.room.TypeConverter
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.swallow.cracker.data.model.listing.RedditChildrenPreview
-import com.swallow.cracker.data.model.listing.RedditChildrenPreviewImage
-import com.swallow.cracker.data.model.listing.RedditChildrenPreviewImageSource
 import com.swallow.cracker.data.model.profile.RemoteProfileInfoSubreddit
-import com.swallow.cracker.utils.fixImgUrl
 
 class TypeConverter {
     @TypeConverter
