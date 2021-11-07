@@ -18,6 +18,7 @@ import com.swallow.cracker.ui.adapters.LoadStateAdapter
 import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegateAdapterClick
 import com.swallow.cracker.ui.adapters.listing.delegates.ComplexDelegatesRedditListAdapter
 import com.swallow.cracker.ui.adapters.listing.delegates.items.RedditListItemImageDelegateAdapter
+import com.swallow.cracker.ui.adapters.listing.delegates.items.RedditListPlaceholderItem
 import com.swallow.cracker.ui.adapters.listing.delegates.items.RedditListSimpleItemDelegateAdapter
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.RedditListItemImage
@@ -34,11 +35,13 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 open class ListFragment : Fragment(R.layout.fragment_list) {
     protected val redditViewModel: RedditListViewModel by viewModel()
     protected val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
         ComplexDelegatesRedditListAdapter.Builder()
+            .add(RedditListPlaceholderItem()) // placeholder
             .add(RedditListSimpleItemDelegateAdapter())
             .add(RedditListItemImageDelegateAdapter())
             .build()
@@ -92,6 +95,7 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
             override fun navigateTo(item: RedditItem) = when (item) {
                 is RedditListSimpleItem -> navigateToDetailSimple(item)
                 is RedditListItemImage -> navigateToDetailsImage(item)
+                else -> Timber.tag("ERROR").d("$item cannot have navigation!")
             }
 
             override fun onSubredditIconClick(item: RedditItem) {

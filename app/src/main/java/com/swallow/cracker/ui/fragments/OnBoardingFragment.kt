@@ -10,7 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.UserPreferences
 import com.swallow.cracker.databinding.FragmentOnBoardingBinding
-import com.swallow.cracker.ui.adapters.OnBoardingAdapter
+import com.swallow.cracker.ui.adapters.onboarding.OnBoardingAdapter
 import com.swallow.cracker.ui.viewmodels.OnBoardingViewModel
 import com.swallow.cracker.utils.autoCleared
 import com.swallow.cracker.utils.bottomNavigationGone

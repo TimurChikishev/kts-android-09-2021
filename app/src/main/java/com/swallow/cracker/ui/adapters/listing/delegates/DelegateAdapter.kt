@@ -12,8 +12,4 @@ abstract class DelegateAdapter<M, in VH : RecyclerView.ViewHolder>(val modelClas
     ): RecyclerView.ViewHolder
 
     abstract fun bindViewHolder(model: M, viewHolder: VH, payloads: List<RedditItem>)
-
-    open fun onViewRecycled(viewHolder: VH) = Unit
-    open fun onViewDetachedFromWindow(viewHolder: VH) = Unit
-    open fun onViewAttachedToWindow(viewHolder: VH) = Unit
 }

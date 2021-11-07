@@ -17,11 +17,10 @@ class ComplexDelegatesRedditListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
-            ?: return delegates.keyAt(0)
+        val item = getItem(position) ?: return delegates.keyAt(0) // placeholder
 
-        delegates.forEach { key,adapter ->
-            if (adapter.modelClass == item::class.java){
+        delegates.forEach { key, adapter ->
+            if (adapter.modelClass == item::class.java) {
                 return key
             }
         }
