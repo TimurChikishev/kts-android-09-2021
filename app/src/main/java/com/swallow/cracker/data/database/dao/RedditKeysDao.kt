@@ -13,9 +13,6 @@ interface RedditKeysDao {
     @Insert(onConflict = REPLACE)
     suspend fun saveRedditKeys(redditKey: RemoteRedditKeys)
 
-    @Query("SELECT * FROM ${RedditKeysContract.TABLE_NAME} WHERE ${RedditKeysContract.Columns.ID} = :prefixId")
-    suspend fun getRedditKeys(prefixId: String): List<RemoteRedditKeys>
-
     @Query("DELETE FROM ${RedditKeysContract.TABLE_NAME} WHERE ${RedditKeysContract.Columns.ID} = :id")
     suspend fun clearRedditKeysByQuery(id: String)
 

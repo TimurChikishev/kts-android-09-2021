@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.swallow.cracker.ui.fragments.SubredditListFragment
 
-class SubredditFragmentAdapter (
+class SubredditFragmentAdapter constructor (
     private val query: String,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle

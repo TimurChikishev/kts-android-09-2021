@@ -1,8 +1,6 @@
 package com.swallow.cracker.data.repository
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import com.swallow.cracker.UserPreferences
 import com.swallow.cracker.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
@@ -10,19 +8,8 @@ import kotlinx.coroutines.flow.catch
 import java.io.IOException
 
 class UserPreferencesRepositoryImpl constructor(
-    context: Context
+    private val userPreferencesStore: DataStore<UserPreferences>
 ) : UserPreferencesRepository {
-
-    companion object {
-        private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
-    }
-
-    private val Context.dataStore: DataStore<UserPreferences> by dataStore(
-        fileName = DATA_STORE_FILE_NAME,
-        serializer = UserPreferencesSerializer
-    )
-
-    private val userPreferencesStore: DataStore<UserPreferences> = context.dataStore
 
     override val userPreferencesFlow: Flow<UserPreferences> = userPreferencesStore.data
         .catch { exception ->

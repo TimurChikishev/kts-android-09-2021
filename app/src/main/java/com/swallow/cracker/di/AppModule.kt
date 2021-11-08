@@ -1,13 +1,11 @@
 package com.swallow.cracker.di
 
-import android.app.Application
-import android.content.Context
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
+import com.swallow.cracker.data.config.DataStoreConfig
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.network.AuthInterceptor
-import com.swallow.cracker.data.repository.AuthRepositoryImpl
-import com.swallow.cracker.data.repository.OnBoardingRepositoryImpl
-import com.swallow.cracker.data.repository.RedditRepositoryImpl
-import com.swallow.cracker.data.repository.UserPreferencesRepositoryImpl
+import com.swallow.cracker.data.repository.*
 import com.swallow.cracker.domain.repository.AuthRepository
 import com.swallow.cracker.domain.repository.OnBoardingRepository
 import com.swallow.cracker.domain.repository.RedditRepository
@@ -41,66 +39,34 @@ val AppModule = module {
 
     viewModel { SubredditViewModel(get(), get()) }
 
-    single { providesGetPostsUseCase(get()) }
+    single { GetPostsUseCase(get()) }
 
-    single { providesRedditRepository(get()) }
+    single<RedditRepository> { RedditRepositoryImpl(get(), get()) }
 
-    single { providesRedditDatabase(androidContext()) }
+    single { RedditDatabase.create(androidContext()) }
 
-    single { providesUserPreferencesUseCase(get()) }
+    single { UserPreferencesUseCase(get()) }
 
-    single { providesUserPreferencesRepository(androidContext()) }
+    single<UserPreferencesRepository> { UserPreferencesRepositoryImpl(get()) }
 
-    single { providesOnBoardingUseCase(get()) }
+    single { OnBoardingUseCase(get()) }
 
-    single { providesOnBoardingRepository() }
+    single<OnBoardingRepository> { OnBoardingRepositoryImpl() }
 
-    single { providesAuthInterceptor(get()) }
+    single { AuthInterceptor(get()) }
 
-    single { providesAuthUseCase(get()) }
+    single { AuthUseCase(get()) }
 
-    single { providesAuthRepository() }
+    single<AuthRepository> { AuthRepositoryImpl() }
 
-    single { providesAuthorizationService(androidApplication()) }
-}
+    single { AuthorizationService(androidApplication()) }
 
-
-fun providesRedditDatabase(context: Context): RedditDatabase {
-    return RedditDatabase.create(context)
-}
-
-fun providesRedditRepository(redditDatabase: RedditDatabase): RedditRepository {
-    return RedditRepositoryImpl(redditDatabase)
-}
-
-fun providesGetPostsUseCase(redditRepository: RedditRepository): GetPostsUseCase {
-    return GetPostsUseCase(redditRepository)
-}
-
-fun providesUserPreferencesRepository(context: Context): UserPreferencesRepository {
-    return UserPreferencesRepositoryImpl(context)
-}
-
-fun providesOnBoardingUseCase(repository: OnBoardingRepository): OnBoardingUseCase {
-    return OnBoardingUseCase(repository)
-}
-
-fun providesOnBoardingRepository(): OnBoardingRepository {
-    return OnBoardingRepositoryImpl()
-}
-
-fun providesAuthInterceptor(userPreferencesUseCase: UserPreferencesUseCase): AuthInterceptor {
-    return AuthInterceptor(userPreferencesUseCase)
-}
-
-fun providesAuthUseCase(authRepository: AuthRepository): AuthUseCase {
-    return AuthUseCase(authRepository)
-}
-
-fun providesAuthRepository(): AuthRepository {
-    return AuthRepositoryImpl()
-}
-
-fun providesAuthorizationService(application: Application): AuthorizationService {
-    return AuthorizationService(application)
+    single {
+        DataStoreFactory.create(
+            serializer = UserPreferencesSerializer,
+            produceFile = {
+                androidApplication().dataStoreFile(DataStoreConfig.DATA_STORE_FILE_NAME)
+            },
+        )
+    }
 }

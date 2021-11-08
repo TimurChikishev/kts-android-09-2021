@@ -5,7 +5,6 @@ import com.swallow.cracker.data.model.listing.RedditDataResponse
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.model.subreddit.RemoteSubredditAbout
 import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
-import com.swallow.cracker.data.model.token.AccessTokenResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -54,14 +53,6 @@ interface RedditApi {
         @Field("dir") dir: Int,
         @Field("id") id: String
     ): Response<Unit>
-
-    @FormUrlEncoded
-    @POST("access_token")
-    suspend fun refreshAuthToken(
-        @Header("Authorization") authorization: String,
-        @Field("grant_type") grantType: String,
-        @Field("refresh_token") refreshToken: String
-    ): Response<AccessTokenResponse>
 
     @GET("api/v1/me")
     suspend fun getProfileInfo(): Response<RemoteRedditProfile>

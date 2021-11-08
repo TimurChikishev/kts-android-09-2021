@@ -5,17 +5,18 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.model.RedditJsonWrapper
 import com.swallow.cracker.data.model.RemoteRedditKeys
 import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
-import com.swallow.cracker.data.network.Networking
 import retrofit2.Response
 
 @OptIn(ExperimentalPagingApi::class)
 class RedditMineSubscriptionsRemoteMediator(
-    private val database: RedditDatabase
+    private val database: RedditDatabase,
+    private val redditApi: RedditApi,
 ) : RemoteMediator<Int, RemoteSubreddit>() {
 
     override suspend fun initialize(): InitializeAction {
@@ -64,7 +65,7 @@ class RedditMineSubscriptionsRemoteMediator(
     private suspend fun getPosts(
         loadKey: RemoteRedditKeys?
     ): Response<RedditJsonWrapper<SubredditDataResponse>> {
-        return Networking.redditApiOAuth.mineSubscriptions(
+        return redditApi.mineSubscriptions(
             after = loadKey?.after,
             before = loadKey?.before,
             limit = 100

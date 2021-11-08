@@ -1,5 +1,6 @@
 package com.swallow.cracker.data.network
 
+import com.swallow.cracker.data.api.RedditApiAuth
 import com.swallow.cracker.data.config.AuthConfig
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
@@ -12,13 +13,14 @@ import okhttp3.Response
 import okhttp3.Route
 
 class TokenRefreshAuthenticator constructor(
-    private val userPreferencesUseCase: UserPreferencesUseCase
+    private val userPreferencesUseCase: UserPreferencesUseCase,
+    private val redditApiAuth: RedditApiAuth
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request {
         runBlocking {
             userPreferencesUseCase.userPreferencesFlow.take(1).collect {
-                val refreshAccessToken = Networking.redditApiV1.refreshAuthToken(
+                val refreshAccessToken = redditApiAuth.refreshAuthToken(
                     authorization = AuthConfig.BASIC_AUTH,
                     grantType = AuthConfig.GRANT_TYPE_REFRESH_TOKEN,
                     refreshToken = it.authRefreshToken

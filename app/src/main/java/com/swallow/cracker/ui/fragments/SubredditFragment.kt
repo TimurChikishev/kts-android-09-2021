@@ -24,9 +24,10 @@ import com.swallow.cracker.utils.sharedUrl
 import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
-class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
+class SubredditFragment : Fragment(R.layout.fragment_subreddit), KoinComponent {
 
     companion object {
         private val tabTitles = listOf("Posts")
@@ -70,8 +71,7 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
     }
 
     private fun initTabBar() = with(viewBinding) {
-        viewPager.adapter =
-            SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
+        viewPager.adapter = SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
 
         TabLayoutMediator(includeAppBar.headerTabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
@@ -87,10 +87,12 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
         subscribeButton.setOnClickListener {
             currentSubreddit?.let { subreddit ->
                 when (subscribeButton.text) {
-                    resources.getString(R.string.join) -> viewModel.subscribeToSubreddit(subreddit)
-                    resources.getString(R.string.joined) -> viewModel.unsubscribeFromSubreddit(
-                        subreddit
-                    )
+                    resources.getString(R.string.join) -> {
+                        viewModel.subscribeToSubreddit(subreddit)
+                    }
+                    resources.getString(R.string.joined) -> {
+                        viewModel.unsubscribeFromSubreddit(subreddit)
+                    }
                     else -> Timber.tag("ERROR").d("There is no such action for subscribe")
                 }
             }
@@ -118,9 +120,9 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
         launchWhenStarted {
             viewModel.isLoading.collect {
-                it?.let {
-                    viewBinding.containerCoordinatorLayout.isVisible = true
-                    viewBinding.progressBar.isVisible = false
+                it?.let { isLoading ->
+                    viewBinding.containerCoordinatorLayout.isVisible = !isLoading
+                    viewBinding.progressBar.isVisible = isLoading
                 }
             }
         }

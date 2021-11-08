@@ -79,7 +79,7 @@ object RedditMapper {
             id = subreddit.id,
             displayName = subreddit.displayName,
             displayNamePrefixed = subreddit.displayNamePrefixed,
-            name = subreddit.name ?: "",
+            name = subreddit.name,
             url = subreddit.url,
             communityIcon = subreddit.communityIcon?.fixImgUrl() ?: "",
             iconImg = subreddit.iconImg?.fixImgUrl(),

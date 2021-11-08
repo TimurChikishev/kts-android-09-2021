@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
+import com.swallow.cracker.data.api.RedditApi
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.RedditDatabase
 import com.swallow.cracker.data.mapper.RedditMapper
@@ -15,7 +16,6 @@ import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
 import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 import com.swallow.cracker.data.network.NetworkHandler
-import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.domain.repository.RedditRepository
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.SearchQuery
@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
 class RedditRepositoryImpl constructor(
-    private val redditDatabase: RedditDatabase
+    private val redditDatabase: RedditDatabase,
+    private val redditApi: RedditApi
 ) : RedditRepository {
 
     private val defaultPagerConfig = PagingConfig(
@@ -41,7 +42,7 @@ class RedditRepositoryImpl constructor(
     override fun getNewListingPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
             config = defaultPagerConfig,
-            remoteMediator = RedditListingRemoteMediator(query, redditDatabase)
+            remoteMediator = RedditListingRemoteMediator(query, redditApi, redditDatabase)
         ) {
             redditDatabase.redditPostsDao().getPosts()
         }
@@ -51,7 +52,7 @@ class RedditRepositoryImpl constructor(
     override fun getNewSearchPager(query: String): Pager<Int, RemoteRedditPost> {
         return Pager(
             config = defaultPagerConfig,
-            remoteMediator = RedditSearchRemoteMediator(query, redditDatabase)
+            remoteMediator = RedditSearchRemoteMediator(query, redditApi, redditDatabase)
         ) {
             redditDatabase.redditPostsDao().getPosts()
         }
@@ -64,7 +65,7 @@ class RedditRepositoryImpl constructor(
                 pageSize = 100,
                 enablePlaceholders = false
             ),
-            remoteMediator = RedditMineSubscriptionsRemoteMediator(redditDatabase)
+            remoteMediator = RedditMineSubscriptionsRemoteMediator(redditDatabase, redditApi)
         ) {
             redditDatabase.redditMineSubscriptionsDao().getMineSubscriptions()
         }.flow
@@ -73,7 +74,7 @@ class RedditRepositoryImpl constructor(
     override suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
         val dir = item.getVoteDir(likes)
 
-        val response = Networking.redditApiOAuth.votePost(
+        val response = redditApi.votePost(
             dir = dir,
             id = item.prefixId
         )
@@ -97,7 +98,7 @@ class RedditRepositoryImpl constructor(
 
     override fun subscribeSubreddit(action: String, subreddit: Subreddit): Flow<Response<Unit>> =
         flow {
-            val response = Networking.redditApiOAuth.subscribeSubreddit(
+            val response = redditApi.subscribeSubreddit(
                 action = action,
                 subredditId = subreddit.name
             )
@@ -108,7 +109,7 @@ class RedditRepositoryImpl constructor(
         }
 
     override suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.savedPost(id = item.prefixId)
+        val response = redditApi.savedPost(id = item.prefixId)
 
         if (response.isSuccessful)
             updateSavedPost(true, item.prefixId)
@@ -117,7 +118,7 @@ class RedditRepositoryImpl constructor(
     }
 
     override suspend fun unSavePost(item: RedditItem): Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.unSavedPost(id = item.prefixId)
+        val response = redditApi.unSavedPost(id = item.prefixId)
 
         if (response.isSuccessful)
             updateSavedPost(false, item.prefixId)
@@ -139,7 +140,8 @@ class RedditRepositoryImpl constructor(
 
     private suspend fun getProfile(): Resources<RemoteRedditProfile> {
         return NetworkHandler.call(
-            api = { getProfileInfo() },
+            api =  redditApi,
+            apiMethod = { getProfileInfo() },
             mapper = { this } // this -> RemoteRedditProfile
         )
     }
@@ -178,7 +180,8 @@ class RedditRepositoryImpl constructor(
 
     private suspend fun getSubreddits(query: String): Resources<List<Subreddit>> {
         return NetworkHandler.call(
-            api = { getSubreddits(query = query) },
+            api = redditApi,
+            apiMethod = { getSubreddits(query = query) },
             mapper = { this.mapRemoteSubredditToUi() }
         )
     }
@@ -217,7 +220,8 @@ class RedditRepositoryImpl constructor(
 
     private suspend fun getSubredditAbout(subreddit: String): Resources<Subreddit> {
         return NetworkHandler.call(
-            api = { getSubredditInfo(subreddit = subreddit) },
+            api = redditApi,
+            apiMethod = { getSubredditInfo(subreddit = subreddit) },
             mapper = { this.mapRemoteSubredditAboutToUi() }
         )
     }
