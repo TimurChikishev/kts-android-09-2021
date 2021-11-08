@@ -17,7 +17,7 @@
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_search.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_search_result.xml" value="0.33" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_subreddit.xml" value="0.22" />
-        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_subscriptions.xml" value="0.55" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_subscriptions.xml" value="0.22" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_test.xml" value="0.3020833333333333" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/home_top_app_bar.xml" value="0.55" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/navigation_view_header_layout.xml" value="0.32760416666666664" />
@@ -25,15 +25,19 @@
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_image_item.xml" value="0.4557291666666667" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_placeholder_item.xml" value="0.4557291666666667" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_simple_item.xml" value="0.4557291666666667" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/retry_layout.xml" value="0.4395833333333333" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/rounded_outline_button.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/search_query_list_item.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/search_result_top_app_bar.xml" value="0.43125" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/search_subreddit_list_item.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/subreddit_top_app_bar.xml" value="0.22" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/subscriptions_top_app_bar.xml" value="0.40307971014492755" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.32760416666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/navigation_drawer_menu.xml" value="0.3020833333333333" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/top_app_bar_home.xml" value="0.46875" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/top_app_bar_profile.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/top_app_bar_subreddit.xml" value="0.39791666666666664" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/menu/top_app_bar_subscriptions.xml" value="0.46875" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable-v23/splash_screen.xml" value="0.5234375" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable/circle_button.xml" value="0.5661458333333333" />
         <entry key="..\:/GIT/PROJECT/kts-android-09-2021/app/src/main/res/drawable/down_arrow.xml" value="0.5661458333333333" />

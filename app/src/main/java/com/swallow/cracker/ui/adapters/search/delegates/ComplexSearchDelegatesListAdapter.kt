@@ -6,9 +6,9 @@ import com.swallow.cracker.ui.adapters.search.delegates.items.SubredditItemDeleg
 
 class ComplexSearchDelegatesListAdapter() : AsyncListDifferDelegationAdapter<Any>(ComplexSearchDiffCallback()) {
 
-    private var eventDelegate: EventSearchDelegateListAdapter? = null
+    private var eventDelegate: EventDelegateListAdapter? = null
 
-    fun initEventDelegate(eventDelegate: EventSearchDelegateListAdapter) {
+    fun initEventDelegate(eventDelegate: EventDelegateListAdapter) {
         this.eventDelegate = eventDelegate
     }
 

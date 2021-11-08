@@ -1,8 +1,10 @@
 package com.swallow.cracker.domain.repository
 
 import androidx.paging.Pager
+import androidx.paging.PagingData
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 import com.swallow.cracker.ui.model.RedditItem
 import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.model.Subreddit
@@ -14,7 +16,11 @@ interface RedditRepository {
 
     fun getNewSearchPager(query: String): Pager<Int, RemoteRedditPost>
 
+    fun getNewMineSubscriptionsPager(): Flow<PagingData<RemoteSubreddit>>
+
     fun getSubredditInfo(subreddit: String): Flow<Subreddit>
+
+    fun subscribeSubreddit(action: String, subreddit: Subreddit) : Flow<Response<Unit>>
 
     suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>>
 
@@ -37,6 +43,4 @@ interface RedditRepository {
     suspend fun savedSearchQuery(searchQuery: SearchQuery)
 
     suspend fun removeSearchQuery(query: String)
-
-    fun subscribeSubreddit(action: String, subreddit: Subreddit) : Flow<Response<Unit>>
 }

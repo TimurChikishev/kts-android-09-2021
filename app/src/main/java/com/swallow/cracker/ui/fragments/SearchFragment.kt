@@ -12,7 +12,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentSearchBinding
 import com.swallow.cracker.ui.adapters.search.delegates.ComplexSearchDelegatesListAdapter
-import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
+import com.swallow.cracker.ui.adapters.search.delegates.EventDelegateListAdapter
 import com.swallow.cracker.ui.model.SearchQuery
 import com.swallow.cracker.ui.model.SearchQueryTransaction
 import com.swallow.cracker.ui.model.Subreddit
@@ -50,7 +50,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
-    private val eventDelegateObject = object : EventSearchDelegateListAdapter {
+    private val eventDelegateObject = object : EventDelegateListAdapter {
         override fun removeItem(item: Any) {
             when (item) {
                 is SearchQuery -> searchViewModel.removeSearchQuery(item)

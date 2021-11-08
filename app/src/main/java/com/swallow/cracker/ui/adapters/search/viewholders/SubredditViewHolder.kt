@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.SearchSubredditListItemBinding
-import com.swallow.cracker.ui.adapters.search.delegates.EventSearchDelegateListAdapter
+import com.swallow.cracker.ui.adapters.search.delegates.EventDelegateListAdapter
 import com.swallow.cracker.ui.model.Subreddit
 
-class SearchViewHolder(
+class SubredditViewHolder(
     private val viewBinding: SearchSubredditListItemBinding,
-    private val eventDelegate: EventSearchDelegateListAdapter?
+    private val eventDelegate: EventDelegateListAdapter?
 ) : RecyclerView.ViewHolder(viewBinding.root) {
 
     private var item: Subreddit? = null

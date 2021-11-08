@@ -6,6 +6,7 @@ import com.swallow.cracker.data.model.RedditJsonWrapper
 import com.swallow.cracker.data.model.RemoteSearchQuery
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 import com.swallow.cracker.data.model.subreddit.RemoteSubredditAbout
 import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
 import com.swallow.cracker.ui.model.*
@@ -73,6 +74,26 @@ object RedditMapper {
         )
     }
 
+    fun mapRemoteSubredditToUi(subreddit: RemoteSubreddit): Subreddit {
+        return Subreddit(
+            id = subreddit.id,
+            displayName = subreddit.displayName,
+            displayNamePrefixed = subreddit.displayNamePrefixed,
+            name = subreddit.name ?: "",
+            url = subreddit.url,
+            communityIcon = subreddit.communityIcon?.fixImgUrl() ?: "",
+            iconImg = subreddit.iconImg?.fixImgUrl(),
+            bannerImg = subreddit.bannerImg?.fixImgUrl(),
+            subscribers = subreddit.subscribers,
+            title = subreddit.title ?: "",
+            publicDescription = subreddit.publicDescription ?: "",
+            description = subreddit.description,
+            created = subreddit.created,
+            userIsSubscriber = subreddit.userIsSubscriber,
+            activeUserCount = subreddit.activeUserCount
+        )
+    }
+
     fun RedditJsonWrapper<SubredditDataResponse>.mapRemoteSubredditToUi(): List<Subreddit> {
         val subreddits = this.data.children.map {
             val subreddit = it.data
@@ -80,7 +101,7 @@ object RedditMapper {
                 id = subreddit.id,
                 displayName = subreddit.displayName,
                 displayNamePrefixed = subreddit.displayNamePrefixed,
-                name = subreddit.name ?: "",
+                name = subreddit.name,
                 url = subreddit.url,
                 communityIcon = subreddit.communityIcon?.fixImgUrl() ?: "",
                 iconImg = subreddit.iconImg?.fixImgUrl(),

@@ -63,6 +63,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun initTopAppBar() = with(viewBinding) {
         (activity as AppCompatActivity).setSupportActionBar(includeAppBar.topAppBar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(false)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
+
 
         includeAppBar.topAppBar.setNavigationOnClickListener {
             drawerLayout.open()

@@ -3,6 +3,7 @@ package com.swallow.cracker.data.repository
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.swallow.cracker.data.config.NetworkConfig
 import com.swallow.cracker.data.database.RedditDatabase
@@ -12,6 +13,7 @@ import com.swallow.cracker.data.mapper.RedditMapper.mapRemoteSubredditToUi
 import com.swallow.cracker.data.model.Resources
 import com.swallow.cracker.data.model.listing.RemoteRedditPost
 import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 import com.swallow.cracker.data.network.NetworkHandler
 import com.swallow.cracker.data.network.Networking
 import com.swallow.cracker.domain.repository.RedditRepository
@@ -55,6 +57,19 @@ class RedditRepositoryImpl constructor(
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getNewMineSubscriptionsPager(): Flow<PagingData<RemoteSubreddit>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 100,
+                enablePlaceholders = false
+            ),
+            remoteMediator = RedditMineSubscriptionsRemoteMediator(redditDatabase)
+        ) {
+            redditDatabase.redditMineSubscriptionsDao().getMineSubscriptions()
+        }.flow
+    }
+
     override suspend fun votePost(item: RedditItem, likes: Boolean): Flow<Response<Unit>> = flow {
         val dir = item.getVoteDir(likes)
 
@@ -80,16 +95,17 @@ class RedditRepositoryImpl constructor(
         }
     }
 
-    override fun subscribeSubreddit(action: String, subreddit: Subreddit) : Flow<Response<Unit>> = flow {
-        val response = Networking.redditApiOAuth.subscribeSubreddit(
-            action = action,
-            subredditId = subreddit.name
-        )
+    override fun subscribeSubreddit(action: String, subreddit: Subreddit): Flow<Response<Unit>> =
+        flow {
+            val response = Networking.redditApiOAuth.subscribeSubreddit(
+                action = action,
+                subredditId = subreddit.name
+            )
 
-        if (!response.isSuccessful) throw Exception("Subscription response failed")
+            if (!response.isSuccessful) throw Exception("Subscription response failed")
 
-        emit(response)
-    }
+            emit(response)
+        }
 
     override suspend fun savePost(item: RedditItem): Flow<Response<Unit>> = flow {
         val response = Networking.redditApiOAuth.savedPost(id = item.prefixId)
@@ -202,7 +218,7 @@ class RedditRepositoryImpl constructor(
     private suspend fun getSubredditAbout(subreddit: String): Resources<Subreddit> {
         return NetworkHandler.call(
             api = { getSubredditInfo(subreddit = subreddit) },
-            mapper = { this.mapRemoteSubredditAboutToUi()  }
+            mapper = { this.mapRemoteSubredditAboutToUi() }
         )
     }
 }

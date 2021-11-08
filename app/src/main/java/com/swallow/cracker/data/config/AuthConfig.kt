@@ -9,7 +9,7 @@ object AuthConfig {
     const val AUTH_URI = "https://ssl.reddit.com/api/v1/authorize.compact"
     const val TOKEN_URI = "https://ssl.reddit.com/api/v1/access_token"
     const val RESPONSE_TYPE = ResponseTypeValues.CODE
-    const val SCOPE = "read identity vote save subscribe"
+    const val SCOPE = "read identity vote save subscribe mysubreddits"
 
     const val CLIENT_ID = "_CTYgC0LmYg3G5z517KYHw"
     const val CLIENT_SECRET = ""

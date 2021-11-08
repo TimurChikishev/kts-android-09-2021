@@ -37,6 +37,8 @@ val AppModule = module {
 
     viewModel { SearchViewModel(get()) }
 
+    viewModel { SubscriptionsViewModel(get()) }
+
     viewModel { SubredditViewModel(get(), get()) }
 
     single { providesGetPostsUseCase(get()) }

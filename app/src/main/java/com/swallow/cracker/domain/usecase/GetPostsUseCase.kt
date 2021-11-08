@@ -11,6 +11,8 @@ class GetPostsUseCase constructor(private val redditRepository: RedditRepository
 
     fun getNewSearchPager(query: String) = redditRepository.getNewSearchPager(query)
 
+    fun getNewMineSubscriptionsPager() = redditRepository.getNewMineSubscriptionsPager()
+
     suspend fun savePost(item: RedditItem) = redditRepository.savePost(item)
 
     suspend fun unSavePost(item: RedditItem) = redditRepository.unSavePost(item)

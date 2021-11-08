@@ -78,4 +78,14 @@ interface RedditApi {
         @Field("skip_initial_defaults") skipInitialDefaults: Boolean = false,
         @Field("sr") subredditId: String, // prefixId = @Json(name = "name")
     ): Response<Unit>
+
+    @GET("subreddits/mine/{where}")
+    suspend fun mineSubscriptions(
+        @Path("where") where: String = "subscriber",
+        @Query("limit") limit: Int,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null,
+        @Query("count") count: String? = null,
+        @Query("show") show: String? = "all"
+    ):Response<RedditJsonWrapper<SubredditDataResponse>>
 }
