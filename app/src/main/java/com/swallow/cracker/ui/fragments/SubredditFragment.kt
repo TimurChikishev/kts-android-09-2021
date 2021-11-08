@@ -1,8 +1,11 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +20,7 @@ import com.swallow.cracker.ui.adapters.SubredditFragmentAdapter
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SubredditViewModel
 import com.swallow.cracker.utils.bottomNavigationGone
+import com.swallow.cracker.utils.sharedUrl
 import com.swallow.cracker.utils.showMessage
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -37,14 +41,37 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         bottomNavigationGone()
         bindOfClick()
         bindViewModel()
         initTabBar()
+        initTopAppBar()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.top_app_bar_subreddit, menu)
+    }
+
+    private fun initTopAppBar() = with(viewBinding) {
+        (activity as AppCompatActivity).setSupportActionBar(includeAppBar.topAppBar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.sharedAction -> {
+                    startActivity(sharedUrl("https://www.reddit.com/$subredditPrefixName/"))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun initTabBar() = with(viewBinding) {
-        viewPager.adapter = SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
+        viewPager.adapter =
+            SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
 
         TabLayoutMediator(includeAppBar.headerTabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
@@ -61,7 +88,9 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
             currentSubreddit?.let { subreddit ->
                 when (subscribeButton.text) {
                     resources.getString(R.string.join) -> viewModel.subscribeToSubreddit(subreddit)
-                    resources.getString(R.string.joined) -> viewModel.unsubscribeFromSubreddit(subreddit)
+                    resources.getString(R.string.joined) -> viewModel.unsubscribeFromSubreddit(
+                        subreddit
+                    )
                     else -> Timber.tag("ERROR").d("There is no such action for subscribe")
                 }
             }
@@ -98,12 +127,11 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit) {
     }
 
     private fun setSubscriberButtonStyle(action: Boolean) = with(viewBinding) {
-        when(action){
+        when (action) {
             true -> includeAppBar.subscribeButton.text = resources.getString(R.string.joined)
             false -> includeAppBar.subscribeButton.text = resources.getString(R.string.join)
         }
     }
-
 
     private fun setAppBarContent(subreddit: Subreddit?) = with(viewBinding.includeAppBar) {
         subreddit?.let {
