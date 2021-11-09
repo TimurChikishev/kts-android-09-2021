@@ -3,6 +3,7 @@ package com.swallow.cracker.data.model.subreddit
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+// TODO: deprecated (use RemoteSubreddit)
 @JsonClass(generateAdapter = true)
 data class RemoteSubredditAbout(
     @Json(name = "id")

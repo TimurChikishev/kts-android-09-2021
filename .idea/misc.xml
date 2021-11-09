@@ -11,7 +11,7 @@
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout-land/onboarding_item.xml" value="0.25573192239858905" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_details.xml" value="0.39791666666666664" />
-        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_list.xml" value="0.22" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_list.xml" value="0.25" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_main.xml" value="0.25" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_profile.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/fragment_search.xml" value="0.39791666666666664" />
@@ -25,6 +25,7 @@
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_image_item.xml" value="0.4557291666666667" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_placeholder_item.xml" value="0.4557291666666667" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_simple_item.xml" value="0.4557291666666667" />
+        <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/reddit_list_tools_item.xml" value="0.2672239108409321" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/retry_layout.xml" value="0.4395833333333333" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/rounded_outline_button.xml" value="0.39791666666666664" />
         <entry key="..\:/GIT/PROJECT/fix/kts-android-09-2021/app/src/main/res/layout/search_query_list_item.xml" value="0.39791666666666664" />
@@ -161,5 +162,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.33" />
+      </ProjectState>
+    </option>
   </component>
 </project>

@@ -11,6 +11,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentListBinding
@@ -36,17 +37,19 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.*
 
 open class ListFragment : Fragment(R.layout.fragment_list) {
     protected val redditViewModel: RedditListViewModel by viewModel()
     protected val redditAdapter: ComplexDelegatesRedditListAdapter by lazy {
         ComplexDelegatesRedditListAdapter.Builder()
-            .add(RedditListPlaceholderItem()) // placeholder
+            .add(RedditListPlaceholderItem()) // placeholder must be first added
             .add(RedditListSimpleItemDelegateAdapter())
             .add(RedditListItemImageDelegateAdapter())
             .build()
     }
 
+    private val singleItems = arrayOf("Best", "Hot", "New", "Top", "Rising")
     private val viewBinding by viewBinding(FragmentListBinding::bind)
     private var dataFromCacheSnackBar: Snackbar? = null
 
@@ -54,9 +57,12 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
         redditViewModel.setQuery(query)
     }
 
+    private fun setSorted(sorted: String) {
+        redditViewModel.setSorted(sorted)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initAdapter()
         bindingViewModel()
         bindingOfClick()
@@ -72,15 +78,42 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
         swipeContainer.setOnRefreshListener(redditAdapter::refresh)
     }
 
+    private fun showDialogChoiceItems() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setSingleChoiceItems(singleItems, redditViewModel.checkedItem.value) { dialog, which ->
+                redditViewModel.updateCheckedItem(which)
+                setSortedPostsTextViewTitle(which)
+                setSorted(singleItems[which].lowercase(Locale.getDefault()))
+
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun setSortedPostsTextViewTitle(which: Int = 0) {
+        val itemTitle = singleItems[which].uppercase(Locale.getDefault())
+        val title = viewBinding.root.context.getString(R.string.sorted_posts, itemTitle)
+        viewBinding.includeHeader.sortedByTextView.text = title
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     protected open fun bindingViewModel() = with(viewLifecycleOwner.lifecycleScope) {
-        launchWhenCreated { redditViewModel.listingItems.collectLatest { redditAdapter.submitData(it) } }
+        launchWhenCreated {
+            redditViewModel.listingItems.collectLatest { redditAdapter.submitData(it) }
+        }
 
         launchWhenStarted { redditViewModel.eventMessage.collect(::showMessage) }
+
+        launchWhenStarted {
+            redditViewModel.checkedItem.collect(::setSortedPostsTextViewTitle)
+        }
     }
 
     private fun bindingOfClick() {
         viewBinding.includeRetry.buttonRetry.setOnClickListener { redditAdapter.retry() }
+
+        viewBinding.includeHeader.container.setOnClickListener {
+            showDialogChoiceItems()
+        }
 
         redditAdapter.attachClickDelegate(object : ComplexDelegateAdapterClick {
             override fun onVoteClick(item: RedditItem, likes: Boolean) {
@@ -116,6 +149,22 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
                 footer = LoadStateAdapter { redditAdapter.retry() }
             )
         }
+
+        viewBinding.redditRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                with(viewBinding.includeHeader) {
+                    if (dy > 0 && container.isShown) {
+                        recyclerView.setPadding(0, 0, 0, 0)
+                        container.visibility = View.GONE
+                    } else if (dy < 0) {
+                        recyclerView.setPadding(0, 80, 0, 0)
+                        container.visibility = View.VISIBLE
+                    }
+                }
+            }
+        })
 
         redditAdapter.addLoadStateListener(::loadStateListener)
         initAdapterRefreshListener()
@@ -178,7 +227,7 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
         findNavController().navigate(action)
     }
 
-    protected open  fun navigateToSubredditFragment(subreddit: String) {
+    protected open fun navigateToSubredditFragment(subreddit: String) {
         val action = MainFragmentDirections.actionMainFragmentToSubredditFragment(subreddit)
         findNavController().navigate(action)
     }

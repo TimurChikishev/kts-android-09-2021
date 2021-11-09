@@ -43,8 +43,8 @@ fun Fragment.bottomNavigationVisible() {
         navView.visibility = View.VISIBLE
 }
 
-fun getDataFormCacheSnackBar(view: View): Snackbar {
-    val tint = ContextCompat.getColor(view.context, R.color.gray)
+fun Fragment.getDataFormCacheSnackBar(view: View): Snackbar {
+    val tint = ContextCompat.getColor(requireContext(), R.color.gray)
 
     return Snackbar.make(view, R.string.data_from_the_cache, Snackbar.LENGTH_SHORT)
         .setBackgroundTint(tint)

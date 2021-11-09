@@ -1,5 +1,6 @@
 package com.swallow.cracker.ui.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -10,17 +11,34 @@ import com.swallow.cracker.data.mapper.RedditMapper
 import com.swallow.cracker.domain.usecase.GetPostsUseCase
 import com.swallow.cracker.ui.model.Message
 import com.swallow.cracker.ui.model.RedditItem
+import com.swallow.cracker.ui.model.RedditListQuery
+import com.swallow.cracker.utils.set
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
 open class RedditListViewModel constructor(
+    private val  savedStateHandle: SavedStateHandle,
     private val getPostsUseCase: GetPostsUseCase
 ) : ViewModel() {
 
-    private val _query = MutableStateFlow("")
-    val query: StateFlow<String> = _query.asStateFlow()
+    private var checkedItemSavedState = savedStateHandle.get<Int>(SORTED_KEY) ?: 0
+        set(value) {
+            field = value
+            savedStateHandle.set(SORTED_KEY, value)
+        }
+
+    private val checkedItemMutableStateFlow = MutableStateFlow(checkedItemSavedState)
+    val checkedItem: MutableStateFlow<Int>
+        get() = checkedItemMutableStateFlow
+
+    fun updateCheckedItem(index: Int){
+        checkedItemMutableStateFlow.set(index)
+    }
+
+    private val _query = MutableStateFlow(RedditListQuery())
+    val query: StateFlow<RedditListQuery> = _query.asStateFlow()
 
     private var eventMessageMutableStateFlow = Channel<Message<*>> (Channel.BUFFERED)
 
@@ -32,25 +50,34 @@ open class RedditListViewModel constructor(
 
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
-    val listingItems = query.map { q -> getPostsUseCase.getNewListingPager(q) }
+    val listingItems = query.map { q -> getPostsUseCase.getNewListingPager(q.fullQuery) }
         .flatMapLatest { pager -> pager.flow }
-        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
+        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value.fullQuery }) }
         .catch { Timber.tag("ERROR").d(it) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
     @ExperimentalCoroutinesApi
     @OptIn(FlowPreview::class)
-    val searchItems = query.map { q -> getPostsUseCase.getNewSearchPager(q) }
+    val searchItems = query.map { q -> getPostsUseCase.getNewSearchPager(q.fullQuery) }
         .flatMapLatest { pager -> pager.flow }
-        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value }) }
+        .map {  RedditMapper.mapPagingDataRemoteRedditPostToUi(it.filter { item -> item.query == query.value.fullQuery }) }
         .catch { Timber.tag("ERROR").d(it) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
 
     fun setQuery(query: String) {
-        _query.tryEmit(query)
+        _query.tryEmit(RedditListQuery(query = query))
+    }
+
+    fun setSorted(sorted: String) {
+        _query.tryEmit(
+            RedditListQuery(
+                query = _query.value.query,
+                sorted = sorted
+            )
+        )
     }
 
     fun savePost(item: RedditItem) {
@@ -98,8 +125,10 @@ open class RedditListViewModel constructor(
                 .collect()
         }
     }
+
+    companion object {
+        private const val SORTED_KEY = "SORTED_KEY"
+    }
 }
-
-
 
 

@@ -68,4 +68,9 @@
     <string name="online">%1$d online</string>
     <string name="search_results">Search results</string>
     <string name="error_subscribing_to_a_subreddit">Error subscribing to a subreddit</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="sorted_posts_by">sorted posts by</string>
+    <string name="sorted_posts">%1$s POSTS</string>
+    <string name="best">best</string>
 </resources>

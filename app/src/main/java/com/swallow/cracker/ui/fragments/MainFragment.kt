@@ -70,7 +70,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         includeAppBar.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.sortedAction -> false // TODO: sorted dialog
                 R.id.searchAction -> {
                     navigateToSearchFragment()
                     true
