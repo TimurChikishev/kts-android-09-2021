@@ -59,7 +59,7 @@ val AppModule = module {
 
     single<AuthRepository> { AuthRepositoryImpl() }
 
-    single { AuthorizationService(androidApplication()) }
+    factory { AuthorizationService(androidApplication()) }
 
     single {
         DataStoreFactory.create(
