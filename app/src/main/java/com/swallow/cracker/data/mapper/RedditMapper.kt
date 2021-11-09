@@ -68,9 +68,13 @@ object RedditMapper {
             avatarImg = profile.avatarImg?.fixImgUrl(),
             created = profile.created.convertLongToTime(),
             totalKarma = profile.totalKarma,
+            awarderKarma = profile.awarderKarma,
+            awardeeKarma = profile.awardeeKarma,
+            commentKarma = profile.commentKarma,
+            linkKarma = profile.linkKarma,
             bannerImg = subreddit.bannerImg?.fixImgUrl(),
             displayName = subreddit.displayName,
-            url = subreddit.url,
+            url = subreddit.url
         )
     }
 

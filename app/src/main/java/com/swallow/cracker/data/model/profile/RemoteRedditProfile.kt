@@ -36,6 +36,22 @@ data class RemoteRedditProfile(
     @ColumnInfo(name = RedditProfileContract.Columns.TOTAL_KARMA)
     val totalKarma: Int,
 
+    @Json(name = "awarder_karma")
+    @ColumnInfo(name = RedditProfileContract.Columns.AWARDER_KARMA)
+    val awarderKarma: Int,
+
+    @Json(name = "awardee_karma")
+    @ColumnInfo(name = RedditProfileContract.Columns.AWARDEE_KARMA)
+    val awardeeKarma: Int,
+
+    @Json(name = "comment_karma")
+    @ColumnInfo(name = RedditProfileContract.Columns.COMMENT_KARMA)
+    val commentKarma: Int,
+
+    @Json(name = "link_karma")
+    @ColumnInfo(name = RedditProfileContract.Columns.LINK_KARMA)
+    val linkKarma: Int,
+
     @Json(name = "subreddit")
     @ColumnInfo(name = RedditProfileContract.Columns.SUBREDDIT)
     val subreddit: RemoteProfileInfoSubreddit

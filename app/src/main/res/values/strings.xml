@@ -73,4 +73,10 @@
     <string name="sorted_posts_by">sorted posts by</string>
     <string name="sorted_posts">%1$s POSTS</string>
     <string name="best">best</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_karma">Post Karma</string>
+    <string name="awarder_karma">Awarder Karma</string>
+    <string name="comments_karma">Comments Karma</string>
+    <string name="awardee_karma">Awardee Karma</string>
 </resources>

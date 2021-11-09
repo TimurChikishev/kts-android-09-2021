@@ -11,6 +11,4 @@ data class RemoteProfileInfoSubreddit(
     val displayName: String,
     @Json(name = "url")
     val url: String
-) {
-    override fun toString(): String = "$bannerImg;;$displayName;;$url"
-}
+)

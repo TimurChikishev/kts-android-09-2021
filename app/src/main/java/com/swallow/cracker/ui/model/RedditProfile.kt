@@ -7,6 +7,10 @@ data class RedditProfile(
     val avatarImg: String?,
     val created: String,
     val totalKarma: Int,
+    val awarderKarma: Int,
+    val awardeeKarma: Int,
+    val commentKarma: Int,
+    val linkKarma: Int,
     val bannerImg: String?,
     val displayName: String,
     val url: String
