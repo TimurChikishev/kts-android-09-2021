@@ -11,7 +11,7 @@
         style="@style/MaterialToolbarCracker"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:constraint_referenced_ids="backMaterialButton,searchView,sortedMaterialButton"
+        app:constraint_referenced_ids="backMaterialButton,searchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,14 +32,6 @@
         app:queryBackground="@android:color/transparent"
         app:queryHint="Search"
         app:searchIcon="@null" />
-
-    <Button
-        android:id="@+id/sortedMaterialButton"
-        style="@style/IconMaterialButton"
-        android:layout_width="56dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/sorted_by"
-        app:icon="@drawable/ic_filter_list_24" />
 
 
     <androidx.recyclerview.widget.RecyclerView

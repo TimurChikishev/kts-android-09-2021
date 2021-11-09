@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
 open class RedditListViewModel constructor(
-    private val  savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val getPostsUseCase: GetPostsUseCase
 ) : ViewModel() {
 

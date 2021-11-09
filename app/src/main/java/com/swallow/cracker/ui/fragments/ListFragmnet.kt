@@ -91,7 +91,7 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
 
     private fun setSortedPostsTextViewTitle(which: Int = 0) {
         val itemTitle = singleItems[which].uppercase(Locale.getDefault())
-        val title = viewBinding.root.context.getString(R.string.sorted_posts, itemTitle)
+        val title = resources.getString(R.string.sorted_posts, itemTitle)
         viewBinding.includeHeader.sortedByTextView.text = title
     }
 
