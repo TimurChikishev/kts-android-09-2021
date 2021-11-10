@@ -79,4 +79,10 @@
     <string name="awardee_karma">Awardee Karma</string>
     <string name="description">Description</string>
     <string name="public_description">Public description</string>
+    <string name="onboarding_title_first">Посты</string>
+    <string name="onboarding_first">Читайте интересные посты и черпайте вдохновение</string>
+    <string name="onboarding_title_second">Голосуй</string>
+    <string name="onboarding_second">Ставьте лайки и сохраняйте ваши любимые посты в избранное</string>
+    <string name="onboarding_title_third">Делись</string>
+    <string name="onboarding_third">Делитесь своими любимыми постами и subrddit-ми</string>
 </resources>

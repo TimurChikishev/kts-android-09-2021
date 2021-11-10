@@ -17,11 +17,11 @@ class OnBoardingViewHolder(private val viewBinding: OnboardingItemBinding) :
         viewBinding.onBoardingImage.setImageResource(image)
     }
 
-    private fun setTitle(title: String) {
-        viewBinding.onBoardingTitle.text = title
+    private fun setTitle(title: Int) {
+        viewBinding.onBoardingTitle.text = viewBinding.root.context.getString(title)
     }
 
-    private fun setDescription(description: String) {
-        viewBinding.onBoardingDescription.text = description
+    private fun setDescription(description: Int) {
+        viewBinding.onBoardingDescription.text = viewBinding.root.context.getString(description)
     }
 }

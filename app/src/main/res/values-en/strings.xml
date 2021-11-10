@@ -79,4 +79,10 @@
     <string name="awardee_karma">Awardee Karma</string>
     <string name="description">Description</string>
     <string name="public_description">Public description</string>
+    <string name="onboarding_title_first">Posts</string>
+    <string name="onboarding_first">Read interesting posts and get inspired</string>
+    <string name="onboarding_title_second">Vote</string>
+    <string name="onboarding_second">Like and save your favorite posts to favorites</string>
+    <string name="onboarding_title_third">Share</string>
+    <string name="onboarding_third">Share your favorite posts and subreddits</string>
 </resources>

@@ -8,17 +8,17 @@ class OnBoardingRepositoryImpl : OnBoardingRepository {
 
     override fun getOnBoardingData() = listOf(
         OnBoardingUI(
-            image = R.drawable.ic_launcher_background,
-            title = "First Title",
-            description = "First description special for on boarding fragment"
+            image = R.drawable.onboarding_first,
+            title = R.string.onboarding_title_first,
+            description = R.string.onboarding_first
         ), OnBoardingUI(
-            image = R.drawable.ic_launcher_background,
-            title = "Second Title",
-            description = "Second description special for on boarding fragment"
+            image = R.drawable.onboarding_second,
+            title =  R.string.onboarding_title_second,
+            description = R.string.onboarding_second
         ), OnBoardingUI(
-            image = R.drawable.ic_launcher_background,
-            title = "Third Title",
-            description = "Third description special for on boarding fragment"
+            image =  R.drawable.onboarding_third,
+            title = R.string.onboarding_title_third,
+            description = R.string.onboarding_third
         )
     )
 
