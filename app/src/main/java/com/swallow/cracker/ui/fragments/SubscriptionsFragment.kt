@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,13 +21,9 @@ import com.swallow.cracker.ui.adapters.search.delegates.EventDelegateListAdapter
 import com.swallow.cracker.ui.adapters.subscriptions.SubscriptionsPagingDataAdapter
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SubscriptionsViewModel
-import com.swallow.cracker.utils.asMergedLoadStates
 import com.swallow.cracker.utils.bottomNavigationVisible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber

@@ -1,16 +1,16 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.swallow.cracker.R
+import com.swallow.cracker.databinding.FragmentSubredditAboutBinding
 import com.swallow.cracker.ui.model.Subreddit
 import com.swallow.cracker.ui.viewmodels.SharedSubredditViewModel
 import kotlinx.coroutines.flow.collect
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.swallow.cracker.databinding.FragmentSubredditAboutBinding
 
 class SubredditAboutFragment : Fragment(R.layout.fragment_subreddit_about) {
 
