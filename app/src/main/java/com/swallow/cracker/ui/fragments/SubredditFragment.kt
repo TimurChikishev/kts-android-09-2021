@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,6 +19,7 @@ import com.swallow.cracker.R
 import com.swallow.cracker.databinding.FragmentSubredditBinding
 import com.swallow.cracker.ui.adapters.SubredditFragmentAdapter
 import com.swallow.cracker.ui.model.Subreddit
+import com.swallow.cracker.ui.viewmodels.SharedSubredditViewModel
 import com.swallow.cracker.ui.viewmodels.SubredditViewModel
 import com.swallow.cracker.utils.bottomNavigationGone
 import com.swallow.cracker.utils.sharedUrl
@@ -30,14 +32,18 @@ import timber.log.Timber
 class SubredditFragment : Fragment(R.layout.fragment_subreddit), KoinComponent {
 
     companion object {
-        private val tabTitles = listOf("Posts")
+        private val tabTitles = listOf("Posts", "About")
     }
+
+    private val viewBinding by viewBinding(FragmentSubredditBinding::bind)
+
+    private val viewModel: SubredditViewModel by viewModel()
+    private val sharedViewModel: SharedSubredditViewModel by activityViewModels()
 
     private val args by navArgs<SubredditFragmentArgs>()
     private val subredditName by lazy { args.subreddit }
     private val subredditPrefixName by lazy { "r/${subredditName}" }
-    private val viewModel: SubredditViewModel by viewModel()
-    private val viewBinding by viewBinding(FragmentSubredditBinding::bind)
+
     private var currentSubreddit: Subreddit? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +77,8 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit), KoinComponent {
     }
 
     private fun initTabBar() = with(viewBinding) {
-        viewPager.adapter = SubredditFragmentAdapter(subredditPrefixName, childFragmentManager, lifecycle)
+        viewPager.adapter =
+            SubredditFragmentAdapter(childFragmentManager, lifecycle)
 
         TabLayoutMediator(includeAppBar.headerTabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
@@ -100,6 +107,8 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit), KoinComponent {
     }
 
     private fun bindViewModel() = with(viewLifecycleOwner.lifecycleScope) {
+        sharedViewModel.setQuery(subredditPrefixName)
+
         launchWhenStarted {
             subredditName?.let {
                 viewModel.getSubredditInfo(it)
@@ -137,6 +146,7 @@ class SubredditFragment : Fragment(R.layout.fragment_subreddit), KoinComponent {
 
     private fun setAppBarContent(subreddit: Subreddit?) = with(viewBinding.includeAppBar) {
         subreddit?.let {
+            sharedViewModel.setSubredditInfo(it)
             currentSubreddit = it
             setSubredditAvatar(it.communityIcon, avatarImageView)
             nameTextView.text = it.displayNamePrefixed

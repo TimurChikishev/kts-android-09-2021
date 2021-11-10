@@ -231,4 +231,9 @@ open class ListFragment : Fragment(R.layout.fragment_list) {
         val action = MainFragmentDirections.actionMainFragmentToSubredditFragment(subreddit)
         findNavController().navigate(action)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dataFromCacheSnackBar = null
+    }
 }

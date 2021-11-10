@@ -1,20 +1,30 @@
 package com.swallow.cracker.ui.fragments
 
 import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.swallow.cracker.ui.model.RedditListItemImage
 import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.swallow.cracker.ui.viewmodels.SharedSubredditViewModel
+import kotlinx.coroutines.flow.collect
 
 // TODO(переписать получение данных без сохранения в базу данных)
 // Из-за сохранения данных происходит refresh в remote mediator,
 // что приводит к обновлению всех списков
 class SubredditListFragment : ListFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val sharedViewModel: SharedSubredditViewModel by activityViewModels()
 
-        arguments?.getString(KEY_QUERY)?.let {
-            setQuery(it)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindSharedViewModel()
+    }
+
+    private fun bindSharedViewModel() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            sharedViewModel.queryStateFlow.collect { it?.let { setQuery(it) }}
         }
     }
 
@@ -29,8 +39,4 @@ class SubredditListFragment : ListFragment() {
     }
 
     override fun navigateToSubredditFragment(subreddit: String) = Unit
-
-    companion object {
-        private const val KEY_QUERY = "KEY_QUERY"
-    }
 }

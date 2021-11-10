@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.swallow.cracker.ui.fragments.SubredditAboutFragment
 import com.swallow.cracker.ui.fragments.SubredditListFragment
 
-class SubredditFragmentAdapter constructor (
-    private val query: String,
+class SubredditFragmentAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
@@ -16,16 +16,13 @@ class SubredditFragmentAdapter constructor (
     override fun getItemCount() = ITEM_COUNT
 
     override fun createFragment(position: Int): Fragment {
-        return buildFragment(SubredditListFragment())
-    }
-
-    private fun buildFragment(fragment: Fragment): Fragment {
-        fragment.arguments = bundleOf(KEY_QUERY to query)
-        return fragment
+        return when(position) {
+            0 -> SubredditListFragment()
+            else -> SubredditAboutFragment()
+        }
     }
 
     companion object {
-        private const val ITEM_COUNT = 1
-        private const val KEY_QUERY = "KEY_QUERY"
+        private const val ITEM_COUNT = 2
     }
 }

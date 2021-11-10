@@ -77,4 +77,6 @@
     <string name="awarder_karma">Awarder Karma</string>
     <string name="comments_karma">Comments Karma</string>
     <string name="awardee_karma">Awardee Karma</string>
+    <string name="description">Description</string>
+    <string name="public_description">Public description</string>
 </resources>
