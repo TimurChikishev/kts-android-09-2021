@@ -27,7 +27,7 @@ data class RedditListSimpleItem(
 
     override fun id() = t3_id
 
-    override fun equalsContent(other: Any?) = this === other
+    override fun equalsContent(other: Any?) = this == other
 
     override fun likes() = likes
 
