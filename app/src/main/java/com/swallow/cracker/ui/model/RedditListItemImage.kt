@@ -28,7 +28,7 @@ class RedditListItemImage(
     override val time: String
         get() = created.convertLongToTime()
 
-    override fun equalsContent(other: Any?) = this === other
+    override fun equalsContent(other: Any?) = this == other
 
     override fun thumbnail() = thumbnail
 
