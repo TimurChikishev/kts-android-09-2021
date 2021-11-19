@@ -8,8 +8,9 @@
     android:padding="16dp"
     tools:context=".ui.fragments.AuthFragment">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loginProgress"
+        style="@style/ProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -18,6 +19,7 @@
 
     <Button
         android:id="@+id/loginButton"
+        style="@style/SimpleButton"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_marginBottom="16dp"

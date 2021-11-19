@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swallow.cracker.R
 import com.swallow.cracker.data.mapper.RedditMapper
-import com.swallow.cracker.data.repository.RedditRepository
-import com.swallow.cracker.data.repository.Repository
+import com.swallow.cracker.domain.usecase.GetPostsUseCase
+import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
 import com.swallow.cracker.ui.model.RedditProfile
 import com.swallow.cracker.utils.set
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ProfileViewModel(
-    private val savedStateHandle: SavedStateHandle
+class ProfileViewModel constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val getPostsUseCase: GetPostsUseCase,
+    private val userPreferencesUseCase: UserPreferencesUseCase
 ) : ViewModel() {
 
     private var profileInfo = savedStateHandle.get<RedditProfile>(KEY_PROFILE_INFO)
@@ -25,9 +27,6 @@ class ProfileViewModel(
             field = value
             savedStateHandle.set(KEY_PROFILE_INFO, value)
         }
-
-    private val userPreferencesRepo = Repository.userPreferencesRepository
-    private val redditRepository = RedditRepository()
 
     private val toastChannel = Channel<Int>(Channel.BUFFERED)
     private var logoutChannel = Channel<Boolean>(Channel.BUFFERED)
@@ -49,14 +48,14 @@ class ProfileViewModel(
     fun init() {
         initJob?.cancel()
         initJob = viewModelScope.launch {
-            userPreferencesRepo.userPreferencesFlow.take(1).collect { pref -> 
-                redditRepository.getProfileFromDB(pref.currentAccountId)
+            userPreferencesUseCase.userPreferencesFlow.take(1).collect { pref ->
+                getPostsUseCase.getProfileFromDB(pref.currentAccountId)
                     .map {
                         it ?: throw  NullPointerException(
                             "There is no information about a user with an ID equal to ${pref.currentAccountId} in the database"
                         )
 
-                        RedditMapper.remoteProfileToUi(it)
+                        RedditMapper.mapRemoteProfileToUi(it)
                     }
                     .catch { Timber.tag("ERROR").d(it) }
                     .flowOn(Dispatchers.IO)
@@ -71,10 +70,10 @@ class ProfileViewModel(
         logoutJob?.cancel()
         logoutJob = viewModelScope.launch {
             runCatching {
-                redditRepository.clearDataBase()
-                userPreferencesRepo.clearAuthToken()
-                userPreferencesRepo.clearAuthRefreshToken()
-                userPreferencesRepo.clearCurrentAccountId()
+                getPostsUseCase.clearDataBase()
+                userPreferencesUseCase.clearAuthToken()
+                userPreferencesUseCase.clearAuthRefreshToken()
+                userPreferencesUseCase.clearCurrentAccountId()
             }.onSuccess {
                 logoutChannel.send(true)
             }.onFailure {
@@ -86,15 +85,15 @@ class ProfileViewModel(
     fun getProfileInfo() {
         profileInfoJob?.cancel()
         profileInfoJob = viewModelScope.launch {
-            redditRepository.getProfileInfo()
-                .map { RedditMapper.remoteProfileToUi(it) }
+            getPostsUseCase.getProfileInfo()
+                .map { RedditMapper.mapRemoteProfileToUi(it) }
                 .catch {
                     toastChannel.send(R.string.data_acquisition_error)
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { me ->
                     profileInfoMutableStateFlow.set(me)
-                    userPreferencesRepo.updateAccountId(me.id)
+                    userPreferencesUseCase.updateAccountId(me.id)
                 }
         }
     }

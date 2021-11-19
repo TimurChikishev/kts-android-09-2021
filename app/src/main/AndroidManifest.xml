@@ -29,10 +29,23 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:host="www.reddit.com"
-                    android:scheme="https"/>
+                <data android:scheme="https"/>
+
+                <data android:host="www.reddit.com"/>
+                <data android:host="reddit.com"/>
+                <data android:host="v.redd.it"/>
+                <data android:host="amp.reddit.com"/>
+                <data android:host="m.reddit.com"/>
+                <data android:host="old.reddit.com"/>
+                <data android:host="new.reddit.com"/>
+                <data android:host="np.reddit.com"/>
+                <data android:host="reddit.app.link"/>
+                <data android:host="redd.it"/>
+                <data android:host="s.reddit.com"/>
 
             </intent-filter>
+
+            <nav-graph android:value="@navigation/navigation"/>
         </activity>
     </application>
 

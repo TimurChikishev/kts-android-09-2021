@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_tab_subscriptions"
+    app:startDestination="@id/subscriptionsFragment">
+
+    <fragment
+        android:id="@+id/subscriptionsFragment"
+        android:name="com.swallow.cracker.ui.fragments.SubscriptionsFragment"
+        android:label="fragment_subscriptions"
+        tools:layout="@layout/fragment_subscriptions" >
+        <action
+            android:id="@+id/action_subscriptionsFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.swallow.cracker.ui.fragments.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+        <deepLink
+            android:id="@+id/deepLinkSearchFragment"
+            app:uri="android-app://com.swallow.cracker/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/subredditFragment"
+        android:name="com.swallow.cracker.ui.fragments.SubredditFragment"
+        android:label="fragment_subreddit"
+        tools:layout="@layout/fragment_subreddit">
+
+        <argument
+            android:name="subreddit"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_subredditFragment_to_detailsPostImageFragment"
+            app:destination="@id/detailsPostImageFragment" />
+        <action
+            android:id="@+id/action_subredditFragment_to_detailsPostSimpleFragment"
+            app:destination="@id/detailsPostSimpleFragment" />
+        <deepLink
+            android:id="@+id/deepLinkSubredditFragment2"
+            app:uri="www.reddit.com/r/{subreddit}" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.swallow.cracker.ui.fragments.SearchResultsFragment"
+        android:label="fragment_search_result"
+        tools:layout="@layout/fragment_search_result" >
+        <argument
+            android:name="query"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_detailsPostSimpleFragment"
+            app:destination="@id/detailsPostSimpleFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_detailsPostImageFragment"
+            app:destination="@id/detailsPostImageFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailsPostImageFragment"
+        android:name="com.swallow.cracker.ui.fragments.DetailsPostImageFragment"
+        tools:layout="@layout/fragment_details">
+        <deepLink app:uri="android-app://com.swallow.cracker/detailsPostImage?post={post}" />
+        <argument
+            android:name="post"
+            app:argType="com.swallow.cracker.ui.model.RedditListItemImage" />
+        <action
+            android:id="@+id/action_detailsPostImageFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsPostSimpleFragment"
+        android:name="com.swallow.cracker.ui.fragments.DetailsPostSimpleFragment"
+        tools:layout="@layout/fragment_details">
+        <deepLink app:uri="android-app://com.swallow.cracker/detailsPostSimple?post={post}" />
+        <argument
+            android:name="post"
+            app:argType="com.swallow.cracker.ui.model.RedditListSimpleItem" />
+        <action
+            android:id="@+id/action_detailsPostSimpleFragment_to_subredditFragment"
+            app:destination="@id/subredditFragment" />
+    </fragment>
+
+</navigation>

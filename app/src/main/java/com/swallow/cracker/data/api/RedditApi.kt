@@ -1,19 +1,38 @@
 package com.swallow.cracker.data.api
 
-import com.swallow.cracker.data.model.*
+import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.swallow.cracker.data.model.listing.RedditDataResponse
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubredditAbout
+import com.swallow.cracker.data.model.subreddit.SubredditDataResponse
 import retrofit2.Response
 import retrofit2.http.*
 
 interface RedditApi {
 
-    @GET("r/{subreddit}/{category}.json")
-    suspend fun getSubreddit(
-        @Path("subreddit") subreddit: String,
-        @Path("category") category: String,
-        @Query("limit") limit: String,
+    @GET("{query}.json")
+    suspend fun getListing(
+        @Path("query") query: String,
+        @Query("limit") limit: Int,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>
+
+    @GET("search.json")
+    suspend fun search(
+        @Query("q") query: String,
+        @Query("limit") limit: Int,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null
+    ): Response<RedditJsonWrapper<RedditDataResponse>>
+
+    @GET("api/subreddit_autocomplete_v2.json")
+    suspend fun getSubreddits(
+        @Query("query") query: String,
+        @Query("limit") limit: Int = 5,
+        @Query("raw_json") rawJson: Int = 1,
+        @Query("gilding_detail") gildingDetail: Int = 1
+    ): Response<RedditJsonWrapper<SubredditDataResponse>>
 
     @FormUrlEncoded
     @POST("api/save")
@@ -35,14 +54,6 @@ interface RedditApi {
         @Field("id") id: String
     ): Response<Unit>
 
-    @FormUrlEncoded
-    @POST("access_token")
-    suspend fun refreshAuthToken(
-        @Header("Authorization") authorization: String,
-        @Field("grant_type") grantType: String,
-        @Field("refresh_token") refreshToken: String
-    ): Response<AccessTokenResponse>
-
     @GET("api/v1/me")
     suspend fun getProfileInfo(): Response<RemoteRedditProfile>
 
@@ -50,4 +61,22 @@ interface RedditApi {
     suspend fun getSubredditInfo(
         @Path("subreddit") subreddit: String
     ): Response<RedditJsonWrapper<RemoteSubredditAbout>>
+
+    @FormUrlEncoded
+    @POST("/api/subscribe")
+    suspend fun subscribeSubreddit(
+        @Field("action") action: String,
+        @Field("skip_initial_defaults") skipInitialDefaults: Boolean = false,
+        @Field("sr") subredditId: String, // prefixId = @Json(name = "name")
+    ): Response<Unit>
+
+    @GET("subreddits/mine/{where}")
+    suspend fun mineSubscriptions(
+        @Path("where") where: String = "subscriber",
+        @Query("limit") limit: Int,
+        @Query("after") after: String? = null,
+        @Query("before") before: String? = null,
+        @Query("count") count: String? = null,
+        @Query("show") show: String? = "all"
+    ):Response<RedditJsonWrapper<SubredditDataResponse>>
 }

@@ -1,8 +1,9 @@
 package com.swallow.cracker.data.network
 
+import com.swallow.cracker.data.api.RedditApiAuth
 import com.swallow.cracker.data.config.AuthConfig
 import com.swallow.cracker.data.config.NetworkConfig
-import com.swallow.cracker.data.repository.Repository
+import com.swallow.cracker.domain.usecase.UserPreferencesUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
@@ -11,14 +12,15 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 
-class TokenRefreshAuthenticator : Authenticator {
-
-    private val repository = Repository.userPreferencesRepository
+class TokenRefreshAuthenticator constructor(
+    private val userPreferencesUseCase: UserPreferencesUseCase,
+    private val redditApiAuth: RedditApiAuth
+) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request {
         runBlocking {
-            repository.userPreferencesFlow.take(1).collect {
-                val refreshAccessToken = Networking.redditApiV1.refreshAuthToken(
+            userPreferencesUseCase.userPreferencesFlow.take(1).collect {
+                val refreshAccessToken = redditApiAuth.refreshAuthToken(
                     authorization = AuthConfig.BASIC_AUTH,
                     grantType = AuthConfig.GRANT_TYPE_REFRESH_TOKEN,
                     refreshToken = it.authRefreshToken
@@ -39,10 +41,10 @@ class TokenRefreshAuthenticator : Authenticator {
     }
 
     private suspend fun saveAuthToken(token: String) {
-        repository.updateAuthToken(token)
+        userPreferencesUseCase.updateAuthToken(token)
     }
 
     private suspend fun saveAuthRefreshToken(refreshToken: String) {
-        repository.updateAuthRefreshToken(refreshToken)
+        userPreferencesUseCase.updateAuthRefreshToken(refreshToken)
     }
 }

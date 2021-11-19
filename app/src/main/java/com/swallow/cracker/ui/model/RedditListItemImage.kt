@@ -1,52 +1,42 @@
 package com.swallow.cracker.ui.model
 
 import android.os.Parcelable
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
 import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class RedditListItemImage(
-    var id: String,
-    var t3_id: String,
-    var author: String,
-    var subreddit: String,
-    val subredditId: String,
-    var title: String,
-    var selftext: String,
-    var score: Int,
-    var likes: Boolean?,
-    var saved: Boolean,
-    var numComments: Int,
-    var created: Long,
+    override var id: String,
+    override var prefixId: String,
+    override var author: String,
+    override var subreddit: String,
+    override var subredditId: String,
+    override var title: String,
+    override var selfText: String,
+    override var score: Int,
+    override var likes: Boolean?,
+    override var saved: Boolean,
+    override var numComments: Int,
+    override var created: Long,
     var thumbnail: String,
-    var url: String,
-    val preview: RedditChildrenPreview?,
-    val communityIcon: String?
+    override var url: String,
+    var preview: RedditChildrenPreview?,
+    override var communityIcon: String?
 ) : RedditItem, Parcelable {
 
-    val time: String
+    override val time: String
         get() = created.convertLongToTime()
-
-    override fun id() = t3_id
 
     override fun equalsContent(other: Any?) = this == other
 
-    override fun likes() = likes
+    override fun thumbnail() = thumbnail
 
-    override fun setItemLikes(likes: Boolean?) {
-        this.likes = likes
-    }
-
-    override fun setItemSaved(saved: Boolean) {
-        this.saved = saved
-    }
+    override fun preview() = preview
 
     override fun plusScore(value: Int) {
         this.score += value
     }
-
-    override fun score() = score
 
     override fun payload(other: Any): RedditItem.Payload {
         if (other is RedditListSimpleItem) {

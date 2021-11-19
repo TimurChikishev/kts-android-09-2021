@@ -17,18 +17,19 @@
             android:id="@+id/includeAppBar"
             layout="@layout/profile_top_app_bar" />
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:ignore="SpeakableTextPresentCheck">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </androidx.core.widget.NestedScrollView>
+        </androidx.viewpager2.widget.ViewPager2>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
+        style="@style/ProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />

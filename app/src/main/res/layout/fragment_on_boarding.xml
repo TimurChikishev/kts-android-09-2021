@@ -17,6 +17,7 @@
 
     <Button
         android:id="@+id/buttonSkip"
+        style="@style/SimpleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

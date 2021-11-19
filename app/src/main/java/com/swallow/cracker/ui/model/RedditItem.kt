@@ -1,17 +1,30 @@
 package com.swallow.cracker.ui.model
 
+import com.swallow.cracker.data.model.listing.RedditChildrenPreview
+
 sealed interface RedditItem {
-    fun id(): String
+    var id: String
+    var prefixId: String
+    var likes: Boolean?
+    var subredditId: String
+    var saved: Boolean
+    var url: String
+    var score: Int
+    var selfText: String
+    var communityIcon: String?
+    var subreddit: String
+    var title: String
+    var author: String
+    var numComments: Int
+    var created: Long
 
-    fun likes(): Boolean?
+    val time: String
 
-    fun setItemLikes(likes: Boolean?)
+    fun thumbnail(): String? = null
 
-    fun setItemSaved(saved: Boolean)
+    fun preview(): RedditChildrenPreview? = null
 
     fun plusScore(value: Int)
-
-    fun score(): Int
 
     fun equalsContent(other: Any?) : Boolean
 

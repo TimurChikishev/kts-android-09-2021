@@ -21,12 +21,11 @@
                 android:layout_height="?attr/actionBarSize" />
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/bottomNavigationHeaderProfile"
+                android:id="@+id/headerTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:theme="@style/TabsCracker"
-                app:labelVisibilityMode="labeled"
-                app:tabIndicatorColor="@color/blue">
+                app:labelVisibilityMode="labeled">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -49,30 +48,8 @@
             android:theme="@style/MaterialToolbarCracker"
             app:layout_collapseMode="pin"
             app:menu="@menu/top_app_bar_home"
-            app:navigationIcon="@drawable/ic_dehaze_24">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/rounded_search_view"
-                android:textColor="@color/black"
-                app:iconifiedByDefault="false"
-                app:queryHint="Search"
-                app:searchIcon="@null" />
-
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:navigationIcon="@drawable/ic_dehaze_24"/>
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/progress_indicator"
-        android:indeterminate="true"
-        android:progress="@integer/material_motion_duration_medium_1"
-        app:indicatorColor="@color/blue" />
 
 </com.google.android.material.appbar.AppBarLayout>

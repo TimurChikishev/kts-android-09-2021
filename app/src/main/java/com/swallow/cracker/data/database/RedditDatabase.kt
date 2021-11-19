@@ -5,16 +5,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.swallow.cracker.data.database.dao.RedditKeysDao
-import com.swallow.cracker.data.database.dao.RedditPostsDao
-import com.swallow.cracker.data.database.dao.RedditProfileDao
+import com.swallow.cracker.data.database.dao.*
 import com.swallow.cracker.data.model.RemoteRedditKeys
-import com.swallow.cracker.data.model.RemoteRedditPost
-import com.swallow.cracker.data.model.RemoteRedditProfile
-
+import com.swallow.cracker.data.model.RemoteSearchQuery
+import com.swallow.cracker.data.model.listing.RemoteRedditPost
+import com.swallow.cracker.data.model.profile.RemoteRedditProfile
+import com.swallow.cracker.data.model.subreddit.RemoteSubreddit
 
 @Database(
-    entities = [RemoteRedditPost::class, RemoteRedditKeys::class, RemoteRedditProfile::class],
+    entities = [
+        RemoteRedditPost::class,
+        RemoteRedditKeys::class,
+        RemoteRedditProfile::class,
+        RemoteSearchQuery::class,
+        RemoteSubreddit::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -23,7 +28,7 @@ abstract class RedditDatabase : RoomDatabase() {
     companion object {
         fun create(context: Context): RedditDatabase {
             val databaseBuilder =
-                Room.databaseBuilder(context, RedditDatabase::class.java, "redditclone.db")
+                Room.databaseBuilder(context, RedditDatabase::class.java, "reddit.db")
             return databaseBuilder.build()
         }
     }
@@ -31,4 +36,6 @@ abstract class RedditDatabase : RoomDatabase() {
     abstract fun redditPostsDao(): RedditPostsDao
     abstract fun redditKeysDao(): RedditKeysDao
     abstract fun redditProfileDao(): RedditProfileDao
+    abstract fun redditSearchQueryDao(): RedditSearchQueryDao
+    abstract fun redditMineSubscriptionsDao(): RedditMineSubscriptionsDao
 }

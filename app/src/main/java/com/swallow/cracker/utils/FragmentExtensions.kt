@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.swallow.cracker.R
 import com.swallow.cracker.ui.model.Message
@@ -28,6 +29,18 @@ fun Fragment.getNoInternetConnectionSnackBar(view: View): Snackbar {
         .setAction("Hide") {}
         .setBackgroundTint(tint)
         .setActionTextColor(actionTextColor)
+}
+
+fun Fragment.bottomNavigationGone() {
+    val navView = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+    if (navView?.visibility == View.VISIBLE)
+        navView.visibility = View.GONE
+}
+
+fun Fragment.bottomNavigationVisible() {
+    val navView = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+    if (navView?.visibility == View.GONE)
+        navView.visibility = View.VISIBLE
 }
 
 fun Fragment.getDataFormCacheSnackBar(view: View): Snackbar {

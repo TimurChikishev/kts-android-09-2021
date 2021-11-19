@@ -1,8 +1,10 @@
 package com.swallow.cracker
 
 import android.app.Application
-import com.swallow.cracker.data.database.Database
-import com.swallow.cracker.data.repository.Repository
+import com.swallow.cracker.di.AppModule
+import com.swallow.cracker.di.NetworkModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class App : Application() {
@@ -13,7 +15,9 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        Repository.initUserPreferencesRepository(this)
-        Database.initRedditDatabase(this)
+        startKoin {
+            androidContext(this@App)
+            modules(AppModule, NetworkModule)
+        }
     }
 }

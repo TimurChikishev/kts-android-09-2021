@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
-    <color name="blue">#005EFF</color>
     <color name="gray">#505050</color>
+
+    <!--  Dark theme colors  -->
+    <color name="arcDarkWindow">#383C4A</color>
+    <color name="arcDarkButton">#444A58</color>
+    <color name="arcDarkButtonHighlight">#505666</color>
+    <color name="arcDarkButtonClose">#cc575d</color>
+    <color name="arcDarkButtonCloseHighlight">#d7787d</color>
+    <color name="arcDarkLight">#404552</color>
+    <color name="arcDarkDark">#2F343F</color>
+    <color name="arcDarkHighlight">#5294E2</color>
+    <color name="arcDarkHighlightDark">#2E3340</color>
+    <color name="arcDarkInHighlight">#4877B1</color>
+    <color name="arcDarkText">#d3dae3</color>
+    <color name="arcDarkTextDark">#898d99</color>
+    <color name="arcDarkLink">#4877B1</color>
+    <color name="arcDarkScroll">#767b87</color>
+
+    <!--  Light theme colors  -->
+    <color name="arcWindow">#e7e8eb</color>
+    <color name="arcWhite">#ffffff</color>
+    <color name="arcGray">#dcdde0</color>
+    <color name="arcButton">#FFFFFF</color>
+    <color name="arcButtonHighlight">#FFFFFF</color>
+    <color name="arcButtonClose">#cc575d</color>
+    <color name="arcButtonCloseHighlight">#d7787d</color>
+    <color name="arcLight">#d3d8e2</color>
+    <color name="arcDark">#2F343F</color>
+    <color name="arcHighlight">#5294E2</color>
+    <color name="arcHighlightDark">#2E3340</color>
+    <color name="arcInHighlight">#4877B1</color>
+    <color name="arcText">#5c616c</color>
+    <color name="arcTextDark">#898d99</color>
+    <color name="arcTextLight">#FFFFFF</color>
+    <color name="arcLink">#4877B1</color>
+    <color name="arcScroll">#767b87</color>
 </resources>
